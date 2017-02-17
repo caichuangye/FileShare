@@ -25,10 +25,13 @@ import android.widget.Toast;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
+import com.huhu.fileshare.databases.DatabaseUtils;
 import com.huhu.fileshare.databases.DownloadHistory;
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.ui.adapter.DownloadHistoryAdapter;
+import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
+import com.huhu.fileshare.util.SystemSetting;
 
 import java.io.File;
 import java.util.List;
@@ -201,7 +204,14 @@ public class DownloadActivity extends BaseActivity implements DownloadHistoryAda
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        showDeletingDialog(checkBox.isChecked());
+                      //  showDeletingDialog();
+                        deleteSelectedItems(checkBox.isChecked());
+                        mAdapter.deleteSelected();
+
+                        setShowMenu(false);
+                        mSelectAllItem.setTitle("全选");
+                        mAdapter.setShowDeleteIcon(false);
+                        mAdapter.selectAll(false);
                     }
                 })
                 .setNegativeButton("取消", null)
@@ -210,18 +220,18 @@ public class DownloadActivity extends BaseActivity implements DownloadHistoryAda
 
 
     private void showGroupDialog(){
-        DownloadHistoryAdapter.Flag flag = mAdapter.getFlag();
+        CommonUtil.Flag flag = mAdapter.getFlag();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.group_show_layout,null);
         final RadioButton allRB = (RadioButton)view.findViewById(R.id.rb_all);
         final RadioButton dateRB = (RadioButton)view.findViewById(R.id.rb_date);
         RadioButton typeRB = (RadioButton)view.findViewById(R.id.rb_type);
         final RadioButton ownerRB = (RadioButton)view.findViewById(R.id.rb_owner);
-        if(flag == DownloadHistoryAdapter.Flag.NONE){
+        if(flag == CommonUtil.Flag.NONE){
             allRB.toggle();
-        }else if(flag == DownloadHistoryAdapter.Flag.OWNER){
+        }else if(flag == CommonUtil.Flag.OWNER){
             ownerRB.toggle();
-        }else if(flag == DownloadHistoryAdapter.Flag.DATE){
+        }else if(flag == CommonUtil.Flag.DATE){
             dateRB.toggle();
         }else{
             typeRB.toggle();
@@ -230,28 +240,58 @@ public class DownloadActivity extends BaseActivity implements DownloadHistoryAda
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        CommonUtil.Flag res;
                         if(allRB.isChecked()){
-                            mAdapter.setGroup(DownloadHistoryAdapter.Flag.NONE);
+                            res = CommonUtil.Flag.NONE;
                         }else if(ownerRB.isChecked()){
-                            mAdapter.setGroup(DownloadHistoryAdapter.Flag.OWNER);
+                            res = CommonUtil.Flag.OWNER;
                         }else if(dateRB.isChecked()){
-                            mAdapter.setGroup(DownloadHistoryAdapter.Flag.DATE);
+                            res = CommonUtil.Flag.DATE;
                         }else{
-                            mAdapter.setGroup(DownloadHistoryAdapter.Flag.TYPE);
+                            res = CommonUtil.Flag.TYPE;
                         }
+                        SystemSetting.getInstance(getApplicationContext()).setGroupFlag(CommonUtil.getFlagValue(res));
+                        mAdapter.setGroup(res);
                     }
                 })
                 .setNegativeButton("取消", null)
                 .show();
     }
 
-    private void showDeletingDialog(boolean deleteSource) {
+    private void showDeletingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         Dialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
         View view = LayoutInflater.from(this).inflate(R.layout.deleting_download_layout, null);
         builder.setView(view)
                 .show();
+    }
+
+    private void deleteSelectedItems(boolean isDeleteResources){
+        List<DownloadItem> list = mAdapter.getSelectedItem();
+        StringBuilder where = new StringBuilder(DatabaseUtils.ColumnName.ID+" in (");
+        for(DownloadItem item : list){
+            String path = item.getToPath();
+            String uuid = item.getUUID();
+            Log.d("cccc", "path = "+path+", uuid = "+uuid);
+            if(!TextUtils.isEmpty(path)) {
+                where.append("'" + uuid + "',");
+                if(isDeleteResources) {
+                    File file = new File(path);
+                    file.deleteOnExit();
+                }
+            }
+
+        }
+        Log.d("cccc", "where = "+where);
+        if(!where.toString().endsWith("(")) {
+            where.deleteCharAt(where.length() - 1);
+            where.append(")");
+            int count = getContentResolver().delete(DatabaseUtils.DOWNLOAD_HISTORY_URI, where.toString(), null);
+            Log.d("cccc", "count = " + count + ", where = " + where.toString());
+        }else{
+            Log.d("cccc", "count = 0" + ", where = null");
+        }
     }
 
 
