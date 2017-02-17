@@ -1,0 +1,78 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="HuhuAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:actionMenuTextColor">@color/black_57</item>
+        <item name="colorPrimary">@color/title_color</item>
+        <item name="colorPrimaryDark">@color/title_color</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="toolbar_layout_style">
+        <item name="android:layout_height">@dimen/huhu_50_dp</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="setting_divider_style_1">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">#ddd</item>
+        <item name="android:layout_marginStart">43dp</item>
+        <item name="android:layout_marginEnd">30dp</item>
+    </style>
+
+    <style name="setting_label_style">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/setting_label_color</item>
+        <item name="android:layout_marginLeft">@dimen/huhu_6_dp</item>
+        <item name="android:textSize">@dimen/huhu_16_sp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
+    <style name="setting_content_style">
+        <item name="android:background">@null</item>
+        <item name="android:clickable">false</item>
+        <item name="android:layout_marginRight">@dimen/huhu_30_dp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/setting_color</item>
+        <item name="android:textSize">@dimen/huhu_15_sp</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:editable">false</item>
+    </style>
+
+
+    <style name="main_menu_style">
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/unselect_menu_color</item>
+        <item name="android:textSize">@dimen/huhu_12_sp</item>
+    </style>
+
+    <style name="main_menu_icon_style">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:layout_width">22dp</item>
+        <item name="android:layout_height">22dp</item>
+    </style>
+
+    <style name="setting_icon_style">
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_width">25dp</item>
+        <item name="android:layout_height">25dp</item>
+        <item name="android:scaleType">fitXY</item>
+    </style>
+
+</resources>

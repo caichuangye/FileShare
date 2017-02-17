@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/huhu_50_dp"
+        android:layout_alignParentTop="true"
+        android:background="#24b7a4">
+
+        <RelativeLayout
+            android:id="@+id/return_back"
+            android:layout_width="@dimen/huhu_50_dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="@dimen/huhu_16_dp"
+                android:layout_height="@dimen/huhu_16_dp"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/left_arrow" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/main_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/return_back"
+            android:text="wifi"
+            android:textColor="@color/black_57"
+            android:textSize="@dimen/huhu_20_sp" />
+
+        <RelativeLayout
+            android:id="@+id/options"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/huhu_10_dp"
+            android:layout_toRightOf="@id/main_title">
+
+            <TextView
+                android:id="@+id/operate"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/huhu_10_dp"
+                android:paddingRight="@dimen/huhu_10_dp"
+                android:text="已共享0个文件"
+                android:textColor="@color/black_57"
+                android:textSize="@dimen/huhu_12_sp"
+                android:visibility="gone" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

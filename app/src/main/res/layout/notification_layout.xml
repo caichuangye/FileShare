@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/huhu_60_dp">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:src="@mipmap/ic_launcher"
+        android:layout_centerVertical="true"
+        android:layout_width="@dimen/huhu_40_dp"
+        android:layout_height="@dimen/huhu_40_dp"
+        android:layout_marginStart="@dimen/huhu_10_dp"
+        />
+
+    <TextView
+        android:id="@+id/file_name"
+        android:layout_toEndOf="@id/icon"
+        android:layout_marginTop="@dimen/huhu_10_dp"
+        android:layout_marginStart="@dimen/huhu_10_dp"
+        android:text="tonight i feel close to you"
+        android:layout_width="200dp"
+        android:textColor="@color/black_57"
+        android:maxLines="1"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/percent"
+        android:textColor="@color/black_57"
+        android:layout_toEndOf="@id/file_name"
+        android:layout_marginTop="@dimen/huhu_10_dp"
+        android:layout_marginStart="@dimen/huhu_30_dp"
+        android:text="99%"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="@dimen/huhu_10_dp"
+        android:layout_marginRight="@dimen/huhu_60_dp"
+        android:layout_toEndOf="@id/icon"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
+        android:progress="99" />
+
+    <RelativeLayout
+        android:id="@+id/delete"
+        android:layout_alignParentEnd="true"
+        android:layout_width="@dimen/huhu_60_dp"
+        android:layout_height="@dimen/huhu_60_dp">
+        <ImageView
+            android:layout_centerInParent="true"
+            android:src="@mipmap/delete"
+            android:scaleType="centerCrop"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/huhu_25_dp"
+            android:layout_height="@dimen/huhu_25_dp" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

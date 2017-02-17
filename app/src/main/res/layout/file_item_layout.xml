@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/huhu_60_dp">
+
+    <ImageView
+        android:id="@+id/file_cover"
+        android:layout_width="@dimen/huhu_50_dp"
+        android:layout_height="@dimen/huhu_50_dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/huhu_10_dp"
+        android:src="@mipmap/mp3"/>
+
+    <RelativeLayout
+        android:layout_marginLeft="@dimen/huhu_10_dp"
+        android:layout_toEndOf="@id/file_cover"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/huhu_60_dp">
+        <TextView
+            android:id="@+id/file_name"
+            android:text="Tonight I feel close to you"
+            android:layout_width="210dp"
+            android:singleLine="true"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_87"
+            android:layout_marginTop="@dimen/huhu_8_dp"
+            android:gravity="left" />
+
+        <TextView
+            android:id="@+id/file_info1"
+            android:text="仓木麻衣"
+            android:singleLine="true"
+            android:textSize="12sp"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_57"
+            android:gravity="left"
+            android:layout_alignBottom="@+id/file_info2"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/file_info2"
+            android:text="3.4MB"
+            android:singleLine="true"
+            android:textColor="@color/black_57"
+            android:textSize="12sp"
+            android:layout_marginStart="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@id/file_info1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/huhu_8_dp"
+            android:gravity="left" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_centerInParent="true"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true">
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:src="@mipmap/select"
+            android:id="@+id/file_selected"
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
+
+        <com.huhu.fileshare.ui.view.DownloadIcon
+            android:id="@+id/file_download"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:visibility="visible"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

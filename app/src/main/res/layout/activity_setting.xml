@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.huhu.fileshare.ui.activity.SettingActivity">
+
+    <include
+        layout="@layout/toolbar_layout"
+        style="@style/toolbar_layout_style"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:background="#ffffff"
+                android:id="@+id/usericon_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/huhu_60_dp">
+                <ImageView
+                    style="@style/setting_icon_style"
+                    android:id="@+id/user_icon_label"
+                    android:src="@mipmap/user_icon"/>
+                <TextView
+                    style="@style/setting_label_style"
+                    android:layout_toRightOf="@id/user_icon_label"
+                    android:text="@string/user_icon"/>
+                <ImageView
+                    android:id="@+id/user_icon"
+                    android:layout_marginRight="@dimen/huhu_25_dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="@dimen/huhu_50_dp"
+                    android:layout_height="@dimen/huhu_50_dp"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/monkey"/>
+            </RelativeLayout>
+            <View
+                android:id="@+id/divider_below_icon"
+                style="@style/setting_divider_style_1"/>
+            <RelativeLayout
+                android:background="#ffffff"
+                android:id="@+id/username_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/huhu_60_dp">
+                <ImageView
+                    style="@style/setting_icon_style"
+                    android:id="@+id/user_name_label"
+                    android:src="@mipmap/user_name"/>
+                <TextView
+                    android:layout_toRightOf="@id/user_name_label"
+                    style="@style/setting_label_style"
+                    android:text="@string/nick_name"/>
+                <TextView
+                    android:id="@+id/user_nickname"
+                    style="@style/setting_content_style"
+                    android:text="huhu"/>
+            </RelativeLayout>
+            <View
+                android:id="@+id/divider_below_name"
+                style="@style/setting_divider_style_1"/>
+
+            <RelativeLayout
+                android:background="#ffffff"
+                android:id="@+id/storagepath_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/huhu_60_dp">
+                <ImageView
+                    style="@style/setting_icon_style"
+                    android:id="@+id/storage_path_label"
+                    android:src="@mipmap/storage"/>
+                <TextView
+                    android:layout_toRightOf="@id/storage_path_label"
+                    style="@style/setting_label_style"
+                    android:text="@string/store_path"/>
+                <TextView
+                    android:id="@+id/storage_path"
+                    style="@style/setting_content_style"
+                    android:text="/storage/fileshare/"/>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/divider_below_storepath"
+                style="@style/setting_divider_style_1"/>
+
+            <RelativeLayout
+                android:id="@+id/checkversion_layout"
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/huhu_60_dp">
+                <ImageView
+                    style="@style/setting_icon_style"
+                    android:id="@+id/check_version_label"
+                    android:src="@mipmap/update"/>
+                <TextView
+                    android:layout_toRightOf="@id/check_version_label"
+                    style="@style/setting_label_style"
+                    android:text="@string/check_version"/>
+                <TextView
+                    android:id="@+id/app_version"
+                    style="@style/setting_content_style" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/divider_below_version"
+                style="@style/setting_divider_style_1"/>
+
+            <RelativeLayout
+                android:background="@android:color/white"
+                android:id="@+id/feedback_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/huhu_60_dp"
+                android:layout_alignParentStart="true">
+                <ImageView
+                    style="@style/setting_icon_style"
+                    android:id="@+id/feedback_label"
+                    android:src="@mipmap/feedback"/>
+                <TextView
+                    android:layout_toRightOf="@id/feedback_label"
+                    style="@style/setting_label_style"
+                    android:text="@string/feedback"/>
+                <ImageView
+                    android:src="@mipmap/arrow_right"
+                    android:layout_marginRight="@dimen/huhu_35_dp"
+                    android:layout_centerVertical="true"
+                    android:layout_width="12dp"
+                    android:layout_height="20dp"
+                    android:scaleType="fitXY"
+                    android:layout_alignParentRight="true" />
+            </RelativeLayout>
+
+
+            <View
+                style="@style/setting_divider_style_1"/>
+
+
+
+            <RelativeLayout
+                android:background="@android:color/white"
+                android:id="@+id/about_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/huhu_60_dp">
+                <ImageView
+                    style="@style/setting_icon_style"
+                    android:id="@+id/about_label"
+                    android:src="@mipmap/ic_launcher"/>
+                <TextView
+                    android:layout_toRightOf="@id/about_label"
+                    style="@style/setting_label_style"
+                    android:text="@string/about"/>
+                <ImageView
+                    android:src="@mipmap/arrow_right"
+                    android:layout_marginRight="@dimen/huhu_35_dp"
+                    android:layout_centerVertical="true"
+                    android:layout_width="12dp"
+                    android:layout_height="20dp"
+                    android:scaleType="fitXY"
+                    android:layout_alignParentRight="true" />
+            </RelativeLayout>
+            <View
+                android:id="@+id/divider_below_feedback"
+                style="@style/setting_divider_style_1"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

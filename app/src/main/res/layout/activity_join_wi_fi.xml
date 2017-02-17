@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_join_wi_fi"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.huhu.fileshare.ui.activity.JoinWiFiActivity">
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/toolbar_layout"
+        style="@style/toolbar_layout_style"/>
+
+    <RelativeLayout
+        android:layout_below="@id/title"
+        android:visibility="gone"
+        android:id="@+id/joining_label"
+        android:background="@android:color/holo_orange_light"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/huhu_50_dp">
+        <TextView
+            android:textColor="@color/black_57"
+            android:id="@+id/joining_textview"
+            android:textSize="@dimen/huhu_14_sp"
+            android:text="正在加入：cmcc-24"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_marginEnd="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+    </RelativeLayout>
+
+
+    <com.huhu.fileshare.com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:layout_below="@id/joining_label"
+        android:id="@+id/find_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/huhu_2_dp"
+        android:layout_marginRight="@dimen/huhu_2_dp"
+        android:background="@android:color/white" />
+
+    <RelativeLayout
+        android:id="@+id/emptyview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="200dp"
+            android:text="WiFi已关闭或无可用网络"
+            android:textColor="@color/black_57" />
+
+        <TextView
+            android:id="@+id/set_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/huhu_6_dp"
+            android:text="@string/set_wifi"
+            android:textColor="@color/title_color" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">圈圈</string>
+    <string name="action_settings">设置</string>
+    <string name="title_activity_main">文件分享</string>
+    <string name="find">发现</string>
+    <string name="share">分享</string>
+    <string name="download">下载</string>
+    <string name="setting">设置</string>
+
+    <string name="pull_to_refresh_pull_label">下拉刷新WiFi列表...</string>
+    <string name="pull_to_refresh_release_label">松开刷新WiFi列表...</string>
+    <string name="pull_to_refresh_refreshing_label">正在加载...</string>
+    <string name="pull_to_refresh_tap_label">点击刷新...</string>
+
+    <string name="user_icon">头像</string>
+    <string name="nick_name">昵称</string>
+    <string name="ap_name">热点名称</string>
+    <string name="ap_pwd">热点密码</string>
+    <string name="store_path">存储路径</string>
+    <string name="auto_refresh">自动刷新WiFi列表</string>
+    <string name="check_version">检测新版本</string>
+    <string name="feedback">用户反馈</string>
+    <string name="about">关于</string>
+    <string name="file_unit">项</string>
+    <string name="edit">编辑</string>
+    <string name="save">保存</string>
+    <string name="title_activity_share_images">图片</string>
+    <string name="title_activity_user_feedback">用户反馈</string>
+    <string name="title_activity_about">关于</string>
+    <string name="commit">提 交</string>
+    <string name="cancel">取 消</string>
+    <string name="find_wifi_title">发现以下WiFi，点击加入</string>
+    <string name="find_devices_title">发现以下共享设备，点击查看共享内容</string>
+    <string name="image">图片</string>
+    <string name="set_wifi"><u>设置WiFi</u></string>
+</resources>

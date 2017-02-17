@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/group"
+        android:showAsAction="always"
+        android:orderInCategory="1"
+        android:title="分组显示" />
+
+    <item
+        android:id="@+id/delete"
+        android:showAsAction="always"
+        android:orderInCategory="1"
+        android:title="删除" />
+
+    <item
+        android:id="@+id/all_select"
+        android:showAsAction="always"
+        android:orderInCategory="1"
+        android:title="全选" />
+
+    <item
+        android:id="@+id/cancel"
+        android:showAsAction="always"
+        android:orderInCategory="1"
+        android:title="取消" />
+
+
+</menu>
+

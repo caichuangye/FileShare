@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fitsSystemWindows="true"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    tools:context="com.huhu.fileshare.ui.activity.AboutActivity">
+
+    <include
+        layout="@layout/toolbar_layout"
+        style="@style/toolbar_layout_style"/>
+
+    <ImageView
+        android:layout_marginTop="@dimen/huhu_60_dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/ic_launcher"
+        android:layout_width="@dimen/huhu_80_dp"
+        android:layout_height="@dimen/huhu_80_dp" />
+    <TextView
+        android:id="@+id/version"
+        android:gravity="center_horizontal"
+        android:text="V2.3.1"
+        android:paddingTop="6dp"
+        android:textColor="@color/title_color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:paddingTop="32dp"
+        android:textSize="16sp"
+        android:gravity="center_horizontal"
+        android:text="圈圈，一款支持多对多的文件共享软件"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:layout_marginTop="260dp"
+        android:gravity="center_horizontal"
+        android:text="caiyeccy@163.com"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

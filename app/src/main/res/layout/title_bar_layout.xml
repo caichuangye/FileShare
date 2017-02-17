@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_alignParentTop="true"
+        android:id="@+id/title_bar"
+        android:background="#24b7a4"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/huhu_50_dp">
+        <RelativeLayout
+            android:id="@+id/return_back"
+            android:layout_width="@dimen/huhu_50_dp"
+            android:layout_height="match_parent">
+            <ImageView
+                android:src="@mipmap/left_arrow"
+                android:layout_centerInParent="true"
+                android:layout_width="@dimen/huhu_16_dp"
+                android:layout_height="@dimen/huhu_16_dp" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_toRightOf="@id/return_back"
+            android:text="wifi"
+            android:textColor="@color/black_57"
+            android:id="@+id/main_title"
+            android:textSize="@dimen/huhu_20_sp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</RelativeLayout>
