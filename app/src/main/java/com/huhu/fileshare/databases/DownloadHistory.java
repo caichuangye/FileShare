@@ -46,11 +46,11 @@ public class DownloadHistory {
 
     }
 
-    public List<DownloadItem> getAllDownloadSuccessItem(){
+    public List<DownloadItem> getAllItems(){
         List<DownloadItem> list = new ArrayList<>();
-        String where = " download_states = '"+DownloadStatus.SUCCESSED.toString()+"'";
+    //    String where = " download_states = '"+DownloadStatus.SUCCESSED.toString()+"'";
         String order = " end_time desc";
-        Cursor cursor = mContentResolver.query(DatabaseUtils.DOWNLOAD_HISTORY_URI,null,where,null,order);
+        Cursor cursor = mContentResolver.query(DatabaseUtils.DOWNLOAD_HISTORY_URI,null,null,null,order);
         if(cursor != null){
             while (cursor.moveToNext()){
                 list.add(parseCursor(cursor));

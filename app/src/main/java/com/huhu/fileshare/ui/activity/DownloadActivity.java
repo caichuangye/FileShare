@@ -17,10 +17,8 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huhu.fileshare.R;
@@ -28,6 +26,7 @@ import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.databases.DatabaseUtils;
 import com.huhu.fileshare.databases.DownloadHistory;
 import com.huhu.fileshare.model.DownloadItem;
+import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.ui.adapter.DownloadHistoryAdapter;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
@@ -66,7 +65,7 @@ public class DownloadActivity extends BaseActivity implements DownloadHistoryAda
 
         mAdapter = new DownloadHistoryAdapter(this, this);
         mDownloadHistory = new DownloadHistory(this);
-        mAdapter.setData(mDownloadHistory.getAllDownloadSuccessItem());
+        mAdapter.setData(mDownloadHistory.getAllItems());
         mListView.setAdapter(mAdapter);
 
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -89,6 +88,10 @@ public class DownloadActivity extends BaseActivity implements DownloadHistoryAda
 
     private void handleClickItem(int position){
         DownloadItem  item = (DownloadItem) mAdapter.getItem(position);
+        if(item.getStatus() != DownloadStatus.SUCCESSED){
+            Toast.makeText(this,item.getToPath()+": 未下载完成",Toast.LENGTH_SHORT).show();
+            return;
+        }
         String path = item.getToPath();
         if(!TextUtils.isEmpty(path)){
             File file = new File(path);

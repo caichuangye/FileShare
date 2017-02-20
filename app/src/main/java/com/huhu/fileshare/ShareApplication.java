@@ -302,8 +302,19 @@ public class ShareApplication extends Application {
      * 获取用户头像的图标的集合
      */
     public int[] getUserIconList() {
-        int[] iconList = {R.mipmap.user_icon_0, R.mipmap.user_icon_1, R.mipmap.user_icon_2, R.mipmap.user_icon_3,
-                R.mipmap.user_icon_4, R.mipmap.user_icon_5, R.mipmap.user_icon_6, R.mipmap.user_icon_7, R.mipmap.user_icon_8,};
+        int[] iconList = {
+                R.mipmap.user_icon_0,
+                R.mipmap.user_icon_1,
+                R.mipmap.user_icon_2,
+                R.mipmap.user_icon_3,
+                R.mipmap.user_icon_4,
+                R.mipmap.user_icon_5,
+                R.mipmap.user_icon_6,
+                R.mipmap.user_icon_7,
+                R.mipmap.user_icon_8,
+                R.mipmap.user_icon_9,
+                R.mipmap.user_icon_10,
+                R.mipmap.user_icon_11,};
         return iconList;
     }
 

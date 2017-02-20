@@ -83,11 +83,8 @@ public class DownloadHistoryAdapter extends BaseAdapter {
 
     public List<DownloadItem> getSelectedItem() {
         List<DownloadItem> list = new ArrayList<>();
-        Log.d("cccc", "selected size = " + mSelectedList.size());
         for (ItemImpl item : mDataList) {
-            Log.d("cccc","item uuid: "+item.getUUID());
             if (mSelectedList.contains(item.getUUID())) {
-                Log.d("cccc", "prepare to delete: " + item.getToPath());
                 list.add(item);
             }
         }
@@ -98,7 +95,6 @@ public class DownloadHistoryAdapter extends BaseAdapter {
         mDataList.clear();
         if (list != null) {
             for (DownloadItem item : list) {
-                Log.d("cccc","---: "+item.getUUID());
                 mDataList.add(ItemImpl.get(item));
             }
         }
@@ -186,11 +182,9 @@ public class DownloadHistoryAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     if (mSelectedList.contains(item.getUUID())) {
                         mSelectedList.remove(item.getUUID());
-                        Log.d("cccc", "remove: " + item.getUUID());
                         imageView.setImageDrawable(mContext.getDrawable(R.mipmap.unselect));
                         mListener.onHasSelected(mSelectedList.size() > 0);
                     } else {
-                        Log.d("cccc", "add: " + item.getUUID());
                         mSelectedList.add(item.getUUID());
                         imageView.setImageDrawable(mContext.getDrawable(R.mipmap.select));
                         mListener.onHasSelected(true);
@@ -364,13 +358,6 @@ public class DownloadHistoryAdapter extends BaseAdapter {
     public interface OnSelectListener {
         void onHasSelected(boolean selected);
     }
-
-//    public enum Flag {
-//        NONE,//0
-//        TYPE,//1
-//        DATE,//2
-//        OWNER//3
-//    }
 
     public static class ItemImpl extends DownloadItem {
 
