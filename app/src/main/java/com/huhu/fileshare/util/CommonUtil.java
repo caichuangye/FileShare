@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.model.ImageItem;
-import com.huhu.fileshare.ui.adapter.DownloadHistoryAdapter;
 import com.huhu.fileshare.ui.view.DownloadIcon;
 
 import java.io.File;

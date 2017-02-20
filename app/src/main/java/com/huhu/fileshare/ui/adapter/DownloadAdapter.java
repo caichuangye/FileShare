@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/4/28.
  */
-public class DownloadHistoryAdapter extends BaseAdapter {
+public class DownloadAdapter extends BaseAdapter {
 
     private Context mContext;
 
@@ -73,7 +73,7 @@ public class DownloadHistoryAdapter extends BaseAdapter {
 
     }
 
-    public DownloadHistoryAdapter(Context context, OnSelectListener listener) {
+    public DownloadAdapter(Context context, OnSelectListener listener) {
         mContext = context;
         mDataList = new ArrayList<>();
         mSelectedList = new ArrayList<>();
@@ -255,6 +255,12 @@ public class DownloadHistoryAdapter extends BaseAdapter {
             }
         }
         if (mFlag == CommonUtil.Flag.NONE) {
+            Collections.sort(mDataList, new Comparator<ItemImpl>() {
+                @Override
+                public int compare(ItemImpl o1, ItemImpl o2) {
+                    return o2.getDate().compareTo(o1.getDate());
+                }
+            });
             notifyDataSetChanged();
             return;
         }
@@ -263,14 +269,102 @@ public class DownloadHistoryAdapter extends BaseAdapter {
             @Override
             public int compare(ItemImpl o1, ItemImpl o2) {
                 if (flag == CommonUtil.Flag.TYPE) {
-                    return o1.getFileType().compareTo(o2.getFileType());
+                    return o2.getFileType().compareTo(o1.getFileType());
                 } else if (flag == CommonUtil.Flag.DATE) {
-                    return o1.getDate().compareTo(o2.getDate());
+                    return o2.getStartTime().compareTo(o1.getStartTime());
                 } else {
-                    return o1.getFromUserName().compareTo(o2.getFromUserName());
+                    return o2.getFromUserName().compareTo(o1.getFromUserName());
                 }
             }
         });
+
+        List<ItemImpl> temp = new ArrayList<>();
+        int start = 0;
+        if (flag == CommonUtil.Flag.TYPE) {
+            for (int i = 0; i < mDataList.size(); i++) {
+                if (i == mDataList.size() - 1) {
+                    List<ItemImpl> list = new ArrayList<>();
+                    for (int j = start; j <= i; j++) {
+                        list.add(mDataList.get(j));
+                    }
+                    Collections.sort(list, new Comparator<ItemImpl>() {
+                        @Override
+                        public int compare(ItemImpl o1, ItemImpl o2) {
+                            return o2.getStartTime().compareTo(o1.getStartTime());
+                        }
+                    });
+                    for(int k = 0 ;k <list.size(); k++){
+                        temp.add(list.get(k));
+                    }
+                    break;
+                }
+                ItemImpl item = mDataList.get(i);
+                ItemImpl next = mDataList.get(i + 1);
+                if (!item.getFileType().equals(next.getFileType())) {
+                    List<ItemImpl> list = new ArrayList<>();
+                    for (int j = start; j <= i; j++) {
+                        list.add(mDataList.get(j));
+                    }
+                    Collections.sort(list, new Comparator<ItemImpl>() {
+                        @Override
+                        public int compare(ItemImpl o1, ItemImpl o2) {
+                            return o2.getStartTime().compareTo(o1.getStartTime());
+                        }
+                    });
+                    for(int k = 0 ;k <list.size(); k++){
+                        temp.add(list.get(k));
+                    }
+                    start = i + 1;
+                }
+            }
+        }else if(flag == CommonUtil.Flag.OWNER){
+            for (int i = 0; i < mDataList.size(); i++) {
+                if (i == mDataList.size() - 1) {
+                    List<ItemImpl> list = new ArrayList<>();
+                    for (int j = start; j <= i; j++) {
+                        list.add(mDataList.get(j));
+                    }
+                    Collections.sort(list, new Comparator<ItemImpl>() {
+                        @Override
+                        public int compare(ItemImpl o1, ItemImpl o2) {
+                            return o2.getStartTime().compareTo(o1.getStartTime());
+                        }
+                    });
+                    for(int k = 0 ;k <list.size(); k++){
+                        temp.add(list.get(k));
+                    }
+                    break;
+                }
+                ItemImpl item = mDataList.get(i);
+                ItemImpl next = mDataList.get(i + 1);
+                if (!item.getFromUserName().equals(next.getFromUserName())) {
+                    List<ItemImpl> list = new ArrayList<>();
+                    for (int j = start; j <= i; j++) {
+                        list.add(mDataList.get(j));
+                    }
+                    Collections.sort(list, new Comparator<ItemImpl>() {
+                        @Override
+                        public int compare(ItemImpl o1, ItemImpl o2) {
+                            return o2.getStartTime().compareTo(o1.getStartTime());
+                        }
+                    });
+                    for(int k = 0 ;k <list.size(); k++){
+                        temp.add(list.get(k));
+                    }
+                    start = i + 1;
+                }
+            }
+        }
+
+        if(flag == CommonUtil.Flag.OWNER || flag == CommonUtil.Flag.TYPE){
+            if(temp.size() == mDataList.size()){
+                mDataList.clear();
+                mDataList.addAll(temp);
+            }else{
+                throw new RuntimeException("日期排序错误！");
+            }
+        }
+
 
         //每个分组添加一个标题
         for (int i = 0; i < mDataList.size(); ) {

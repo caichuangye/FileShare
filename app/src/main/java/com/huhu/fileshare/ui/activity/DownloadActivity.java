@@ -27,7 +27,7 @@ import com.huhu.fileshare.databases.DatabaseUtils;
 import com.huhu.fileshare.databases.DownloadHistory;
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
-import com.huhu.fileshare.ui.adapter.DownloadHistoryAdapter;
+import com.huhu.fileshare.ui.adapter.DownloadAdapter;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.SystemSetting;
@@ -35,9 +35,9 @@ import com.huhu.fileshare.util.SystemSetting;
 import java.io.File;
 import java.util.List;
 
-public class DownloadActivity extends BaseActivity implements DownloadHistoryAdapter.OnSelectListener {
+public class DownloadActivity extends BaseActivity implements DownloadAdapter.OnSelectListener {
 
-    private DownloadHistoryAdapter mAdapter;
+    private DownloadAdapter mAdapter;
 
     private DownloadHistory mDownloadHistory;
 
@@ -63,7 +63,7 @@ public class DownloadActivity extends BaseActivity implements DownloadHistoryAda
         mListView = (ListView) findViewById(R.id.listview);
         mListView.setEmptyView(empty);
 
-        mAdapter = new DownloadHistoryAdapter(this, this);
+        mAdapter = new DownloadAdapter(this, this);
         mDownloadHistory = new DownloadHistory(this);
         mAdapter.setData(mDownloadHistory.getAllItems());
         mListView.setAdapter(mAdapter);
