@@ -1,15 +1,10 @@
 package com.huhu.fileshare.ui.activity;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,7 +12,6 @@ import android.widget.Toast;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
-import com.huhu.fileshare.ui.adapter.ChangeUserIconAdapter;
 import com.huhu.fileshare.util.SystemSetting;
 
 public class SettingActivity extends BaseActivity {
@@ -96,7 +90,7 @@ public class SettingActivity extends BaseActivity {
             String item = null;
             switch (v.getId()){
                 case R.id.usericon_layout:
-                    goActivity(EditUserIogoActivity.class);
+                    goActivity(EditUserlogoActivity.class);
                     return;
                 case R.id.username_layout:
                     item = SystemSetting.USER_NICKNAME;

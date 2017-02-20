@@ -21,6 +21,7 @@ public class SystemSetting {
     public static final String AP_PWD          = "AP_PWD";
     public static final String STORAGE_PATH    = "STORAGE_PATH";
     public static final String AUTO_REFRESH    = "AUTO_REFRESH";
+    public static final String GROUP_FLAG      ="GROUP_FLAG";
 
     private SharedPreferences mSharedPreferences;
 
@@ -51,6 +52,16 @@ public class SystemSetting {
     public void setUserIconIndex(int index){
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putInt(USER_ICON_INDEX,index);
+        editor.commit();
+    }
+
+    public int getGroupFlag(){
+        return mSharedPreferences.getInt(GROUP_FLAG,0);
+    }
+
+    public void setGroupFlag(int flag){
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt(GROUP_FLAG,flag);
         editor.commit();
     }
 

@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.model.ImageItem;
+import com.huhu.fileshare.ui.adapter.DownloadHistoryAdapter;
 import com.huhu.fileshare.ui.view.DownloadIcon;
 
 import java.io.File;
@@ -184,5 +185,38 @@ public class CommonUtil {
             return null;
         }
     }
+
+    public enum Flag {
+        NONE,//0
+        TYPE,//1
+        DATE,//2
+        OWNER//3
+    }
+
+    public static Flag getFlag(int i){
+        if(i == 1){
+            return Flag.TYPE;
+        }else if(i == 2){
+            return Flag.DATE;
+        }else if(i == 3){
+            return Flag.OWNER;
+        }else{
+            return Flag.NONE;
+        }
+    }
+
+    public static int getFlagValue(Flag flag){
+        if(flag == Flag.TYPE){
+            return 1;
+        }else if(flag == Flag.DATE){
+            return 2;
+        }else if(flag == Flag.OWNER){
+            return 3;
+        }else{
+            return 0;
+        }
+    }
+
+
 
 }

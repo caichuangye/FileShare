@@ -45,7 +45,7 @@
             android:name=".ui.activity.AboutActivity"
             android:label="@string/title_activity_about" />
         <activity
-            android:name=".ui.activity.EditUserIogoActivity" />
+            android:name=".ui.activity.EditUserlogoActivity" />
 
         <provider
             android:name=".databases.ShareProvider"

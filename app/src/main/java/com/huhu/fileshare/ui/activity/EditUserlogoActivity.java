@@ -16,9 +16,9 @@ import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.ui.adapter.ChangeUserIconAdapter;
 import com.huhu.fileshare.util.SystemSetting;
 
-public class EditUserIogoActivity extends BaseActivity {
+public class EditUserlogoActivity extends BaseActivity {
 
-    private ImageView mSelectedIcon;
+    private int mIconIndex = 0;
 
     private GridView mIconGridView;
 
@@ -28,7 +28,6 @@ public class EditUserIogoActivity extends BaseActivity {
         setContentView(R.layout.activity_edit_user_logo);
         initToolbar("编辑头像",null);
 
-        mSelectedIcon = (ImageView)findViewById(R.id.user_icon);
         mIconGridView = (GridView)findViewById(R.id.gridview);
         init();
     }
@@ -62,6 +61,7 @@ public class EditUserIogoActivity extends BaseActivity {
                 onBackPressed();
                 break;
             case R.id.save:
+                SystemSetting.getInstance(getApplicationContext()).setUserIconIndex(mIconIndex);
                 finish();
                 break;
         }
@@ -69,15 +69,15 @@ public class EditUserIogoActivity extends BaseActivity {
     }
 
     private void init(){
-        int index = SystemSetting.getInstance(this).getUserIconIndex();
-        mSelectedIcon.setImageResource(((ShareApplication) this.getApplicationContext()).getUserIconList()[index]);
-        ChangeUserIconAdapter adapter = new ChangeUserIconAdapter(this);
+        mIconIndex = SystemSetting.getInstance(this).getUserIconIndex();
+        final ChangeUserIconAdapter adapter = new ChangeUserIconAdapter(this);
         mIconGridView.setAdapter(adapter);
         mIconGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SystemSetting.getInstance(getApplicationContext()).setUserIconIndex(position);
-                mSelectedIcon.setImageResource(((ShareApplication)getApplicationContext()).getUserIconList()[position]);
+                mIconIndex = position;
+                adapter.setSelectedIndex(position);
             }
         });
     }

@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
+import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.SystemSetting;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
@@ -59,18 +61,44 @@ public class DownloadHistoryAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void deleteSelected() {
+        Iterator<ItemImpl> iterator = mDataList.iterator();
+        while (iterator.hasNext()) {
+            ItemImpl item = iterator.next();
+            if (!item.isTitle() && mSelectedList.contains(item.getUUID())) {
+                iterator.remove();
+            }
+        }
+        setGroup(mFlag);
+
+    }
+
     public DownloadHistoryAdapter(Context context, OnSelectListener listener) {
         mContext = context;
         mDataList = new ArrayList<>();
         mSelectedList = new ArrayList<>();
         mListener = listener;
-        mFlag =Flag.NONE;
+        mFlag = CommonUtil.getFlag(SystemSetting.getInstance(mContext).getGroupFlag());
+    }
+
+    public List<DownloadItem> getSelectedItem() {
+        List<DownloadItem> list = new ArrayList<>();
+        Log.d("cccc", "selected size = " + mSelectedList.size());
+        for (ItemImpl item : mDataList) {
+            Log.d("cccc","item uuid: "+item.getUUID());
+            if (mSelectedList.contains(item.getUUID())) {
+                Log.d("cccc", "prepare to delete: " + item.getToPath());
+                list.add(item);
+            }
+        }
+        return list;
     }
 
     public void setData(List<DownloadItem> list) {
         mDataList.clear();
         if (list != null) {
             for (DownloadItem item : list) {
+                Log.d("cccc","---: "+item.getUUID());
                 mDataList.add(ItemImpl.get(item));
             }
         }
@@ -158,9 +186,11 @@ public class DownloadHistoryAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     if (mSelectedList.contains(item.getUUID())) {
                         mSelectedList.remove(item.getUUID());
+                        Log.d("cccc", "remove: " + item.getUUID());
                         imageView.setImageDrawable(mContext.getDrawable(R.mipmap.unselect));
                         mListener.onHasSelected(mSelectedList.size() > 0);
                     } else {
+                        Log.d("cccc", "add: " + item.getUUID());
                         mSelectedList.add(item.getUUID());
                         imageView.setImageDrawable(mContext.getDrawable(R.mipmap.select));
                         mListener.onHasSelected(true);
@@ -192,11 +222,11 @@ public class DownloadHistoryAdapter extends BaseAdapter {
             }
 
         } else {
-            if (mFlag == Flag.DATE) {
+            if (mFlag == CommonUtil.Flag.DATE) {
                 titleHolder.titleTextView.setText(item.getDate());
-            } else if (mFlag == Flag.OWNER) {
+            } else if (mFlag == CommonUtil.Flag.OWNER) {
                 titleHolder.titleTextView.setText(item.getFromUserName());
-            } else if (mFlag == Flag.TYPE) {
+            } else if (mFlag == CommonUtil.Flag.TYPE) {
                 titleHolder.titleTextView.setText(getTypeDesc(item.getFileType()));
             }
         }
@@ -215,13 +245,13 @@ public class DownloadHistoryAdapter extends BaseAdapter {
         return id;
     }
 
-    private Flag mFlag;
+    private CommonUtil.Flag mFlag;
 
-    public Flag getFlag(){
+    public CommonUtil.Flag getFlag() {
         return mFlag;
     }
 
-    public void setGroup(final Flag flag) {
+    public void setGroup(final CommonUtil.Flag flag) {
         mFlag = flag;
         Iterator<ItemImpl> iterator = mDataList.iterator();
         //删除之前添加的标题项
@@ -230,7 +260,7 @@ public class DownloadHistoryAdapter extends BaseAdapter {
                 iterator.remove();
             }
         }
-        if (mFlag == Flag.NONE) {
+        if (mFlag == CommonUtil.Flag.NONE) {
             notifyDataSetChanged();
             return;
         }
@@ -238,9 +268,9 @@ public class DownloadHistoryAdapter extends BaseAdapter {
         Collections.sort(mDataList, new Comparator<ItemImpl>() {
             @Override
             public int compare(ItemImpl o1, ItemImpl o2) {
-                if (flag == Flag.TYPE) {
+                if (flag == CommonUtil.Flag.TYPE) {
                     return o1.getFileType().compareTo(o2.getFileType());
-                } else if (flag == Flag.DATE) {
+                } else if (flag == CommonUtil.Flag.DATE) {
                     return o1.getDate().compareTo(o2.getDate());
                 } else {
                     return o1.getFromUserName().compareTo(o2.getFromUserName());
@@ -255,7 +285,7 @@ public class DownloadHistoryAdapter extends BaseAdapter {
             }
             ItemImpl item = mDataList.get(i);
             ItemImpl next = mDataList.get(i + 1);
-            if (flag == Flag.TYPE) {
+            if (flag == CommonUtil.Flag.TYPE) {
                 if (!item.getFileType().equals(next.getFileType())) {
                     ItemImpl tmp = ItemImpl.get(next);
                     tmp.setIsTitle(true);
@@ -264,7 +294,7 @@ public class DownloadHistoryAdapter extends BaseAdapter {
                 } else {
                     i++;
                 }
-            } else if (flag == Flag.DATE) {
+            } else if (flag == CommonUtil.Flag.DATE) {
                 if (!item.getDate().equals(next.getDate())) {
                     ItemImpl tmp = ItemImpl.get(next);
                     tmp.setIsTitle(true);
@@ -273,7 +303,7 @@ public class DownloadHistoryAdapter extends BaseAdapter {
                 } else {
                     i++;
                 }
-            } else if (flag == Flag.OWNER) {
+            } else if (flag == CommonUtil.Flag.OWNER) {
                 if (!item.getFromUserName().equals(next.getFromUserName())) {
                     ItemImpl tmp = ItemImpl.get(next);
                     tmp.setIsTitle(true);
@@ -317,16 +347,16 @@ public class DownloadHistoryAdapter extends BaseAdapter {
         return 2;
     }
 
-    private String getTypeDesc(String type){
-        if(type.toUpperCase().equals("IMAGE")){
+    private String getTypeDesc(String type) {
+        if (type.toUpperCase().equals("IMAGE")) {
             return "图片";
-        }else if(type.toUpperCase().equals("AUDIO")){
+        } else if (type.toUpperCase().equals("AUDIO")) {
             return "音乐";
-        }else if(type.toUpperCase().equals("FILE")){
+        } else if (type.toUpperCase().equals("FILE")) {
             return "文件";
-        }else if(type.toUpperCase().equals("VIDEO")){
+        } else if (type.toUpperCase().equals("VIDEO")) {
             return "视频";
-        }else{
+        } else {
             return "其他";
         }
     }
@@ -335,12 +365,12 @@ public class DownloadHistoryAdapter extends BaseAdapter {
         void onHasSelected(boolean selected);
     }
 
-    public enum Flag {
-        TYPE,
-        DATE,
-        OWNER,
-        NONE
-    }
+//    public enum Flag {
+//        NONE,//0
+//        TYPE,//1
+//        DATE,//2
+//        OWNER//3
+//    }
 
     public static class ItemImpl extends DownloadItem {
 
