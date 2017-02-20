@@ -33,22 +33,12 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ShareSpecialFileFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link ShareSpecialFileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShareSpecialFileFragment extends BaseFragment {
-    private static final String TYPE = "type";
-    private static final String IP = "ip";
-
-    private String mIP;
-
-    private OnFragmentInteractionListener mListener;
+public class ShareSpecialFileFragment extends MediaFragment {
 
     private SpecialFileAdapter mAdapter;
-    private ListView mListView;
 
     public static ShareSpecialFileFragment newInstance(int type, String data) {
         ShareSpecialFileFragment fragment = new ShareSpecialFileFragment();
@@ -76,7 +66,7 @@ public class ShareSpecialFileFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_share_special_file, container, false);
+        View view = inflater.inflate(R.layout.fragment_share_mediafiles, container, false);
         mListView = (ListView)view.findViewById(R.id.listview);
         mAdapter = new SpecialFileAdapter(mContext,mType);
         mListView.setAdapter(mAdapter);
@@ -88,54 +78,31 @@ public class ShareSpecialFileFragment extends BaseFragment {
                 }
             });
         }
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+
+        initEmptyView(view,"文件");
+
         if(mType == GlobalParams.SHOW_MODE) {
-            ProgressBar progressBar = new ProgressBar(mContext);
-            ViewGroup parent = (ViewGroup)mListView.getParent();
-            parent.addView(progressBar,params);
-            mListView.setEmptyView(progressBar);
             ScanSpecialFiles.getInstance(mContext).start();
         }else{
-            TextView textView = new TextView(mContext);
-            textView.setTextColor(mContext.getResources().getColor(R.color.black_57));
-            textView.setText("暂无共享的文件");
-            ViewGroup parent = (ViewGroup)mListView.getParent();
-            parent.addView(textView,params);
-            mListView.setEmptyView(textView);
             setData();
         }
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-         void onFragmentInteraction(Uri uri);
-    }
 
     public void onEventMainThread(EventBusType.ShareSpecialFileInfo info){
+        getData();
         mAdapter.setData(info.getData());
     }
 
@@ -158,6 +125,7 @@ public class ShareSpecialFileFragment extends BaseFragment {
 
     private void setData(){
         SharedCollection collection = ShareApplication.getInstance().getDestAllSharedFiles(mIP);
+        getData();
         if(collection != null && mAdapter != null){
             List<SpecialFileItem> list = collection.getSpecialFileList();
             mAdapter.setData(list);
