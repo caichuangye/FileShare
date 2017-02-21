@@ -19,9 +19,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <ProgressBar
+    <TextView
+        android:id="@+id/emptyview"
         android:layout_centerInParent="true"
-        android:id="@+id/progressBar"
+        android:textColor="@color/title_color"
+        android:text="当前WiFi内暂无共享用户"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
+
+    <include
+        android:id="@+id/loading_view"
+        layout="@layout/loading_layout" />
 </RelativeLayout>

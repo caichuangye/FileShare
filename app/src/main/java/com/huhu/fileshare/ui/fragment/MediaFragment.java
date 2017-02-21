@@ -5,8 +5,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.huhu.fileshare.R;
@@ -26,10 +28,10 @@ public class MediaFragment extends BaseFragment {
 
     protected ListView mListView;
 
-    protected ProgressBar mProgressBar;
+    protected RelativeLayout mProgressBar;
 
     public void initEmptyView(View root,String msg){
-        mProgressBar = (ProgressBar)root.findViewById(R.id.progressBar);
+        mProgressBar = (RelativeLayout)root.findViewById(R.id.loading_view);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
         TextView textView = new TextView(mContext);
@@ -42,10 +44,14 @@ public class MediaFragment extends BaseFragment {
         ViewGroup parent = (ViewGroup)mListView.getParent();
         parent.addView(textView,params);
         mListView.setEmptyView(textView);
+        mListView.setVisibility(View.GONE);
+        mListView.getEmptyView().setVisibility(View.GONE);
     }
 
     public void getData(){
         mProgressBar.setVisibility(View.GONE);
+        mListView.getEmptyView().setVisibility(View.VISIBLE  );
+        mListView.setVisibility(View.VISIBLE);
     }
 
 }

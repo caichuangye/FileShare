@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.huhu.fileshare.R;
@@ -26,14 +28,16 @@ public class UsersListActivity extends BaseActivity {
 
     private String mSelectedIP;
 
+    private RelativeLayout mLoadingView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_list);
 
         initToolbar(WiFiOperation.getInstance(getApplicationContext()).getConnectedWiFiSSID(),null);
-
-        View empty = findViewById(R.id.progressBar);
+        mLoadingView = (RelativeLayout)findViewById(R.id.loading_view);
+        View empty = findViewById(R.id.emptyview);
         mListView = (ListView)findViewById(R.id.devices_listview);
         mListView.setEmptyView(empty);
         mAdapter = new DevicesAdapter(getApplicationContext());
@@ -56,6 +60,9 @@ public class UsersListActivity extends BaseActivity {
                 }
             }
         });
+        mLoadingView.setVisibility(View.VISIBLE);
+        mListView.setVisibility(View.GONE);
+        mListView.getEmptyView().setVisibility(View.GONE);
     }
 
     @Override
@@ -69,6 +76,9 @@ public class UsersListActivity extends BaseActivity {
     }
 
     public void onEventMainThread(EventBusType.OnlineDevicesInfo info){
+        mLoadingView.setVisibility(View.GONE);
+        mListView.setVisibility(View.VISIBLE);
+        mListView.getEmptyView().setVisibility(View.VISIBLE);
         mAdapter.setData(info.getData());
     }
 }
