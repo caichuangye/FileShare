@@ -1,5 +1,6 @@
 package com.huhu.fileshare.ui.fragment;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.huhu.fileshare.R;
+import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
 
 /**

@@ -35,6 +35,14 @@ public class GlobalParams {
         REQUEST_DOWNLOAD_FILES
     }
 
+    public enum DownloadOper{
+        ADD,
+        DELETE,
+        UPDATE_START,
+        UPDATE_ING,
+        UPDATE_END
+    }
+
     public enum ShareType{
         IMAGE("IMAGE"),
         AUDIO("AUDIO"),

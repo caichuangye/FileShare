@@ -314,18 +314,15 @@ public class EventBusType {
     public static class UpdateDownloadFile{
         private DownloadItem mData;
 
-        private boolean mIsUpdateProgress = false;
+        private GlobalParams.DownloadOper mOper;
 
-        public UpdateDownloadFile(DownloadItem item){
+        public UpdateDownloadFile(DownloadItem item,GlobalParams.DownloadOper oper){
             mData = item;
+            mOper = oper;
         }
 
-        public void setFlag(boolean res){
-            mIsUpdateProgress = res;
-        }
-
-        public boolean isUpdateProgress(){
-            return mIsUpdateProgress;
+        public GlobalParams.DownloadOper getOper(){
+            return mOper;
         }
 
         public DownloadItem getData(){

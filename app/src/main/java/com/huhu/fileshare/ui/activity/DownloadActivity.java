@@ -30,6 +30,7 @@ import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.ui.adapter.DownloadAdapter;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
+import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.SystemSetting;
 
 import java.io.File;
@@ -49,7 +50,7 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
 
     private MenuItem mCancelItem;
 
-    private MenuItem mGrouplItem;
+    private MenuItem mGroupItem;
 
 
     @Override
@@ -136,11 +137,19 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
     }
 
     public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
-        updateData();
+        DownloadItem item = info.getData();
+        GlobalParams.DownloadOper oper = info.getOper();
+        if(oper == GlobalParams.DownloadOper.DELETE){
+            mAdapter.deleteItem(item);
+        }else if(oper == GlobalParams.DownloadOper.ADD){
+            mAdapter.addItem(item);
+        }else{
+            mAdapter.updateItem(item);
+        }
     }
 
     private void setShowMenu(boolean show) {
-        mGrouplItem.setVisible(!show);
+        mGroupItem.setVisible(!show);
         mCancelItem.setVisible(show);
         mSelectAllItem.setVisible(show);
         if (show == false) {
@@ -155,7 +164,7 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
         mSelectAllItem = menu.findItem(R.id.all_select);
         mCancelItem = menu.findItem(R.id.cancel);
         mDeleteItem = menu.findItem(R.id.delete);
-        mGrouplItem = menu.findItem(R.id.group);
+        mGroupItem = menu.findItem(R.id.group);
         setShowMenu(false);
         return super.onCreateOptionsMenu(menu);
     }
@@ -261,14 +270,6 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
                 .show();
     }
 
-    private void showDeletingDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        Dialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
-        View view = LayoutInflater.from(this).inflate(R.layout.deleting_download_layout, null);
-        builder.setView(view)
-                .show();
-    }
 
     private void deleteSelectedItems(boolean isDeleteResources){
         List<DownloadItem> list = mAdapter.getSelectedItem();
@@ -276,7 +277,6 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
         for(DownloadItem item : list){
             String path = item.getToPath();
             String uuid = item.getUUID();
-            Log.d("cccc", "path = "+path+", uuid = "+uuid);
             if(!TextUtils.isEmpty(path)) {
                 where.append("'" + uuid + "',");
                 if(isDeleteResources) {
@@ -286,14 +286,10 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
             }
 
         }
-        Log.d("cccc", "where = "+where);
         if(!where.toString().endsWith("(")) {
             where.deleteCharAt(where.length() - 1);
             where.append(")");
             int count = getContentResolver().delete(DatabaseUtils.DOWNLOAD_HISTORY_URI, where.toString(), null);
-            Log.d("cccc", "count = " + count + ", where = " + where.toString());
-        }else{
-            Log.d("cccc", "count = 0" + ", where = null");
         }
     }
 

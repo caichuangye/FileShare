@@ -34,18 +34,6 @@
             android:layout_marginEnd="20dp"
            android:layout_alignParentEnd="true"/>
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="26dp"
-            android:layout_marginLeft="@dimen/huhu_10_dp"
-            android:layout_marginRight="@dimen/huhu_20_dp"
-            android:layout_toRightOf="@id/type_icon"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:max="100"
-            android:progress="100" />
 
         <TextView
             android:id="@+id/file_owner"
@@ -111,8 +99,8 @@
             android:singleLine="true"
             android:textSize="10sp"
             tools:text="67%"
-            android:layout_alignBaseline="@+id/date"
-            android:layout_alignBottom="@+id/date"
+            android:layout_marginBottom="8dp"
+            android:layout_alignParentBottom="true"
             android:layout_toEndOf="@+id/file_owner" />
 
         <RelativeLayout

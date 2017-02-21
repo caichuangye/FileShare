@@ -101,20 +101,42 @@ public class DownloadAdapter extends BaseAdapter {
         setGroup(mFlag);
     }
 
-    public void addItem(DownloadItem item) {
-        boolean has = false;
-        for (DownloadItem ele : mDataList) {
-            if (item.getUUID().equals(ele.getUUID())) {
-                has = true;
-                ele.setRecvSize(item.getRecvSize());
-                ele.setStatus(item.getStatus());
+    public void updateItem(DownloadItem item){
+        for(int i = 0 ; i < mDataList.size(); i++){
+            ItemImpl impl = mDataList.get(i);
+            if(impl.getUUID().equals(item.getUUID())){
+                mDataList.get(i).setRecvSize(item.getRecvSize());
+                mDataList.get(i).setStatus(item.getStatus());
+                mDataList.get(i).setEndTime(item.getEndTime());
+                Log.d("crecv","total = "+item.getTotalSize()+", recv = "+item.getRecvSize()+", per = "+100*item.getRecvSize()/item.getTotalSize());
                 break;
             }
         }
-        if (!has) {
-            mDataList.add(0, ItemImpl.get(item));
+        notifyDataSetChanged();
+    }
+
+    public void deleteItem(DownloadItem item){
+        for(ItemImpl impl : mDataList){
+            if(impl.getUUID().equals(item.getUUID())){
+                mDataList.remove(impl);
+                break;
+            }
         }
         setGroup(mFlag);
+    }
+
+    public void addItem(DownloadItem item) {
+        out("1");
+        mDataList.add(0, ItemImpl.get(item));
+        out("2");
+        setGroup(mFlag);
+    }
+
+    private void out(String tag){
+        Log.d("corder","---------------------"+tag+"-------------------");
+        for(int i = 0 ; i < mDataList.size(); i++){
+            Log.d("corder",i+": "+mDataList.get(i).getToPath());
+        }
     }
 
     @Override
@@ -145,7 +167,6 @@ public class DownloadAdapter extends BaseAdapter {
                 itemHolder.ownerTextView = (TextView) convertView.findViewById(R.id.file_owner);
                 itemHolder.sizeTextView = (TextView) convertView.findViewById(R.id.file_size);
                 itemHolder.dateTextView = (TextView) convertView.findViewById(R.id.date);
-                itemHolder.progressBar = (ProgressBar) convertView.findViewById(R.id.progressBar);
                 itemHolder.progressLabelTextView = (TextView) convertView.findViewById(R.id.progress_label);
                 itemHolder.deleteLayout = (RelativeLayout) convertView.findViewById(R.id.delete);
                 itemHolder.deleteImageView = (ImageView) convertView.findViewById(R.id.deleteImageView);
@@ -195,24 +216,25 @@ public class DownloadAdapter extends BaseAdapter {
             if (mShowDeleteIcon) {
                 itemHolder.sizeTextView.setVisibility(View.GONE);
                 itemHolder.dateTextView.setVisibility(View.GONE);
-                itemHolder.progressBar.setVisibility(View.GONE);
                 itemHolder.deleteLayout.setVisibility(View.VISIBLE);
             } else {
                 itemHolder.sizeTextView.setVisibility(View.VISIBLE);
                 itemHolder.dateTextView.setVisibility(View.VISIBLE);
-                itemHolder.progressBar.setVisibility(View.VISIBLE);
                 itemHolder.deleteLayout.setVisibility(View.GONE);
             }
-
+            Log.d("crecv","name = "+item.getToPath()+", recv = "+item.getRecvSize());
             if (item.getStatus() != DownloadStatus.SUCCESSED) {
-                int progress = (int) (item.getRecvSize() * 100 / item.getTotalSize());
-                itemHolder.progressBar.setProgress(progress);
-                itemHolder.progressLabelTextView.setText(progress + "%");
-                itemHolder.progressBar.setVisibility(View.VISIBLE);
-                itemHolder.progressLabelTextView.setVisibility(View.VISIBLE);
+                if(item.getRecvSize() > 0) {
+                    int progress = (int) (item.getRecvSize() * 100 / item.getTotalSize());
+                    itemHolder.progressLabelTextView.setText(progress + "%");
+                    itemHolder.progressLabelTextView.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
+                }else{
+                    itemHolder.progressLabelTextView.setText("等待中");
+                    itemHolder.progressLabelTextView.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+                }
             } else {
-                itemHolder.progressBar.setVisibility(View.GONE);
-                itemHolder.progressLabelTextView.setVisibility(View.GONE);
+                itemHolder.progressLabelTextView.setText("已下载");
+                itemHolder.progressLabelTextView.setTextColor(mContext.getResources().getColor(R.color.title_color));
             }
 
         } else {
@@ -261,9 +283,11 @@ public class DownloadAdapter extends BaseAdapter {
                     return o2.getDate().compareTo(o1.getDate());
                 }
             });
+            out("3");
             notifyDataSetChanged();
             return;
         }
+        out("4");
         //重新排序，排序的目的是为了分组
         Collections.sort(mDataList, new Comparator<ItemImpl>() {
             @Override
@@ -414,7 +438,7 @@ public class DownloadAdapter extends BaseAdapter {
         TextView ownerTextView;
         TextView dateTextView;
         TextView sizeTextView;
-        ProgressBar progressBar;
+//        ProgressBar progressBar;
         TextView progressLabelTextView;
         RelativeLayout deleteLayout;
         ImageView deleteImageView;
