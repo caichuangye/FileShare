@@ -125,16 +125,6 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
     @Override
     public void onResume() {
         super.onResume();
-        updateData();
-    }
-
-    private void updateData() {
-        List<DownloadItem> list = ShareApplication.getInstance().getWaitToDownloadingFiles();
-        if (list != null) {
-            for (DownloadItem item : list) {
-                mAdapter.addItem(item);
-            }
-        }
     }
 
     public void onEventMainThread(EventBusType.UpdateDownloadFile info) {

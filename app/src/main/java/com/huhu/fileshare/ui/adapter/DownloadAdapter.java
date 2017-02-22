@@ -135,7 +135,7 @@ public class DownloadAdapter extends BaseAdapter {
     private void out(String tag){
         Log.d("corder","---------------------"+tag+"-------------------");
         for(int i = 0 ; i < mDataList.size(); i++){
-            Log.d("corder",i+": "+mDataList.get(i).getToPath());
+            Log.d("corder",i+": "+mDataList.get(i).getFromPath());
         }
     }
 

@@ -106,10 +106,10 @@ public class TransferClient {
             while (true) {
                 DownloadItem info = item.getFile();
                 if (info == null) {
-                    Log.d(TAG,"info == null ");
+                    Log.d("transfer-c","recv: null ");
                     break;
                 }else{
-                    Log.d(TAG,"start recv "+info.getFromPath());
+                    Log.d("transfer-c","recv: "+info.getFromPath());
                 }
                 String remotePath = info.getFromPath();
                 long size = info.getTotalSize();

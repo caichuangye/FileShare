@@ -83,8 +83,15 @@ public class TransferServer implements Runnable {
                             Socket socket = mServerSocket.accept();
                             String destIP = socket.getInetAddress().getHostAddress();
                             List<DownloadItem> list = getSendFilesByIP(destIP);
-                            mSendMap.put(destIP, new SendListItem(socket, list));
-                      //      Log.d(TAG, "get connect, ip = " + destIP + ", request file size = " + list.size());
+                            Log.d("transfer-s", "get connect, ip = " + destIP + ", request file size = " + list.size());
+                            SendListItem listItem = mSendMap.get(destIP);
+                            if(listItem == null) {
+                                mSendMap.put(destIP, new SendListItem(socket, list));
+                            }else{
+                                listItem.appendFilesList(list);
+                                mSendMap.put(destIP,listItem);
+                            }
+
                         } catch (IOException e) {
                         //    Log.e(TAG, "accept rr: " + e.getMessage());
                             e.printStackTrace();
@@ -150,7 +157,7 @@ public class TransferServer implements Runnable {
                 if (item == null) {
                     break;
                 } else {
-                    Log.d(TAG, "send:getFile " + item.getFromPath());
+                    Log.d("transfer-s", "send: " + item.getFromPath());
                     sendFile(item.getFromPath(), info.getSocket());
                 }
             }

@@ -106,7 +106,8 @@ public class ShareVideoFragment extends MediaFragment {
 
     public void onEventMainThread(EventBusType.UpdateDownloadFile info){
         if(mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
-                || info.getOper() == GlobalParams.DownloadOper.UPDATE_START)) {
+                || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
+                || info.getOper() == GlobalParams.DownloadOper.ADD)) {
             Log.d("ooo","just change tag");
             mAdapter.notifyDataSetChanged();
         }
