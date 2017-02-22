@@ -90,7 +90,8 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
     private void handleClickItem(int position){
         DownloadItem  item = (DownloadItem) mAdapter.getItem(position);
         if(item.getStatus() != DownloadStatus.SUCCESSED){
-            Toast.makeText(this,item.getToPath()+": 未下载完成",Toast.LENGTH_SHORT).show();
+            String name = item.getToPath().substring(item.getToPath().lastIndexOf("/")+1);
+            Toast.makeText(this,name+": 未下载完成",Toast.LENGTH_SHORT).show();
             return;
         }
         String path = item.getToPath();

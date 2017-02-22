@@ -192,7 +192,7 @@ public class DownloadAdapter extends BaseAdapter {
             itemHolder.ownerTextView.setText(item.getFromUserName());
             String info = Formatter.formatFileSize(mContext, item.getTotalSize());
             itemHolder.sizeTextView.setText(info);
-            itemHolder.dateTextView.setText(item.getStartTime());
+            itemHolder.dateTextView.setText(item.getStartTime().substring(5));
 
             int resID = mSelectedList.contains(item.getUUID()) ? R.mipmap.select : R.mipmap.unselect;
             itemHolder.deleteImageView.setImageDrawable(mContext.getDrawable(resID));
