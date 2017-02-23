@@ -19,7 +19,7 @@ import com.nostra13.universalimageloader.core.assist.ImageSize;
 /**
  * Created by Administrator on 2016/4/15.
  */
-public class ImageFolderAdapter extends HuhuBaseAdapter<ImageFolderItem> {
+public class ImageFolderAdapter extends FileBaseAdapter<ImageFolderItem> {
 
     public ImageFolderAdapter(Context context){
         super(context,GlobalParams.SHOW_MODE);

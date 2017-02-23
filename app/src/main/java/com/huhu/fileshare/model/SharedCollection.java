@@ -17,16 +17,16 @@ public class SharedCollection {
 
     private List<MusicItem> mMusicList;
 
-    private List<SpecialFileItem> mSpecialFileList;
+    private List<CommonFileItem> mCommonFileList;
 
-    private List<FileItem> mSDFileList;
+    private List<ApkItem> mApkList;
 
     public SharedCollection(){
         mMusicList = new ArrayList<>();
         mVideoList = new ArrayList<>();
         mImagesList = new ArrayList<>();
-        mSpecialFileList = new ArrayList<>();
-        mSDFileList = new ArrayList<>();
+        mCommonFileList = new ArrayList<>();
+        mApkList = new ArrayList<>();
     }
 
     public List<ImageItem> getImageList(){ return mImagesList;  }
@@ -39,32 +39,19 @@ public class SharedCollection {
         return mVideoList;
     }
 
-    public List<SpecialFileItem> getSpecialFileList(){
-        return mSpecialFileList;
+    public List<CommonFileItem> getCommonFileList(){
+        return mCommonFileList;
     }
 
-    public List<FileItem> getSDFileList(){return mSDFileList; }
+    public List<ApkItem> getApkList(){return mApkList; }
 
 
     public void clear(){
         mMusicList.clear();
         mVideoList.clear();
         mImagesList.clear();
-        mSpecialFileList.clear();
-        mSDFileList.clear();
-    }
-
-    public void mergeSpecialAndSDFiles(){
-        for(FileItem fileItem : mSDFileList){
-            if(fileItem.getType() == FileItem.TYPE_FILE){
-                int index = fileItem.getPath().lastIndexOf(".");
-                String type = fileItem.getPath().substring(index+1);
-                SpecialFileItem item = new SpecialFileItem(fileItem.getShowName(),fileItem.getPath(),fileItem.getSize(),
-                        false,null, SpecialFileItem.FileType.valueOfString(type));
-                HLog.d("MERGE","item name = "+fileItem.getShowName()+"; type = "+type);
-                mSpecialFileList.add(item);
-            }
-        }
+        mCommonFileList.clear();
+        mApkList.clear();
     }
 
     public List<String> getSharedPathByType(GlobalParams.ShareType type){
@@ -86,12 +73,12 @@ public class SharedCollection {
                 }
                 break;
             case FILE:
-                for(SpecialFileItem item : mSpecialFileList){
+                for(CommonFileItem item : mCommonFileList){
                     list.add(item.getPath());
                 }
                 break;
-            case SD_FILE:
-                for(FileItem item : mSDFileList){
+            case APK:
+                for(ApkItem item : mApkList){
                     list.add(item.getPath());
                 }
                 break;
@@ -120,15 +107,15 @@ public class SharedCollection {
                 }
                 break;
             case FILE:
-                SpecialFileItem item3 = (SpecialFileItem)object;
-                if(!mSpecialFileList.contains(item3)) {
-                    mSpecialFileList.add(item3);
+                CommonFileItem item3 = (CommonFileItem)object;
+                if(!mCommonFileList.contains(item3)) {
+                    mCommonFileList.add(item3);
                 }
                 break;
-            case SD_FILE:
-                FileItem item4 = (FileItem)object;
-                if(!mSDFileList.contains(item4)) {
-                    mSDFileList.add(item4);
+            case APK:
+                ApkItem item4 = (ApkItem)object;
+                if(!mApkList.contains(item4)) {
+                    mApkList.add(item4);
                 }
                 break;
         }
@@ -161,17 +148,17 @@ public class SharedCollection {
                 }
                 break;
             case FILE:
-                for(int i = 0 ; i < mSpecialFileList.size(); i++){
-                    if(mSpecialFileList.get(i).getPath().equals(path)){
-                        mSpecialFileList.remove(i);
+                for(int i = 0; i < mCommonFileList.size(); i++){
+                    if(mCommonFileList.get(i).getPath().equals(path)){
+                        mCommonFileList.remove(i);
                         break;
                     }
                 }
                 break;
-            case SD_FILE:
-                for(int i = 0 ; i < mSDFileList.size(); i++){
-                    if(mSDFileList.get(i).getPath().equals(path)){
-                        mSDFileList.remove(i);
+            case APK:
+                for(int i = 0 ; i < mApkList.size(); i++){
+                    if(mApkList.get(i).getPath().equals(path)){
+                        mApkList.remove(i);
                         break;
                     }
                 }

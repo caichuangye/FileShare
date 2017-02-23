@@ -4,21 +4,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
-import com.huhu.fileshare.model.FileItem;
+import com.huhu.fileshare.model.SDCardFileItem;
 import com.huhu.fileshare.ui.view.DownloadIcon;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
@@ -26,8 +23,6 @@ import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
 import com.huhu.fileshare.util.ScanFiles;
 
-import java.io.File;
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +37,7 @@ public class FileAdapter extends BaseAdapter {
 
     private Context mContext;
 
-    private List<FileItem> mDataList;
+    private List<SDCardFileItem> mDataList;
 
     private Bitmap mFileCover;
 
@@ -59,10 +54,10 @@ public class FileAdapter extends BaseAdapter {
         mFolderCover = CommonUtil.roundBitmap(folder,folder.getWidth()/10,folder.getHeight()/10);
     }
 
-    public void setData(List<FileItem> list,List<String> selectedList){
+    public void setData(List<SDCardFileItem> list, List<String> selectedList){
         mDataList.clear();
         if(list != null){
-            for(FileItem item : list){
+            for(SDCardFileItem item : list){
                 if(selectedList != null && selectedList.contains(item.getPath())){
                     item.setSelected(true);
                 }
@@ -73,27 +68,27 @@ public class FileAdapter extends BaseAdapter {
     }
 
     public final void updateSelectFiles(){
-        List<String> list = ((ShareApplication)mContext.getApplicationContext()).
-                getSharedFileByType(GlobalParams.ShareType.SD_FILE);
-        if(list == null){
-            for(FileItem t : mDataList){
-                t.setSelected(false);
-            }
-        }else{
-            for(FileItem t : mDataList){
-                if(list.contains(t.getPath())){
-                    t.setSelected(true);
-                }else{
-                    t.setSelected(false);
-                }
-            }
-        }
-        notifyDataSetChanged();
+//        List<String> list = ((ShareApplication)mContext.getApplicationContext()).
+//                getSharedFileByType(GlobalParams.ShareType.SD_FILE);
+//        if(list == null){
+//            for(SDCardFileItem t : mDataList){
+//                t.setSelected(false);
+//            }
+//        }else{
+//            for(SDCardFileItem t : mDataList){
+//                if(list.contains(t.getPath())){
+//                    t.setSelected(true);
+//                }else{
+//                    t.setSelected(false);
+//                }
+//            }
+//        }
+//        notifyDataSetChanged();
     }
 
     public String handleClick(int pos){
-        FileItem item = mDataList.get(pos);
-        if(item.getType() == FileItem.TYPE_FOLDER){
+        SDCardFileItem item = mDataList.get(pos);
+        if(item.getType() == SDCardFileItem.TYPE_FOLDER){
             if(item.getSize() == 0) {
                 return null;
             }else{
@@ -106,18 +101,18 @@ public class FileAdapter extends BaseAdapter {
         }
     }
 
-    private void operateFile(FileItem item){
+    private void operateFile(SDCardFileItem item){
         boolean res = item.isSelected();
         item.setSelected(!res);
         notifyDataSetChanged();
         String oper = res? "delete":"add";
         HLog.d(TAG,"post: "+oper+"; path = "+item.getPath());
-        EventBus.getDefault().post(new EventBusType.SharedFileInfo(item,GlobalParams.ShareType.SD_FILE,!res));
+     //   EventBus.getDefault().post(new EventBusType.SharedFileInfo(item,GlobalParams.ShareType.SD_FILE,!res));
     }
 
     public String getParentFolderPath(){
         if(mDataList.size() > 0) {
-            FileItem item = mDataList.get(0);
+            SDCardFileItem item = mDataList.get(0);
             int index = item.getPath().lastIndexOf("/");
             if (index > 0) {
                 String str = item.getPath().substring(0, index);
@@ -161,22 +156,22 @@ public class FileAdapter extends BaseAdapter {
         }else{
             holder = (ViewHolder)convertView.getTag();
         }
-        FileItem item = mDataList.get(position);
-        if(item.getType() == FileItem.TYPE_FILE){
+        SDCardFileItem item = mDataList.get(position);
+        if(item.getType() == SDCardFileItem.TYPE_FILE){
             holder.iconImageView.setImageBitmap(mFileCover);
         }else{
             holder.iconImageView.setImageBitmap(mFolderCover);
         }
         holder.file2TextView.setVisibility(View.INVISIBLE );
         holder.nameTextView.setText(item.getShowName());
-        if(item.getType() == FileItem.TYPE_FILE) {
+        if(item.getType() == SDCardFileItem.TYPE_FILE) {
             String sizeStr = Formatter.formatFileSize(mContext, item.getSize());
             holder.sizeTextView.setText(sizeStr);
         }else{
             String sizeStr = item.getSize()+mContext.getResources().getString(R.string.file_unit);
             holder.sizeTextView.setText(sizeStr);
         }
-        if(item.getType() == FileItem.TYPE_FOLDER){
+        if(item.getType() == SDCardFileItem.TYPE_FOLDER){
             holder.selectedImageView.setVisibility(View.INVISIBLE);
         }else{
             if(item.isSelected()) {

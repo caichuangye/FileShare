@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="HuhuAppTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="HuhuAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:actionMenuTextColor">@color/black_57</item>

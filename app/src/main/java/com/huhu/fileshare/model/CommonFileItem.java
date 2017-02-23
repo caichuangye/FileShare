@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 /**
  * Created by Administrator on 2016/4/18.
  */
-public class SpecialFileItem extends BaseItem {
+public class CommonFileItem extends BaseItem {
 
     public enum FileType{
         APK("apk"),PDF("pdf"),ZIP("zip"),DOC("doc"),XLS("xls"),PPT("ppt"),TXT("txt"),UNKNOWN("?");
@@ -33,11 +33,11 @@ public class SpecialFileItem extends BaseItem {
 
     private FileType mType;
 
-    public SpecialFileItem(){
+    public CommonFileItem(){
         super();
     }
 
-    public SpecialFileItem(String name,String path,long size,boolean selected,String cover, FileType type){
+    public CommonFileItem(String name, String path, long size, boolean selected, String cover, FileType type){
         super(name,path,size,selected,cover);
         mType = type;
     }

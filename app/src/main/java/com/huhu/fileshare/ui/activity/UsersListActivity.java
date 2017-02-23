@@ -3,6 +3,7 @@ package com.huhu.fileshare.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -54,6 +55,7 @@ public class UsersListActivity extends BaseActivity {
                     intent.putExtra("IP", mSelectedIP);
                     startActivity(intent);
                     ComClient.getInstance(mSelectedIP).sendMessage(GlobalParams.REQUEST_SHARED_FILES);
+                    Log.d("shareinfo","client send REQUEST_SHARED_FILES");
                 } else {
                     mSelectedIP = null;
                     Toast.makeText(UsersListActivity.this, mUserName + "无共享文件", Toast.LENGTH_SHORT).show();

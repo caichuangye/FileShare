@@ -94,13 +94,16 @@ public class ComServer implements Runnable {
     }
 
     private void handleRequest(String request,Socket socket){
-        HLog.d(TAG, "server recv data: " + request.toString());
+        HLog.d("shareinfo", "handleRequest: " + request);
         switch (request){
             case GlobalParams.REQUEST_SHARED_FILES:
+                Log.d("shareinfo","1111111----");
                 String reply = ShareApplication.getInstance().getAllSharedFiles();
+                Log.d("shareinfo","json = "+reply);
                 sendResponse(reply,socket);
                 break;
             default:
+                Log.d("shareinfo","pase request = "+request);
                 parseData(request);
                 break;
         }

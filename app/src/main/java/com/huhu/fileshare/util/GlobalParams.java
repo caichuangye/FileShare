@@ -19,9 +19,9 @@ public class GlobalParams {
 
     public static int NET_NOT_CONNECTED = 1;
 
-    public static final int DETECT_PORT = 25012;
+    public static final int DETECT_PORT = 25301;
 
-    public static final int SEND_PORT = 34012;
+    public static final int SEND_PORT = 34052;
 
     public static final int RECV_PORT = 34012;
 
@@ -48,7 +48,8 @@ public class GlobalParams {
         AUDIO("AUDIO"),
         VIDEO("VIDEO"),
         FILE("FILE"),
-        SD_FILE("SD_FILE");
+        APK("APK");
+     //   SD_FILE("SD_FILE");
 
         private String mString;
 

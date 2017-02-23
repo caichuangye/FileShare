@@ -59,7 +59,7 @@ public class ComClient implements Runnable{
         Socket socket;
         try{
             socket = new Socket(mIP,GlobalParams.SEND_PORT);
-            socket.setSoTimeout(3000);
+            socket.setSoTimeout(3000*10);
             HandlerThread thread = new HandlerThread("send");
             thread.start();
             mHandler = new Handler(thread.getLooper());

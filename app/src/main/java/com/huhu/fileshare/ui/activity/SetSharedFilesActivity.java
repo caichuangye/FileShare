@@ -100,8 +100,9 @@ public class SetSharedFilesActivity extends BaseActivity {
         int imageSize = collection.getImageList().size();
         int audioSize = collection.getMusicList().size();
         int videoSize = collection.getVideoList().size();
-        int fileSize = collection.getSDFileList().size()+collection.getSpecialFileList().size();
-        int total = imageSize+audioSize+videoSize+fileSize;
+        int fileSize = collection.getCommonFileList().size();
+        int apkSize =   collection.getApkList().size();
+        int total = imageSize+audioSize+videoSize+fileSize+apkSize;
         if(total == 0){
             Toast.makeText(this,"暂无共享的文件",Toast.LENGTH_SHORT).show();
             return;
@@ -116,11 +117,13 @@ public class SetSharedFilesActivity extends BaseActivity {
         TextView audio = (TextView)view.findViewById(R.id.music_count);
         TextView video = (TextView)view.findViewById(R.id.video_count);
         TextView file = (TextView)view.findViewById(R.id.file_count);
+        TextView apk = (TextView)view.findViewById(R.id.apk_count);
         title.setText("已共享"+total+"个文件");
         image.setText("图片：" + imageSize );
         audio.setText("音乐：" + audioSize);
         video.setText("视频："+ videoSize);
         file.setText("文件：" + fileSize);
+        apk.setText( "应用："+apkSize);
         builder.setView(view)
                 .setPositiveButton("确    定", new DialogInterface.OnClickListener() {
                     @Override

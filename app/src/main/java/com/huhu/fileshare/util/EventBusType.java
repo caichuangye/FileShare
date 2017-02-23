@@ -1,15 +1,12 @@
 package com.huhu.fileshare.util;
 
-import android.text.TextUtils;
-
 import com.huhu.fileshare.model.BaseItem;
 import com.huhu.fileshare.model.DeviceItem;
 import com.huhu.fileshare.model.DownloadItem;
-import com.huhu.fileshare.model.FileItem;
+import com.huhu.fileshare.model.SDCardFileItem;
 import com.huhu.fileshare.model.ImageFolderItem;
 import com.huhu.fileshare.model.MusicItem;
-import com.huhu.fileshare.model.ScanDeviceItem;
-import com.huhu.fileshare.model.SpecialFileItem;
+import com.huhu.fileshare.model.CommonFileItem;
 import com.huhu.fileshare.model.VideoItem;
 
 import java.util.List;
@@ -68,13 +65,13 @@ public class EventBusType {
      */
     public static class FileItemsInfo{
 
-        private List<FileItem> mDataList;
+        private List<SDCardFileItem> mDataList;
 
-        public FileItemsInfo(List<FileItem> list){
+        public FileItemsInfo(List<SDCardFileItem> list){
             mDataList = list;
         }
 
-        public List<FileItem> getData(){
+        public List<SDCardFileItem> getData(){
             return mDataList;
         }
     }
@@ -164,13 +161,13 @@ public class EventBusType {
      *
      */
     public static class ShareSpecialFileInfo{
-        private List<SpecialFileItem> mData;
+        private List<CommonFileItem> mData;
 
-        public ShareSpecialFileInfo(List<SpecialFileItem> items){
+        public ShareSpecialFileInfo(List<CommonFileItem> items){
             mData = items;
         }
 
-        public List<SpecialFileItem> getData(){
+        public List<CommonFileItem> getData(){
             return mData;
         }
     }

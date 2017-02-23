@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
-import com.huhu.fileshare.model.BaseItem;
-import com.huhu.fileshare.ui.adapter.HuhuBaseAdapter;
-import com.huhu.fileshare.util.EventBusType;
 
 /**
  * Created by Administrator on 2016/4/10.

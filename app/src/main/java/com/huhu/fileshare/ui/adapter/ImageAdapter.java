@@ -19,14 +19,13 @@ import com.huhu.fileshare.util.GlobalParams;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 /**
  * Created by Administrator on 2016/4/16.
  */
-public class ImageAdapter extends HuhuBaseAdapter<ImageItem> {
+public class ImageAdapter extends FileBaseAdapter<ImageItem> {
 
     private DisplayImageOptions mOptions = new DisplayImageOptions.Builder()
             .showImageOnLoading(R.mipmap.ic_launcher) // 在ImageView加载过程中显示图片

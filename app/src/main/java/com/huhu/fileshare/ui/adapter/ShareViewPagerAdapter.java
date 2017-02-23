@@ -4,10 +4,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.huhu.fileshare.ui.fragment.ShareFileFragment;
+import com.huhu.fileshare.ui.fragment.ShareApkFragment;
+import com.huhu.fileshare.ui.fragment.ShareSDCardFragment;
 import com.huhu.fileshare.ui.fragment.ShareImageFolderFragment;
 import com.huhu.fileshare.ui.fragment.ShareMusicFragment;
-import com.huhu.fileshare.ui.fragment.ShareSpecialFileFragment;
+import com.huhu.fileshare.ui.fragment.ShareCommonFileFragment;
 import com.huhu.fileshare.ui.fragment.ShareVideoFragment;
 import com.huhu.fileshare.util.GlobalParams;
 
@@ -18,7 +19,7 @@ public class ShareViewPagerAdapter extends FragmentPagerAdapter{
 
     private Fragment[] mFragmentList = new Fragment[5];
 
-    private String[] mTitles = {"图片","音乐","视频","文件","SD卡"};
+    private String[] mTitles = {"图片","音乐","视频","应用","文件"};
 
     public ShareViewPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -30,9 +31,9 @@ public class ShareViewPagerAdapter extends FragmentPagerAdapter{
             }else if(i == 2){
                 mFragmentList[i] = ShareVideoFragment.newInstance(GlobalParams.SHOW_MODE, null);
             } else if(i == 3){
-                mFragmentList[i] = ShareSpecialFileFragment.newInstance(GlobalParams.SHOW_MODE, null);
+                mFragmentList[i] = ShareApkFragment.newInstance(GlobalParams.SHOW_MODE, null);
             } else{
-                mFragmentList[i] = ShareFileFragment.newInstance(null, null);
+                mFragmentList[i] = ShareCommonFileFragment.newInstance(GlobalParams.SHOW_MODE, null);
             }
         }
     }

@@ -1,47 +1,37 @@
 package com.huhu.fileshare.ui.fragment;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
-import com.huhu.fileshare.model.MusicItem;
 import com.huhu.fileshare.model.SharedCollection;
-import com.huhu.fileshare.model.SpecialFileItem;
-import com.huhu.fileshare.model.VideoItem;
+import com.huhu.fileshare.model.CommonFileItem;
 import com.huhu.fileshare.ui.adapter.SpecialFileAdapter;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.ScanSpecialFiles;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ShareSpecialFileFragment#newInstance} factory method to
+ * Use the {@link ShareCommonFileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShareSpecialFileFragment extends MediaFragment {
+public class ShareCommonFileFragment extends MediaFragment {
 
     private SpecialFileAdapter mAdapter;
 
-    public static ShareSpecialFileFragment newInstance(int type, String data) {
-        ShareSpecialFileFragment fragment = new ShareSpecialFileFragment();
+    public static ShareCommonFileFragment newInstance(int type, String data) {
+        ShareCommonFileFragment fragment = new ShareCommonFileFragment();
         Bundle args = new Bundle();
         args.putInt(TYPE, type);
         args.putString(IP, data);
@@ -49,7 +39,7 @@ public class ShareSpecialFileFragment extends MediaFragment {
         return fragment;
     }
 
-    public ShareSpecialFileFragment() {
+    public ShareCommonFileFragment() {
         // Required empty public constructor
     }
 
@@ -129,7 +119,7 @@ public class ShareSpecialFileFragment extends MediaFragment {
         SharedCollection collection = ShareApplication.getInstance().getDestAllSharedFiles(mIP);
         getData();
         if(collection != null && mAdapter != null){
-            List<SpecialFileItem> list = collection.getSpecialFileList();
+            List<CommonFileItem> list = collection.getCommonFileList();
             mAdapter.setData(list);
         }
     }

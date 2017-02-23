@@ -6,11 +6,10 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.provider.MediaStore;
-import android.text.format.Formatter;
 import android.webkit.MimeTypeMap;
 
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
-import com.huhu.fileshare.model.SpecialFileItem;
+import com.huhu.fileshare.model.CommonFileItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ public class ScanSpecialFiles implements Runnable {
 
     private Context mContext;
 
-    private List<SpecialFileItem> mFileList;
+    private List<CommonFileItem> mFileList;
 
     private ScanSpecialFiles(Context context) {
         mContext = context;
@@ -94,7 +93,7 @@ public class ScanSpecialFiles implements Runnable {
                             String path = cursor.getString(pathIndex);
                             String title = cursor.getString(titleIndex);
                             long size = cursor.getLong(sizeIndex);
-                            SpecialFileItem item = new SpecialFileItem(title, path, size, false, null, SpecialFileItem.FileType.valueOfString(typeStr));
+                            CommonFileItem item = new CommonFileItem(title, path, size, false, null, CommonFileItem.FileType.valueOfString(typeStr));
                             mFileList.add(item);
                         }
                     }

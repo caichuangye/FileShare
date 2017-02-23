@@ -1,37 +1,31 @@
 package com.huhu.fileshare.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
-import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.model.MusicItem;
 import com.huhu.fileshare.ui.view.DownloadIcon;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
-import com.huhu.fileshare.util.HLog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 
 /**
  * Created by Administrator on 2016/4/12.
  */
-public class MusicAdapter extends HuhuBaseAdapter<MusicItem> {
+public class MusicAdapter extends FileBaseAdapter<MusicItem> {
 
     public MusicAdapter(Context context,int mode){
         super(context,mode);

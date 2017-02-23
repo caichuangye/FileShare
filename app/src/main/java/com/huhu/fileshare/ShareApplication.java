@@ -344,7 +344,6 @@ public class ShareApplication extends Application {
         Type type = new TypeToken<SharedCollection>() {
         }.getType();
         SharedCollection collection = gson.fromJson(reply.getData(), type);
-        collection.mergeSpecialAndSDFiles();
         mAllSharedCollection.put(reply.getIP(), collection);
         EventBus.getDefault().post(new EventBusType.UpdateSharedFiles());
         HLog.d("RECCY", "---------------------in application, notice fragment to update----------------------");

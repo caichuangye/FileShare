@@ -1,7 +1,5 @@
 package com.huhu.fileshare.util;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -9,30 +7,21 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.Xfermode;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.util.Log;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.ImageFolderItem;
 import com.huhu.fileshare.model.ImageItem;
 import com.huhu.fileshare.model.MusicItem;
-import com.huhu.fileshare.model.SpecialFileItem;
+import com.huhu.fileshare.model.CommonFileItem;
 import com.huhu.fileshare.model.VideoItem;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,7 +45,7 @@ public class FileQueryHelper {
 
     private Map<String,Bitmap> mVideoCovers;
 
-    private Map<SpecialFileItem.FileType,Bitmap> mSpecialCover;
+    private Map<CommonFileItem.FileType,Bitmap> mSpecialCover;
 
     private List<MusicItem> mMusicList;
 
@@ -284,7 +273,7 @@ public class FileQueryHelper {
     }
 
 
-    public Bitmap getSpecialFileCover(SpecialFileItem.FileType type){
+    public Bitmap getSpecialFileCover(CommonFileItem.FileType type){
         if(mSpecialCover == null){
             mSpecialCover = new HashMap<>();
         }

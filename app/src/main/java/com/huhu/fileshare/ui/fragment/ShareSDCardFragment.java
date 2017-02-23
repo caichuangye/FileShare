@@ -1,11 +1,9 @@
 package com.huhu.fileshare.ui.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +16,6 @@ import android.widget.TextView;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
-import com.huhu.fileshare.model.FileItem;
 import com.huhu.fileshare.ui.adapter.FileAdapter;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
@@ -30,12 +27,12 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ShareFileFragment.OnFragmentInteractionListener} interface
+ * {@link ShareSDCardFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ShareFileFragment#newInstance} factory method to
+ * Use the {@link ShareSDCardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShareFileFragment extends BaseFragment {
+public class ShareSDCardFragment extends BaseFragment {
 
     private  final String TAG = this.getClass().getCanonicalName();
 
@@ -70,11 +67,11 @@ public class ShareFileFragment extends BaseFragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ShareFileFragment.
+     * @return A new instance of fragment ShareSDCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ShareFileFragment newInstance(String param1, String param2) {
-        ShareFileFragment fragment = new ShareFileFragment();
+    public static ShareSDCardFragment newInstance(String param1, String param2) {
+        ShareSDCardFragment fragment = new ShareSDCardFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -82,7 +79,7 @@ public class ShareFileFragment extends BaseFragment {
         return fragment;
     }
 
-    public ShareFileFragment() {
+    public ShareSDCardFragment() {
         // Required empty public constructor
 
     }
@@ -189,10 +186,10 @@ public class ShareFileFragment extends BaseFragment {
     }
 
     public void onEventMainThread(EventBusType.FileItemsInfo info) {
-        List<String> list = ((ShareApplication)((Activity)(mContext)).getApplication()).getSharedFileByType(GlobalParams.ShareType.SD_FILE);
-                mLayout.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.GONE);
-        mAdapter.setData(info.getData(),list);
+//        List<String> list = ((ShareApplication)((Activity)(mContext)).getApplication()).getSharedFileByType(GlobalParams.ShareType.SD_FILE);
+//                mLayout.setVisibility(View.VISIBLE);
+//        mProgressBar.setVisibility(View.GONE);
+//        mAdapter.setData(info.getData(),list);
     }
 
     public void onEventMainThread(EventBusType.ClearShared info){

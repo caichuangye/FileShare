@@ -23,7 +23,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 /**
  * Created by Administrator on 2016/4/15.
  */
-public class VideoAdapter extends HuhuBaseAdapter<VideoItem> {
+public class VideoAdapter extends FileBaseAdapter<VideoItem> {
 
     private DisplayImageOptions mOptions = new DisplayImageOptions.Builder()
             .showImageOnLoading(R.mipmap.video) // 在ImageView加载过程中显示图片

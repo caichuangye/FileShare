@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/4/12.
  */
-public abstract class HuhuBaseAdapter<T extends BaseItem> extends BaseAdapter {
+public abstract class FileBaseAdapter<T extends BaseItem> extends BaseAdapter {
 
     protected Context mContext;
 
@@ -25,7 +25,7 @@ public abstract class HuhuBaseAdapter<T extends BaseItem> extends BaseAdapter {
 
     protected int mMode;
 
-    public HuhuBaseAdapter(Context context,int mode){
+    public FileBaseAdapter(Context context, int mode){
         mMode = mode;
         mContext = context;
         mDataList = new ArrayList<>();
