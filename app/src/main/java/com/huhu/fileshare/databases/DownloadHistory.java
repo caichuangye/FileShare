@@ -72,6 +72,7 @@ public class DownloadHistory {
         String str = cursor.getString(cursor.getColumnIndex(DatabaseUtils.ColumnName.DOWNLOAD_STATES));
         String totalSize = cursor.getString(cursor.getColumnIndex(DatabaseUtils.ColumnName.TOTAL_SIZE));
         String recvSize = cursor.getString(cursor.getColumnIndex(DatabaseUtils.ColumnName.RECV_SIZE));
+        String destName = cursor.getString(cursor.getColumnIndex(DatabaseUtils.ColumnName.DEST_NAME));
         DownloadStatus status = DownloadStatus.getStatus(str);
         item.setUUID(uuid);
         item.setStartTime(startTime);
@@ -84,6 +85,7 @@ public class DownloadHistory {
         item.setStatus(status);
         item.setTotalSize(Long.parseLong(totalSize));
         item.setRecvSize(Long.parseLong(recvSize));
+        item.setDestName(destName);
         HLog.d("ccyd","parse curor: "+item.toString());
         return item;
     }
@@ -102,6 +104,7 @@ public class DownloadHistory {
         values.put(DatabaseUtils.ColumnName.RECV_SIZE,String.valueOf(item.getRecvSize()));
         values.put(DatabaseUtils.ColumnName.FILE_TYPE,item.getFileType());
         values.put(DatabaseUtils.ColumnName.DOWNLOAD_STATES,item.getStatus().toString());
+        values.put(DatabaseUtils.ColumnName.DEST_NAME,item.getDestName());
         mContentResolver.insert(DatabaseUtils.DOWNLOAD_HISTORY_URI,values);
     }
 

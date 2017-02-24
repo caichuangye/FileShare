@@ -117,6 +117,7 @@ public class ShareApkFragment extends MediaFragment {
                                 long size = inputStream.available();
                                 PackageInfo pi = packageManager.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
                                 ApkItem item = new ApkItem(name, path, size, false, null, pi.versionName);
+                            //    item.setDesc(name);
                             //    item.setIcon(info.loadIcon(packageManager));
                                 Log.d("ccapk","info = "+name);
                                 mApkList.add(item);

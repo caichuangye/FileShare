@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -133,6 +134,7 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
         if(oper == GlobalParams.DownloadOper.DELETE){
             mAdapter.deleteItem(item);
         }else if(oper == GlobalParams.DownloadOper.ADD){
+            Log.d("cctype","add: "+item.toString());
             mAdapter.addItem(item);
         }else{
             mAdapter.updateItem(item);
@@ -271,8 +273,15 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
             if(!TextUtils.isEmpty(path)) {
                 where.append("'" + uuid + "',");
                 if(isDeleteResources) {
+                    if(item.getFileType().equals(GlobalParams.ShareType.APK.toString())){
+                        String localPath = Environment.getExternalStorageDirectory().getPath()+ File.separator+"fileshare";
+                        path = localPath + File.separator + item.getDestName()+".apk";
+                    }
                     File file = new File(path);
-                    file.deleteOnExit();
+                    if(file.exists()) {
+                        boolean res = file.delete();
+                        Log.d("ccdelete", path+": "+res);
+                    }
                 }
             }
 

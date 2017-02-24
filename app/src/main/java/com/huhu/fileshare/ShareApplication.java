@@ -212,6 +212,10 @@ public class ShareApplication extends Application {
             item.setTotalSize(item0.getSize());
             item.setFromUserName(mScanningServerName);
             item.setIP(mScanningServerIP);
+            if(info.getType().equals(GlobalParams.ShareType.APK)){
+                item.setDestName(item0.getShowName());
+                Log.d("cctype",item.toString());
+            }
             addScanFile(item);
         }
     }

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.huhu.fileshare.download.DownloadService;
 import com.huhu.fileshare.util.CommonUtil;
+import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
 import com.huhu.fileshare.util.SystemSetting;
 
@@ -43,11 +44,13 @@ public class DownloadItem implements Parcelable {
     private long mRecvSize;
     private String mFromUser;
 
+    private String mDestName;
+
     @Override
     public String toString(){
         String str = "uuid = "+mUUID+"; startTime = "+mStartTime+"; endTime = "+mEndTime+"; fileType = "+mFileType+
                 "; ip = "+mIP+"; totalSize = "+mTotalSize+"; recvSize = "+mRecvSize+"; fromPath = "+mFromPath+"; toPath = "+mToPath+"; status = "+
-                mStates.toString()+"; fromUser = "+mFromUser;
+                mStates.toString()+"; fromUser = "+mFromUser+", dest name = "+mDestName;
         return str;
     }
 
@@ -171,6 +174,17 @@ public class DownloadItem implements Parcelable {
 
     public void setFromPath(String fromPath){
         mFromPath = fromPath;
+    }
+
+    public String getDestName() {
+        return mDestName;
+    }
+
+    public void setDestName(String destName) {
+        this.mDestName = destName;
+        if(mFileType.equals(GlobalParams.ShareType.APK.toString())) {
+            mToPath = CommonUtil.getAppFolder() + File.separator + mDestName + ".apk";
+        }
     }
 
     @Override

@@ -86,13 +86,20 @@ public class DownloadService extends Service{
     private class DownloadBinder extends IDownloadServicelInterface.Stub{
 
         @Override
-        public void addDownloadItem(String uuid,String ip,String fromPath,long size,String fromUser,String type)
+        public void addDownloadItem(String uuid,String ip,String fromPath,long size,String fromUser,String type,String destName)
                 throws RemoteException {
             HLog.d(DD,"Service:addDownloadItem, ip = "+ip+", from path = "+fromPath);
             DownloadItem item = new DownloadItem(ip,size,fromPath,fromUser,uuid,type);
+            item.setDestName(destName);
             mDownloadHistory.operateDatabases(item, ADD_ITEM);
             TransferClient.getInstance().requestFiles(item,ip);
         }
+
+//        @Override
+//        public void addDownloadItem(DownloadItem item)
+//                throws RemoteException {
+//
+//        }
 
         @Override
         public void deleteDownloadItem(String uuid) throws RemoteException {

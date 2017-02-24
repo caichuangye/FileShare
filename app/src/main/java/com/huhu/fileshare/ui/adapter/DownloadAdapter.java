@@ -187,8 +187,13 @@ public class DownloadAdapter extends BaseAdapter {
             DisplayImageOptions options = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(15)).build();
             ImageLoader.getInstance().displayImage("drawable://" + getCoverId(GlobalParams.ShareType.getType(item.getFileType())),
                     itemHolder.imageView, options);
-            String name = item.getFromPath().substring(item.getFromPath().lastIndexOf("/") + 1);
-            itemHolder.nameTextView.setText(name);
+            if(item.getFileType().equals(GlobalParams.ShareType.APK.toString())){
+                Log.d("cctype","show name: "+item.getDestName());
+                itemHolder.nameTextView.setText(item.getDestName()+".apk");
+            }else {
+                String name = item.getFromPath().substring(item.getFromPath().lastIndexOf("/") + 1);
+                itemHolder.nameTextView.setText(name);
+            }
             itemHolder.ownerTextView.setText(item.getFromUserName());
             String info = Formatter.formatFileSize(mContext, item.getTotalSize());
             itemHolder.sizeTextView.setText(info);
@@ -257,6 +262,8 @@ public class DownloadAdapter extends BaseAdapter {
             id = R.mipmap.mp3;
         } else if (shareType == GlobalParams.ShareType.VIDEO) {
             id = R.mipmap.video;
+        }else if(shareType == GlobalParams.ShareType.APK){
+            id = R.mipmap.apk;
         }
         return id;
     }
@@ -498,6 +505,8 @@ public class DownloadAdapter extends BaseAdapter {
             impl.setUUID(item.getUUID());
             impl.setToPath(item.getToPath());
             impl.setTotalSize(item.getTotalSize());
+            impl.setDestName(item.getDestName());
+            Log.d("cctype","impl, topath = "+impl.getToPath());
             return impl;
         }
 

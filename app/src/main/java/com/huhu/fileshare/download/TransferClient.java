@@ -5,6 +5,7 @@ import android.util.Log;
 
 
 import com.huhu.fileshare.model.DownloadItem;
+import com.huhu.fileshare.util.GlobalParams;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -116,7 +117,11 @@ public class TransferClient {
                 long offset = 0;
                 String name = remotePath.substring(remotePath.lastIndexOf(File.separator) + 1);
                 String localPath = Environment.getExternalStorageDirectory().getPath()+ File.separator+"fileshare";
-                localPath += File.separator + name;
+                if(info.getFileType() == GlobalParams.ShareType.APK.toString()){
+                    localPath += File.separator + info.getDestName()+".apk";
+                }else {
+                    localPath += File.separator + name;
+                }
                 File file = new File(localPath);
                 file.deleteOnExit();
                 FileOutputStream outputStream = new FileOutputStream(file);
