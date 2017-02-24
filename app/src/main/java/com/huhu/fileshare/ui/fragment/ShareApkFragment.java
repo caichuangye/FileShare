@@ -22,6 +22,7 @@ import com.huhu.fileshare.model.MusicItem;
 import com.huhu.fileshare.model.SharedCollection;
 import com.huhu.fileshare.ui.adapter.ApkAdapter;
 import com.huhu.fileshare.ui.adapter.MusicAdapter;
+import com.huhu.fileshare.util.ApkIconCacher;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
@@ -50,6 +51,9 @@ public class ShareApkFragment extends MediaFragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+
+
 
     public ShareApkFragment() {
         // Required empty public constructor
@@ -116,37 +120,34 @@ public class ShareApkFragment extends MediaFragment {
                                 FileInputStream inputStream = new FileInputStream(path);
                                 long size = inputStream.available();
                                 PackageInfo pi = packageManager.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
-                                ApkItem item = new ApkItem(name, path, size, false, null, pi.versionName);
-                            //    item.setDesc(name);
-                            //    item.setIcon(info.loadIcon(packageManager));
-                                Log.d("ccapk","info = "+name);
-                                mApkList.add(item);
+                                final ApkItem item = new ApkItem(name, path, size, false, null, pi.versionName);
+                                ApkIconCacher.getInstance().cacheDrawable(path,info.loadIcon(packageManager));
+                                ((Activity)mContext).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        getData();
+                                        mAdapter.addItem(item);
+                                    }
+                                });
                             }catch (Exception e){
 
                             }
                         }
                     }
-                    ((Activity)mContext).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            getData();
-                            mAdapter.setData(mApkList);
-                        }
-                    });
+                    ApkIconCacher.getInstance().exit();
                 }
             }
         });
     }
 
 
-//    public void onEventMainThread(EventBusType.ShareMusicInfo info){
-//        HLog.d("SHARECCY", "--------------:got data (GlobalParams.ShareType.AUDIO) ");
-//        getData();
-//        mAdapter.setData(info.getData());
-//    }
-
     public void onEventMainThread(EventBusType.ClearShared info){
         mAdapter.updateSelectFiles();
+    }
+
+    public void onEventMainThread(EventBusType.CacheApkIconComplete info){
+        HLog.d("ccdr",info.path+": "+info.coverPath);
+        mAdapter.updateCover(info.path,info.coverPath);
     }
 
     public void onEventMainThread(EventBusType.UpdateSharedFiles info){

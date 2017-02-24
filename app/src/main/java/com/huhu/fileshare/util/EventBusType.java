@@ -338,4 +338,17 @@ public class EventBusType {
 
     }
 
+    public static class CacheApkIconComplete{
+
+        public String path;
+
+        public String coverPath;
+
+        public CacheApkIconComplete(String path,String coverPath){
+            this.path = path;
+            this.coverPath = coverPath;
+        }
+
+    }
+
 }

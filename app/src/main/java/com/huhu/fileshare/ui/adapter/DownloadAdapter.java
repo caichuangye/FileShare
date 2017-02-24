@@ -475,7 +475,9 @@ public class DownloadAdapter extends BaseAdapter {
             return "文件";
         } else if (type.toUpperCase().equals("VIDEO")) {
             return "视频";
-        } else {
+        } else if (type.toUpperCase().equals("APK")) {
+            return "应用";
+        }else {
             return "其他";
         }
     }

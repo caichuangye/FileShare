@@ -1,7 +1,9 @@
 package com.huhu.fileshare.ui.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +15,14 @@ import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.ApkItem;
 import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.ui.view.DownloadIcon;
+import com.huhu.fileshare.util.ApkIconCacher;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.HLog;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 
 /**
@@ -25,6 +32,30 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
 
     public ApkAdapter(Context context, int mode){
         super(context,mode);
+    }
+
+    public void addItem(ApkItem item){
+        for(ApkItem apkItem : mDataList){
+            if(item.getPath().equals(apkItem.getPath())){
+                return;
+            }
+        }
+        mDataList.add(item);
+        notifyDataSetChanged();
+    }
+
+    public void updateCover(String path,String cover){
+        boolean hit = false;
+        for(ApkItem item : mDataList){
+            if(path.equals(item.getPath())){
+                item.setCoverBitMap(cover);
+                hit = true;
+                break;
+            }
+        }
+        if(hit){
+            notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -49,16 +80,15 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
             holder = (ViewHolder)convertView.getTag();
         }
         ApkItem item = mDataList.get(position);
-//        String uri = null;
-//        if(!TextUtils.isEmpty(item.getCoverBitMap())) {
-//            uri = "file://"+item.getCoverBitMap();
-//        }else{
-//            uri = "drawable://"+R.mipmap.mp3;
-//        }
-//        DisplayImageOptions options =  new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(15)).build();
-//        ImageLoader.getInstance().displayImage(uri,holder.coverImageView,options);
 
-    //    holder.coverImageView.setImageDrawable(item.getIcon());
+        if(TextUtils.isEmpty(item.getCoverBitMap())) {
+            item.setCoverBitMap(ApkIconCacher.getInstance().getCoverPath(item.getPath()));
+        }
+        DisplayImageOptions options =  new DisplayImageOptions.Builder().displayer(
+                new RoundedBitmapDisplayer(15))
+                .showImageOnFail(R.mipmap.apk)
+                .build();
+        ImageLoader.getInstance().displayImage("file://"+item.getCoverBitMap(),holder.coverImageView,options);
 
         holder.titleTextView.setText(item.getShowName());
         holder.descTextView.setText(item.getDesc());
@@ -83,7 +113,6 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
 
         return convertView;
     }
-
 
     private class ViewHolder{
         ImageView coverImageView;
