@@ -4,6 +4,10 @@
     android:background="#ffffff"
     tools:context="com.huhu.fileshare.ui.fragment.ShareImageFolderFragment">
 
+   <include
+       android:id="@+id/loading_view"
+       layout="@layout/loading_layout" />
+
    <GridView
        android:id="@+id/gridview"
       android:layout_margin="@dimen/huhu_4_dp"
