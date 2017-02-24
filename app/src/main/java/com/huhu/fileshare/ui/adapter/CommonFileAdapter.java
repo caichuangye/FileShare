@@ -1,6 +1,7 @@
 package com.huhu.fileshare.ui.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
+import com.huhu.fileshare.model.ApkItem;
 import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.model.CommonFileItem;
 import com.huhu.fileshare.ui.view.DownloadIcon;
@@ -17,14 +19,32 @@ import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.ImageCacher;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 /**
  * Created by Administrator on 2016/4/18.
  */
-public class SpecialFileAdapter extends FileBaseAdapter<CommonFileItem> {
+public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
 
-    public SpecialFileAdapter(Context context,int mode){
+    public CommonFileAdapter(Context context, int mode){
         super(context,mode);
+    }
+
+    public void updateCover(String path,String cover){
+        boolean hit = false;
+        for(CommonFileItem item : mDataList){
+            if(path.equals(item.getType().toString())){
+                item.setCoverBitMap(cover);
+                hit = true;
+           //     break;
+            }
+        }
+        if(hit){
+            notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -49,7 +69,19 @@ public class SpecialFileAdapter extends FileBaseAdapter<CommonFileItem> {
             holder = (ViewHolder)convertView.getTag();
         }
         CommonFileItem item = mDataList.get(position);
-        holder.coverImageView.setImageBitmap(FileQueryHelper.getInstance(mContext).getSpecialFileCover(item.getType()));
+
+      //  holder.coverImageView.setImageBitmap(FileQueryHelper.getInstance(mContext).getSpecialFileCover(item.getType()));
+        if(TextUtils.isEmpty(item.getCoverBitMap())) {
+            item.setCoverBitMap(ImageCacher.getInstance().getCoverPath(item.getType().toString(), ImageCacher.Type.COMMON_FILE));
+        }
+        DisplayImageOptions options =  new DisplayImageOptions.Builder().displayer(
+                new RoundedBitmapDisplayer(15))
+                .showImageOnFail(R.mipmap.file)
+                .build();
+        ImageLoader.getInstance().displayImage("file://"+item.getCoverBitMap(),holder.coverImageView,options);
+
+
+
         holder.titleTextView.setText(item.getShowName());
         holder.typeTextView.setText(item.getType().getTypeString());
         holder.sizeTextView.setText(Formatter.formatFileSize(mContext, item.getSize()));

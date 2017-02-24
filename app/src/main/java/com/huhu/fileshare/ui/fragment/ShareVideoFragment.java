@@ -21,6 +21,7 @@ import com.huhu.fileshare.ui.adapter.VideoAdapter;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.ImageCacher;
 
 import java.util.List;
 
@@ -89,9 +90,19 @@ public class ShareVideoFragment extends MediaFragment {
     }
 
 
+    public void onEventMainThread(EventBusType.CacheImageComplete info){
+        if(info.result.type == ImageCacher.Type.VIDEO) {
+            mAdapter.updateCover(info.result.filePath, info.result.coverPath);
+        }
+    }
+
     public void onEventMainThread(EventBusType.ShareVideoInfo info){
         getData();
-        mAdapter.setData(info.getData());
+        List<VideoItem> list = info.getData();
+        for(VideoItem item : list){
+            ImageCacher.getInstance().cacheVideo(item.getPath(),150,150);
+        }
+        mAdapter.setData(list);
     }
 
     public void onEventMainThread(EventBusType.ClearShared info){

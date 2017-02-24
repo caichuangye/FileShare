@@ -18,13 +18,10 @@ import android.widget.ListView;
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.ApkItem;
-import com.huhu.fileshare.model.MusicItem;
 import com.huhu.fileshare.model.SharedCollection;
 import com.huhu.fileshare.ui.adapter.ApkAdapter;
-import com.huhu.fileshare.ui.adapter.MusicAdapter;
-import com.huhu.fileshare.util.ApkIconCacher;
+import com.huhu.fileshare.util.ImageCacher;
 import com.huhu.fileshare.util.EventBusType;
-import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
 
@@ -121,7 +118,7 @@ public class ShareApkFragment extends MediaFragment {
                                 long size = inputStream.available();
                                 PackageInfo pi = packageManager.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
                                 final ApkItem item = new ApkItem(name, path, size, false, null, pi.versionName);
-                                ApkIconCacher.getInstance().cacheDrawable(path,info.loadIcon(packageManager));
+                                ImageCacher.getInstance().cacheDrawable(path,info.loadIcon(packageManager), ImageCacher.Type.APK);
                                 ((Activity)mContext).runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -134,7 +131,7 @@ public class ShareApkFragment extends MediaFragment {
                             }
                         }
                     }
-                    ApkIconCacher.getInstance().exit();
+                    ImageCacher.getInstance().exit();
                 }
             }
         });
@@ -145,9 +142,10 @@ public class ShareApkFragment extends MediaFragment {
         mAdapter.updateSelectFiles();
     }
 
-    public void onEventMainThread(EventBusType.CacheApkIconComplete info){
-        HLog.d("ccdr",info.path+": "+info.coverPath);
-        mAdapter.updateCover(info.path,info.coverPath);
+    public void onEventMainThread(EventBusType.CacheImageComplete info){
+        if(info.result.type == ImageCacher.Type.APK) {
+            mAdapter.updateCover(info.result.filePath, info.result.coverPath);
+        }
     }
 
     public void onEventMainThread(EventBusType.UpdateSharedFiles info){

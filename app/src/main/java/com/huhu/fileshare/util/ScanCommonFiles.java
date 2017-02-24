@@ -17,9 +17,9 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/4/18.
  */
-public class ScanSpecialFiles implements Runnable {
+public class ScanCommonFiles implements Runnable {
 
-    private static ScanSpecialFiles sInstance;
+    private static ScanCommonFiles sInstance;
 
     private Handler mHandler;
 
@@ -27,18 +27,18 @@ public class ScanSpecialFiles implements Runnable {
 
     private List<CommonFileItem> mFileList;
 
-    private ScanSpecialFiles(Context context) {
+    private ScanCommonFiles(Context context) {
         mContext = context;
         HandlerThread handlerThread = new HandlerThread("scanspecialfile");
         handlerThread.start();
         mHandler = new Handler(handlerThread.getLooper());
     }
 
-    public static ScanSpecialFiles getInstance(Context context) {
+    public static ScanCommonFiles getInstance(Context context) {
         if (sInstance == null) {
-            synchronized (ScanSpecialFiles.class) {
+            synchronized (ScanCommonFiles.class) {
                 if (sInstance == null) {
-                    sInstance = new ScanSpecialFiles(context);
+                    sInstance = new ScanCommonFiles(context);
                 }
             }
         }
@@ -102,6 +102,6 @@ public class ScanSpecialFiles implements Runnable {
                 }
             }
         }
-        EventBus.getDefault().post(new EventBusType.ShareSpecialFileInfo(mFileList));
+        EventBus.getDefault().post(new EventBusType.ShareCommonFileInfo(mFileList));
     }
 }

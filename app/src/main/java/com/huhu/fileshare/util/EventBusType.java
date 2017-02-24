@@ -160,10 +160,10 @@ public class EventBusType {
     /**
      *
      */
-    public static class ShareSpecialFileInfo{
+    public static class ShareCommonFileInfo {
         private List<CommonFileItem> mData;
 
-        public ShareSpecialFileInfo(List<CommonFileItem> items){
+        public ShareCommonFileInfo(List<CommonFileItem> items){
             mData = items;
         }
 
@@ -338,15 +338,12 @@ public class EventBusType {
 
     }
 
-    public static class CacheApkIconComplete{
+    public static class CacheImageComplete {
 
-        public String path;
+        public ImageCacher.CacheResult result;
 
-        public String coverPath;
-
-        public CacheApkIconComplete(String path,String coverPath){
-            this.path = path;
-            this.coverPath = coverPath;
+        public CacheImageComplete(ImageCacher.CacheResult result){
+            this.result = result;
         }
 
     }

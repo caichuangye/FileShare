@@ -3,7 +3,6 @@ package com.huhu.fileshare.ui.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,10 @@ import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.ApkItem;
 import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.ui.view.DownloadIcon;
-import com.huhu.fileshare.util.ApkIconCacher;
+import com.huhu.fileshare.util.ImageCacher;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
-import com.huhu.fileshare.util.HLog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
@@ -82,7 +80,7 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
         ApkItem item = mDataList.get(position);
 
         if(TextUtils.isEmpty(item.getCoverBitMap())) {
-            item.setCoverBitMap(ApkIconCacher.getInstance().getCoverPath(item.getPath()));
+            item.setCoverBitMap(ImageCacher.getInstance().getCoverPath(item.getPath(), ImageCacher.Type.APK));
         }
         DisplayImageOptions options =  new DisplayImageOptions.Builder().displayer(
                 new RoundedBitmapDisplayer(15))

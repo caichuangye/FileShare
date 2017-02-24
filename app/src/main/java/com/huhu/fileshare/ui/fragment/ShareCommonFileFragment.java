@@ -14,11 +14,13 @@ import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.SharedCollection;
 import com.huhu.fileshare.model.CommonFileItem;
-import com.huhu.fileshare.ui.adapter.SpecialFileAdapter;
+import com.huhu.fileshare.ui.adapter.CommonFileAdapter;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
-import com.huhu.fileshare.util.ScanSpecialFiles;
+import com.huhu.fileshare.util.ImageCacher;
+import com.huhu.fileshare.util.ScanCommonFiles;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +30,7 @@ import java.util.List;
  */
 public class ShareCommonFileFragment extends MediaFragment {
 
-    private SpecialFileAdapter mAdapter;
+    private CommonFileAdapter mAdapter;
 
     public static ShareCommonFileFragment newInstance(int type, String data) {
         ShareCommonFileFragment fragment = new ShareCommonFileFragment();
@@ -58,7 +60,7 @@ public class ShareCommonFileFragment extends MediaFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_share_mediafiles, container, false);
         mListView = (ListView)view.findViewById(R.id.listview);
-        mAdapter = new SpecialFileAdapter(mContext,mType);
+        mAdapter = new CommonFileAdapter(mContext,mType);
         mListView.setAdapter(mAdapter);
         if(mType == GlobalParams.SHOW_MODE) {
             mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -72,7 +74,7 @@ public class ShareCommonFileFragment extends MediaFragment {
         initEmptyView(view,"文件");
 
         if(mType == GlobalParams.SHOW_MODE) {
-            ScanSpecialFiles.getInstance(mContext).start();
+            ScanCommonFiles.getInstance(mContext).start();
         }else{
             setData();
         }
@@ -90,9 +92,23 @@ public class ShareCommonFileFragment extends MediaFragment {
         super.onDetach();
     }
 
+    public void onEventMainThread(EventBusType.CacheImageComplete info){
+        if(info.result.type == ImageCacher.Type.COMMON_FILE) {
+            Log.d("ccim",info.result.filePath+":   "+info.result.coverPath);
+            mAdapter.updateCover(info.result.filePath, info.result.coverPath);
+        }
+    }
 
-    public void onEventMainThread(EventBusType.ShareSpecialFileInfo info){
+    public void onEventMainThread(EventBusType.ShareCommonFileInfo info){
         getData();
+        List<CommonFileItem> list = info.getData();
+        List<CommonFileItem.FileType> typeList = new ArrayList<>();
+        for(CommonFileItem commonFileItem : list){
+            if(!typeList.contains(commonFileItem.getType())){
+                typeList.add(commonFileItem.getType());
+                ImageCacher.getInstance().cacheCommonFileIcon(commonFileItem.getType(),150,150);
+            }
+        }
         mAdapter.setData(info.getData());
     }
 

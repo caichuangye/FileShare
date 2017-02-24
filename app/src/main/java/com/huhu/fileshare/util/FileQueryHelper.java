@@ -43,8 +43,6 @@ public class FileQueryHelper {
 
     private List<ImageItem> mAllImagesList;
 
-    private Map<String,Bitmap> mVideoCovers;
-
     private Map<CommonFileItem.FileType,Bitmap> mSpecialCover;
 
     private List<MusicItem> mMusicList;
@@ -221,55 +219,6 @@ public class FileQueryHelper {
         }
         cur.close();
         return album_art;
-    }
-
-//    public  Bitmap getVideoThumbnail(String path,int w,int h) {
-//        if (mVideoCovers == null) {
-//            mVideoCovers = new HashMap<>();
-//            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.video);
-//            bitmap = CommonUtil.roundBitmap(bitmap,bitmap.getWidth()/10,bitmap.getHeight()/10);
-//            mVideoCovers.put("unknown",bitmap);
-//        }
-//        if (mVideoCovers.get(path) != null) {
-//            return mVideoCovers.get(path);
-//        } else {
-//            Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Video.Thumbnails.MINI_KIND);
-//            bitmap = ThumbnailUtils.extractThumbnail(bitmap, w, h, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-//            if(bitmap != null) {
-//                bitmap = CommonUtil.roundBitmap(bitmap,bitmap.getWidth()/10,bitmap.getHeight()/10);
-//                mVideoCovers.put(path, bitmap);
-//            }else{
-//                bitmap = mVideoCovers.get("unknown");
-//            }
-//            return bitmap;
-//        }
-//    }
-
-    public synchronized Bitmap getVideoThumbnail(final String path,final int w,final int h) {
-        Bitmap tmp = BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.video);
-        final Bitmap defaultBitmap = CommonUtil.roundBitmap(tmp,tmp.getWidth()/10,tmp.getHeight()/10);
-        if (mVideoCovers == null) {
-            mVideoCovers = new HashMap<>();
-            mVideoCovers.put("unknown",defaultBitmap);
-        }
-        if (mVideoCovers.get(path) != null) {
-            return mVideoCovers.get(path);
-        } else {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Video.Thumbnails.MINI_KIND);
-                    bitmap = ThumbnailUtils.extractThumbnail(bitmap, w, h, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-                    if(bitmap != null) {
-                        bitmap = CommonUtil.roundBitmap(bitmap,bitmap.getWidth()/10,bitmap.getHeight()/10);
-                    }else{
-                        bitmap = defaultBitmap;
-                    }
-                    mVideoCovers.put(path, bitmap);
-                }
-            });
-            return defaultBitmap;
-        }
     }
 
 
