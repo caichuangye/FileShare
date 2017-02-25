@@ -44,10 +44,15 @@ public class ComClient implements Runnable{
                     sComClient = new ComClient(ip);
                 }
             }
+        }else{
+            sComClient.setIP(ip);
         }
         return sComClient;
     }
 
+    private void setIP(String ip){
+        mIP = ip;
+    }
 
     public void sendMessage(String msg){
         mSendMsg = msg;
@@ -90,7 +95,7 @@ public class ComClient implements Runnable{
                 stringBuilder.append(line);
             }
 
-            HLog.d(TAG, "after send, recv:" + stringBuilder.toString());
+            HLog.d(TAG, "after send to "+mIP+", recv:" + stringBuilder.toString());
             if(mSendMsg.equals(GlobalParams.REQUEST_SHARED_FILES)) {
                 HLog.d("RECCY","---------------------got reply REQUEST_SHARED_FILES, then post----------------------");
                 EventBus.getDefault().post(new EventBusType.SharedFilesReply(stringBuilder.toString(),mIP));

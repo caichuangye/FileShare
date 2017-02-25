@@ -83,7 +83,7 @@ public class TransferServer implements Runnable {
                             Socket socket = mServerSocket.accept();
                             String destIP = socket.getInetAddress().getHostAddress();
                             List<DownloadItem> list = getSendFilesByIP(destIP);
-                            Log.d("transfer-s", "get connect, ip = " + destIP + ", request file size = " + list.size());
+//                            Log.d("transfer-s", "get connect, ip = " + destIP + ", request file size = " + list.size());
                             SendListItem listItem = mSendMap.get(destIP);
                             if(listItem == null) {
                                 mSendMap.put(destIP, new SendListItem(socket, list));

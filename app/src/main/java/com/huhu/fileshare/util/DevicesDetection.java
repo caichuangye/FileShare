@@ -71,7 +71,7 @@ public class DevicesDetection {
 
         mIsStart = false;
         mQuit = false;
-        mSendInternal = 2000;
+        mSendInternal = 500;
     }
 
     public void start() {
