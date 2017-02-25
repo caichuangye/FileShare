@@ -146,10 +146,9 @@ public class TransferClient {
             }
             socket.close();
         } catch (UnknownHostException e) {
-            e.printStackTrace();
-            Log.e(TAG,e.getMessage());
+            Log.e(TAG,"receiveFiles: UnknownHostException = "+e.getMessage());
         } catch (IOException e) {
-            Log.e(TAG,e.toString());
+            Log.e(TAG,"receiveFiles: IOException = "+e.toString());
         }
 
     }

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.download.ServiceUtils;
+import com.huhu.fileshare.download.TransferServer;
 import com.huhu.fileshare.model.BaseItem;
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
@@ -191,7 +192,7 @@ public class ShareApplication extends Application {
         String oper = isAdd?"add" : "delete";
         Log.d("upf","c: "+mScanningServerIP+": "+oper+": "+path);
         UpdateCommand command = new UpdateCommand();
-        command.ip = mScanningServerIP;
+        command.ip = WiFiOperation.getInstance(this).getIP();
         command.oper = oper;
         command.path = path;
         Gson gson = new Gson();
@@ -244,6 +245,7 @@ public class ShareApplication extends Application {
                 list.add(item);
             }
             mServerToSendList.put(command.ip, list);
+            Log.d(TransferServer.TAG,"add to send, ip = "+command.ip+", path = "+command.path);
             for(DownloadItem i : list){
                 Log.d("transferu","-----: "+i.getFromPath());
             }
