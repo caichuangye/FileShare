@@ -61,20 +61,19 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true">
 
-        <ImageView
+        <CheckBox
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="20dp"
-            android:src="@mipmap/select"
             android:id="@+id/file_selected"
-            android:layout_width="20dp"
-            android:layout_height="20dp" />
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
 
         <com.huhu.fileshare.ui.view.DownloadIcon
             android:id="@+id/file_download"
             android:layout_width="60dp"
             android:layout_height="30dp"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_centerInParent="true" />
 
     </RelativeLayout>

@@ -1,19 +1,17 @@
 package com.huhu.fileshare.ui.fragment;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
-import com.huhu.fileshare.model.SharedCollection;
 import com.huhu.fileshare.model.CommonFileItem;
+import com.huhu.fileshare.model.SharedCollection;
 import com.huhu.fileshare.ui.adapter.CommonFileAdapter;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
@@ -59,23 +57,15 @@ public class ShareCommonFileFragment extends MediaFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_share_mediafiles, container, false);
-        mListView = (ListView)view.findViewById(R.id.listview);
-        mAdapter = new CommonFileAdapter(mContext,mType);
+        mListView = (ListView) view.findViewById(R.id.listview);
+        mAdapter = new CommonFileAdapter(mContext, mType);
         mListView.setAdapter(mAdapter);
-        if(mType == GlobalParams.SHOW_MODE) {
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mAdapter.handleClick(position);
-                }
-            });
-        }
 
-        initEmptyView(view,"文件");
+        initEmptyView(view, "文件");
 
-        if(mType == GlobalParams.SHOW_MODE) {
+        if (mType == GlobalParams.SHOW_MODE) {
             ScanCommonFiles.getInstance(mContext).start();
-        }else{
+        } else {
             setData();
         }
         return view;
@@ -92,49 +82,47 @@ public class ShareCommonFileFragment extends MediaFragment {
         super.onDetach();
     }
 
-    public void onEventMainThread(EventBusType.CacheImageComplete info){
-        if(info.result.type == ImageCacher.Type.COMMON_FILE) {
-            Log.d("ccim",info.result.filePath+":   "+info.result.coverPath);
+    public void onEventMainThread(EventBusType.CacheImageComplete info) {
+        if (info.result.type == ImageCacher.Type.COMMON_FILE) {
             mAdapter.updateCover(info.result.filePath, info.result.coverPath);
         }
     }
 
-    public void onEventMainThread(EventBusType.ShareCommonFileInfo info){
+    public void onEventMainThread(EventBusType.ShareCommonFileInfo info) {
         getData();
         List<CommonFileItem> list = info.getData();
         List<CommonFileItem.FileType> typeList = new ArrayList<>();
-        for(CommonFileItem commonFileItem : list){
-            if(!typeList.contains(commonFileItem.getType())){
+        for (CommonFileItem commonFileItem : list) {
+            if (!typeList.contains(commonFileItem.getType())) {
                 typeList.add(commonFileItem.getType());
-                ImageCacher.getInstance().cacheCommonFileIcon(commonFileItem.getType(),150,150);
+                ImageCacher.getInstance().cacheCommonFileIcon(commonFileItem.getType(), 150, 150);
             }
         }
         mAdapter.setData(info.getData());
     }
 
-    public void onEventMainThread(EventBusType.ClearShared info){
+    public void onEventMainThread(EventBusType.ClearShared info) {
         mAdapter.updateSelectFiles();
     }
 
-    public void onEventMainThread(EventBusType.UpdateSharedFiles info){
-        if(mType == GlobalParams.SCAN_MODE) {
+    public void onEventMainThread(EventBusType.UpdateSharedFiles info) {
+        if (mType == GlobalParams.SCAN_MODE) {
             setData();
         }
     }
 
-    public void onEventMainThread(EventBusType.UpdateDownloadFile info){
-        if(mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
+    public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
+        if (mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
                 || info.getOper() == GlobalParams.DownloadOper.ADD)) {
-            Log.d("ooo","just change tag");
             mAdapter.notifyDataSetChanged();
         }
     }
 
-    private void setData(){
+    private void setData() {
         SharedCollection collection = ShareApplication.getInstance().getDestAllSharedFiles(mIP);
         getData();
-        if(collection != null && mAdapter != null){
+        if (collection != null && mAdapter != null) {
             List<CommonFileItem> list = collection.getCommonFileList();
             mAdapter.setData(list);
         }

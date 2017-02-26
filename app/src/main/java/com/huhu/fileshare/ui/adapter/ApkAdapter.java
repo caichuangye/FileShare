@@ -3,9 +3,12 @@ package com.huhu.fileshare.ui.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -62,7 +65,7 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if(convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(R.layout.file_item_layout,null);
@@ -70,7 +73,7 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
             holder.coverImageView = (ImageView)convertView.findViewById(R.id.file_cover);
             holder.titleTextView = (TextView)convertView.findViewById(R.id.file_name);
             holder.descTextView = (TextView)convertView.findViewById(R.id.file_info1);
-            holder.selectedImageView = (ImageView) convertView.findViewById(R.id.file_selected);
+            holder.selectedCheckbox = (CheckBox) convertView.findViewById(R.id.file_selected);
             holder.sizeTextView = (TextView)convertView.findViewById(R.id.file_info2);
             holder.downloadTextView = (DownloadIcon) convertView.findViewById(R.id.file_download);
             convertView.setTag(holder);
@@ -92,8 +95,15 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
         holder.descTextView.setText(item.getDesc());
         holder.sizeTextView.setText(Formatter.formatFileSize(mContext, item.getSize()));
 
+        holder.selectedCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleClick(position);
+            }
+        });
+
         if (mMode == GlobalParams.SCAN_MODE) {
-            holder.selectedImageView.setVisibility(View.GONE);
+            holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadTextView.setVisibility(View.VISIBLE);
             DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());
             if(status != null) {
@@ -105,8 +115,9 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
                 holder.downloadTextView.setOnClickListener(listener);
             }
         }else{
+            holder.selectedCheckbox.setVisibility(View.VISIBLE);
             holder.downloadTextView.setVisibility(View.GONE);
-            holder.selectedImageView.setVisibility(item.isSelected()?View.VISIBLE:View.GONE);
+            holder.selectedCheckbox.setChecked(item.isSelected());
         }
 
         return convertView;
@@ -117,7 +128,7 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
         TextView titleTextView;
         TextView descTextView;
         DownloadIcon downloadTextView;
-        ImageView selectedImageView;
+        CheckBox selectedCheckbox;
         TextView sizeTextView;
     }
 }

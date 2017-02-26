@@ -50,8 +50,6 @@ public class ShareApkFragment extends MediaFragment {
     }
 
 
-
-
     public ShareApkFragment() {
         // Required empty public constructor
     }
@@ -70,27 +68,19 @@ public class ShareApkFragment extends MediaFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_share_mediafiles, container, false);
-        mListView = (ListView)view.findViewById(R.id.listview);
-        mAdapter = new ApkAdapter(mContext,mType);
+        mListView = (ListView) view.findViewById(R.id.listview);
+        mAdapter = new ApkAdapter(mContext, mType);
         mListView.setAdapter(mAdapter);
-        if(mType == GlobalParams.SHOW_MODE) {
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mAdapter.handleClick(position);
-                }
-            });
-        }
 
-       initEmptyView(view,"应用");
+        initEmptyView(view, "应用");
 
         HandlerThread thread = new HandlerThread("getapp");
         thread.start();
         mWorkHandler = new Handler(thread.getLooper());
         mApkList = new ArrayList<>();
-        if(mType == GlobalParams.SHOW_MODE) {
+        if (mType == GlobalParams.SHOW_MODE) {
             queryAllApks();
-        }else {
+        } else {
             setData();
         }
         return view;
@@ -102,31 +92,31 @@ public class ShareApkFragment extends MediaFragment {
     }
 
 
-    private void queryAllApks(){
+    private void queryAllApks() {
         mWorkHandler.post(new Runnable() {
             @Override
             public void run() {
                 PackageManager packageManager = mContext.getPackageManager();
                 List<ApplicationInfo> list = packageManager.getInstalledApplications(GET_UNINSTALLED_PACKAGES);
-                if(list != null){
-                    for(ApplicationInfo info : list){
+                if (list != null) {
+                    for (ApplicationInfo info : list) {
                         String path = info.sourceDir;
-                        if(!TextUtils.isEmpty(path) && path.startsWith("/data/app")){
+                        if (!TextUtils.isEmpty(path) && path.startsWith("/data/app")) {
                             String name = String.valueOf(info.loadLabel(packageManager));
                             try {
                                 FileInputStream inputStream = new FileInputStream(path);
                                 long size = inputStream.available();
                                 PackageInfo pi = packageManager.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
                                 final ApkItem item = new ApkItem(name, path, size, false, null, pi.versionName);
-                                ImageCacher.getInstance().cacheDrawable(path,info.loadIcon(packageManager), ImageCacher.Type.APK);
-                                ((Activity)mContext).runOnUiThread(new Runnable() {
+                                ImageCacher.getInstance().cacheDrawable(path, info.loadIcon(packageManager), ImageCacher.Type.APK);
+                                ((Activity) mContext).runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         getData();
                                         mAdapter.addItem(item);
                                     }
                                 });
-                            }catch (Exception e){
+                            } catch (Exception e) {
 
                             }
                         }
@@ -138,27 +128,27 @@ public class ShareApkFragment extends MediaFragment {
     }
 
 
-    public void onEventMainThread(EventBusType.ClearShared info){
+    public void onEventMainThread(EventBusType.ClearShared info) {
         mAdapter.updateSelectFiles();
     }
 
-    public void onEventMainThread(EventBusType.CacheImageComplete info){
-        if(info.result.type == ImageCacher.Type.APK) {
+    public void onEventMainThread(EventBusType.CacheImageComplete info) {
+        if (info.result.type == ImageCacher.Type.APK) {
             mAdapter.updateCover(info.result.filePath, info.result.coverPath);
         }
     }
 
-    public void onEventMainThread(EventBusType.UpdateSharedFiles info){
-        if(mType == GlobalParams.SCAN_MODE) {
+    public void onEventMainThread(EventBusType.UpdateSharedFiles info) {
+        if (mType == GlobalParams.SCAN_MODE) {
             setData();
         }
     }
 
-    public void onEventMainThread(EventBusType.UpdateDownloadFile info){
-        if(mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
+    public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
+        if (mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
                 || info.getOper() == GlobalParams.DownloadOper.ADD)) {
-            Log.d("ooo","just change tag");
+            Log.d("ooo", "just change tag");
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -166,11 +156,11 @@ public class ShareApkFragment extends MediaFragment {
     /**
      * 更新目标机器上共享的apk文件
      */
-    private void setData(){
+    private void setData() {
         HLog.d("RECCY", "---------------------in music fragment,  to update----------------------");
         SharedCollection collection = ShareApplication.getInstance().getDestAllSharedFiles(mIP);
         getData();
-        if(collection != null && mAdapter != null){
+        if (collection != null && mAdapter != null) {
             HLog.d("RECCY", "---------------------real to update----------------------");
             List<ApkItem> list = collection.getApkList();
             mAdapter.setData(list);

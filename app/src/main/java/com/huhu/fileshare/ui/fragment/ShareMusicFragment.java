@@ -1,18 +1,10 @@
 package com.huhu.fileshare.ui.fragment;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
@@ -22,7 +14,6 @@ import com.huhu.fileshare.ui.adapter.MusicAdapter;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
-import com.huhu.fileshare.util.HLog;
 
 import java.util.List;
 
@@ -58,23 +49,15 @@ public class ShareMusicFragment extends MediaFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_share_mediafiles, container, false);
-        mListView = (ListView)view.findViewById(R.id.listview);
-        mAdapter = new MusicAdapter(mContext,mType);
+        mListView = (ListView) view.findViewById(R.id.listview);
+        mAdapter = new MusicAdapter(mContext, mType);
         mListView.setAdapter(mAdapter);
-        if(mType == GlobalParams.SHOW_MODE) {
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mAdapter.handleClick(position);
-                }
-            });
-        }
 
-       initEmptyView(view,"音乐");
+        initEmptyView(view, "音乐");
 
-        if(mType == GlobalParams.SHOW_MODE) {
+        if (mType == GlobalParams.SHOW_MODE) {
             FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.AUDIO);
-        }else {
+        } else {
             setData();
         }
         return view;
@@ -86,37 +69,33 @@ public class ShareMusicFragment extends MediaFragment {
     }
 
 
-    public void onEventMainThread(EventBusType.ShareMusicInfo info){
-        HLog.d("SHARECCY", "--------------:got data (GlobalParams.ShareType.AUDIO) ");
+    public void onEventMainThread(EventBusType.ShareMusicInfo info) {
         getData();
         mAdapter.setData(info.getData());
     }
 
-    public void onEventMainThread(EventBusType.ClearShared info){
+    public void onEventMainThread(EventBusType.ClearShared info) {
         mAdapter.updateSelectFiles();
     }
 
-    public void onEventMainThread(EventBusType.UpdateSharedFiles info){
-        if(mType == GlobalParams.SCAN_MODE) {
+    public void onEventMainThread(EventBusType.UpdateSharedFiles info) {
+        if (mType == GlobalParams.SCAN_MODE) {
             setData();
         }
     }
 
-    public void onEventMainThread(EventBusType.UpdateDownloadFile info){
-        if(mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
+    public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
+        if (mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
                 || info.getOper() == GlobalParams.DownloadOper.ADD)) {
-            Log.d("ooo","just change tag");
             mAdapter.notifyDataSetChanged();
         }
     }
 
-    private void setData(){
-        HLog.d("RECCY", "---------------------in music fragment,  to update----------------------");
+    private void setData() {
         SharedCollection collection = ShareApplication.getInstance().getDestAllSharedFiles(mIP);
         getData();
-        if(collection != null && mAdapter != null){
-            HLog.d("RECCY", "---------------------real to update----------------------");
+        if (collection != null && mAdapter != null) {
             List<MusicItem> list = collection.getMusicList();
             mAdapter.setData(list);
         }

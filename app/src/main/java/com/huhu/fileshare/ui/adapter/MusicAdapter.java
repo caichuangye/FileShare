@@ -6,6 +6,7 @@ import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,7 +38,7 @@ public class MusicAdapter extends FileBaseAdapter<MusicItem> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if(convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(R.layout.file_item_layout,null);
@@ -45,7 +46,7 @@ public class MusicAdapter extends FileBaseAdapter<MusicItem> {
             holder.coverImageView = (ImageView)convertView.findViewById(R.id.file_cover);
             holder.titleTextView = (TextView)convertView.findViewById(R.id.file_name);
             holder.artistTextView = (TextView)convertView.findViewById(R.id.file_info1);
-            holder.selectedImageView = (ImageView) convertView.findViewById(R.id.file_selected);
+            holder.selectedCheckbox = (CheckBox) convertView.findViewById(R.id.file_selected);
             holder.sizeTextView = (TextView)convertView.findViewById(R.id.file_info2);
             holder.downloadTextView = (DownloadIcon) convertView.findViewById(R.id.file_download);
             convertView.setTag(holder);
@@ -62,12 +63,19 @@ public class MusicAdapter extends FileBaseAdapter<MusicItem> {
         DisplayImageOptions options =  new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(15)).build();
         ImageLoader.getInstance().displayImage(uri,holder.coverImageView,options);
 
+        holder.selectedCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleClick(position);
+            }
+        });
+
         holder.titleTextView.setText(item.getShowName());
         holder.artistTextView.setText(item.getArtist());
         holder.sizeTextView.setText(Formatter.formatFileSize(mContext, item.getSize()));
 
         if (mMode == GlobalParams.SCAN_MODE) {
-            holder.selectedImageView.setVisibility(View.GONE);
+            holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadTextView.setVisibility(View.VISIBLE);
             DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());
             if(status != null) {
@@ -79,8 +87,9 @@ public class MusicAdapter extends FileBaseAdapter<MusicItem> {
                 holder.downloadTextView.setOnClickListener(listener);
             }
         }else{
+            holder.selectedCheckbox.setVisibility(View.VISIBLE);
             holder.downloadTextView.setVisibility(View.GONE);
-            holder.selectedImageView.setVisibility(item.isSelected()?View.VISIBLE:View.GONE);
+            holder.selectedCheckbox.setChecked(item.isSelected());
         }
 
         return convertView;
@@ -92,7 +101,7 @@ public class MusicAdapter extends FileBaseAdapter<MusicItem> {
         TextView titleTextView;
         TextView artistTextView;
         DownloadIcon downloadTextView;
-        ImageView selectedImageView;
+        CheckBox selectedCheckbox;
         TextView sizeTextView;
     }
 }

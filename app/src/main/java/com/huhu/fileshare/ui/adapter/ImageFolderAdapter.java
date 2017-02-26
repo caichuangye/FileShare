@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,7 +40,7 @@ public class ImageFolderAdapter extends FileBaseAdapter<ImageFolderItem> {
             holder.image = (ImageView)convertView.findViewById(R.id.image);
             holder.folderInfoTextView = (TextView)convertView.findViewById(R.id.folder_info);
             holder.downloadTextView = (DownloadIcon)convertView.findViewById(R.id.download_icon);
-            holder.selectedImage = (ImageView)convertView.findViewById(R.id.selected_icon);
+            holder.selectedCheckbox = (CheckBox) convertView.findViewById(R.id.selected_icon);
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder)convertView.getTag();
@@ -49,7 +50,7 @@ public class ImageFolderAdapter extends FileBaseAdapter<ImageFolderItem> {
         ImageLoader.getInstance().displayImage("file://" + item.getCoverImagePath(), holder.image,
                 new ImageSize((int) mContext.getResources().getDimension(R.dimen.huhu_174_dp),
                         (int) mContext.getResources().getDimension(R.dimen.huhu_174_dp)));
-        holder.selectedImage.setVisibility(View.GONE);
+        holder.selectedCheckbox.setVisibility(View.GONE);
         holder.downloadTextView.setVisibility(View.GONE);
         return convertView;
     }
@@ -62,7 +63,7 @@ public class ImageFolderAdapter extends FileBaseAdapter<ImageFolderItem> {
         ImageView image;
         TextView folderInfoTextView;
         DownloadIcon downloadTextView;
-        ImageView selectedImage;
+        CheckBox selectedCheckbox;
     }
 
 }

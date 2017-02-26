@@ -43,8 +43,6 @@ public class FileQueryHelper {
 
     private List<ImageItem> mAllImagesList;
 
-    private Map<CommonFileItem.FileType,Bitmap> mSpecialCover;
-
     private List<MusicItem> mMusicList;
 
     private List<VideoItem> mVideoList;
@@ -174,14 +172,9 @@ public class FileQueryHelper {
             long count = map.get(str);
             String coverPath = null;
             for(String p : coverList){
-                HLog.d("ccyf","file = "+p+" folder = "+str);
-            //    if(p.startsWith(str)){
                 if(CommonUtil.isDirectFolder(p,str)){
-                    HLog.d("ccyf","true");
                     coverPath = p;
                     break;
-                }else{
-                    HLog.d("ccyf","false");
                 }
             }
             ImageFolderItem folderItem = new ImageFolderItem(coverPath,folderName,count);
@@ -219,35 +212,6 @@ public class FileQueryHelper {
         }
         cur.close();
         return album_art;
-    }
-
-
-    public Bitmap getSpecialFileCover(CommonFileItem.FileType type){
-        if(mSpecialCover == null){
-            mSpecialCover = new HashMap<>();
-        }
-        Bitmap bitmap = mSpecialCover.get(type);
-        if(bitmap == null){
-            String str = type.getTypeString().toUpperCase();
-            int color = Color.argb(255,135,206,235);
-            int w = (int)mContext.getResources().getDimension(R.dimen.huhu_50_dp);
-            int h = w;
-
-            Bitmap tmp = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
-            Canvas canvas = new Canvas(tmp);
-            canvas.drawColor(color);
-
-            Paint paint = new Paint();
-            paint.setTextSize(mContext.getResources().getDimension(R.dimen.huhu_20_sp));
-            Rect rect = new Rect();
-            paint.getTextBounds(str, 0, str.length(), rect);
-
-            paint.setColor(mContext.getResources().getColor(R.color.title_color));
-            canvas.drawText(str, w / 2 - rect.width() / 2, h / 2 + rect.height() / 2, paint);
-            bitmap = CommonUtil.roundBitmap(tmp,w/10,h/10);
-            mSpecialCover.put(type, bitmap);
-        }
-        return bitmap;
     }
 
 

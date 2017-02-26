@@ -7,8 +7,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/huhu_60_dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
 
         <ImageView
             android:id="@+id/type_icon"
@@ -21,45 +21,45 @@
 
         <TextView
             android:id="@+id/date"
-            android:layout_marginStart="140dp"
-            android:gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_57"
-            android:layout_marginBottom="8dp"
             android:layout_alignParentBottom="true"
-            android:singleLine="true"
-            android:textSize="10sp"
-            tools:text="2016-10-22"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="20dp"
-           android:layout_alignParentEnd="true"/>
+            android:layout_marginStart="140dp"
+            android:gravity="end"
+            android:singleLine="true"
+            android:textColor="@color/black_57"
+            android:textSize="10sp"
+            tools:text="2016-10-22" />
 
 
         <TextView
             android:id="@+id/file_owner"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:gravity="left"
-            android:layout_marginLeft="1dp"
-            android:textColor="@color/black_57"
-            android:textSize="10sp"
-            tools:text="huhu"
             android:layout_alignBaseline="@+id/file_from_label"
             android:layout_alignBottom="@+id/file_from_label"
-            android:layout_toEndOf="@+id/file_from_label" />
+            android:layout_marginLeft="1dp"
+            android:layout_toEndOf="@+id/file_from_label"
+            android:gravity="left"
+            android:textColor="@color/black_57"
+            android:textSize="10sp"
+            tools:text="huhu" />
 
 
         <TextView
             android:id="@+id/file_size"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="12dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="20dp"
-            android:gravity="end"
             android:layout_width="45dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_57"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="12dp"
+            android:gravity="end"
             android:maxLines="1"
+            android:textColor="@color/black_57"
             android:textSize="10sp"
             tools:text="34MB" />
 
@@ -67,55 +67,50 @@
             android:id="@+id/file_name"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_87"
             android:layout_marginLeft="@dimen/huhu_10_dp"
-            android:maxLines="1"
-            android:textSize="@dimen/huhu_12_sp"
-            tools:text="tonight i feel close to you"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
-            android:layout_toEndOf="@id/type_icon" />
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/type_icon"
+            android:maxLines="1"
+            android:textColor="@color/black_87"
+            android:textSize="@dimen/huhu_12_sp"
+            tools:text="tonight i feel close to you" />
 
         <TextView
             android:id="@+id/file_from_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="left"
-            android:layout_marginLeft="@dimen/huhu_10_dp"
-            android:textColor="@color/black_57"
-            android:textSize="10sp"
-            android:text="来自于："
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="8dp"
-            android:layout_toEndOf="@id/type_icon" />
+            android:layout_marginLeft="@dimen/huhu_10_dp"
+            android:layout_toEndOf="@id/type_icon"
+            android:gravity="left"
+            android:text="来自于："
+            android:textColor="@color/black_57"
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/progress_label"
-            android:layout_marginStart="19dp"
-            android:gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_57"
-            android:singleLine="true"
-            android:textSize="10sp"
-            tools:text="67%"
-            android:layout_marginBottom="8dp"
             android:layout_alignParentBottom="true"
-            android:layout_toEndOf="@+id/file_owner" />
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="19dp"
+            android:layout_toEndOf="@+id/file_owner"
+            android:gravity="end"
+            android:singleLine="true"
+            android:textColor="@color/black_57"
+            android:textSize="10sp"
+            tools:text="67%" />
 
-        <RelativeLayout
-            android:visibility="visible"
-            android:id="@+id/delete"
+
+        <CheckBox
+            android:id="@+id/deleteCheckbox"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentEnd="true"
-            android:layout_width="60dp"
-            android:layout_height="60dp">
-            <ImageView
-                android:id="@+id/deleteImageView"
-                android:layout_centerInParent="true"
-                android:src="@mipmap/unselect"
-                android:layout_width="20dp"
-                android:layout_height="20dp" />
-        </RelativeLayout>
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp" />
 
 
     </RelativeLayout>

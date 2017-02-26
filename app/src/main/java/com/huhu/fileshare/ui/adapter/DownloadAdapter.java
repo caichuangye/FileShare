@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -17,6 +18,7 @@ import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.HLog;
 import com.huhu.fileshare.util.SystemSetting;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -168,8 +170,8 @@ public class DownloadAdapter extends BaseAdapter {
                 itemHolder.sizeTextView = (TextView) convertView.findViewById(R.id.file_size);
                 itemHolder.dateTextView = (TextView) convertView.findViewById(R.id.date);
                 itemHolder.progressLabelTextView = (TextView) convertView.findViewById(R.id.progress_label);
-                itemHolder.deleteLayout = (RelativeLayout) convertView.findViewById(R.id.delete);
-                itemHolder.deleteImageView = (ImageView) convertView.findViewById(R.id.deleteImageView);
+          //      itemHolder.deleteLayout = (RelativeLayout) convertView.findViewById(R.id.delete);
+                itemHolder.deleteCheckBox = (CheckBox) convertView.findViewById(R.id.deleteCheckbox);
                 convertView.setTag(itemHolder);
             } else {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.title_layout, null);
@@ -188,7 +190,6 @@ public class DownloadAdapter extends BaseAdapter {
             ImageLoader.getInstance().displayImage("drawable://" + getCoverId(GlobalParams.ShareType.getType(item.getFileType())),
                     itemHolder.imageView, options);
             if(item.getFileType().equals(GlobalParams.ShareType.APK.toString())){
-                Log.d("cctype","show name: "+item.getDestName());
                 itemHolder.nameTextView.setText(item.getDestName()+".apk");
             }else {
                 String name = item.getFromPath().substring(item.getFromPath().lastIndexOf("/") + 1);
@@ -199,20 +200,22 @@ public class DownloadAdapter extends BaseAdapter {
             itemHolder.sizeTextView.setText(info);
             itemHolder.dateTextView.setText(item.getStartTime().substring(5));
 
-            int resID = mSelectedList.contains(item.getUUID()) ? R.mipmap.select : R.mipmap.unselect;
-            itemHolder.deleteImageView.setImageDrawable(mContext.getDrawable(resID));
+            itemHolder.deleteCheckBox.setChecked(mSelectedList.contains(item.getUUID()));
 
-            final ImageView imageView = itemHolder.deleteImageView;
-            itemHolder.deleteLayout.setOnClickListener(new View.OnClickListener() {
+            final CheckBox checkBox = itemHolder.deleteCheckBox;
+         //   itemHolder.deleteLayout.setOnClickListener(new View.OnClickListener() {
+            itemHolder.deleteCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mSelectedList.contains(item.getUUID())) {
                         mSelectedList.remove(item.getUUID());
-                        imageView.setImageDrawable(mContext.getDrawable(R.mipmap.unselect));
+                        checkBox.setChecked(false);
+                        HLog.d("ccdelete","contains, has = "+mSelectedList.size());
                         mListener.onHasSelected(mSelectedList.size() > 0);
                     } else {
+                        HLog.d("ccdelete","not contains, add, has = true");
                         mSelectedList.add(item.getUUID());
-                        imageView.setImageDrawable(mContext.getDrawable(R.mipmap.select));
+                        checkBox.setChecked(true);
                         mListener.onHasSelected(true);
                     }
                 }
@@ -221,11 +224,11 @@ public class DownloadAdapter extends BaseAdapter {
             if (mShowDeleteIcon) {
                 itemHolder.sizeTextView.setVisibility(View.GONE);
                 itemHolder.dateTextView.setVisibility(View.GONE);
-                itemHolder.deleteLayout.setVisibility(View.VISIBLE);
+                itemHolder.deleteCheckBox.setVisibility(View.VISIBLE);
             } else {
                 itemHolder.sizeTextView.setVisibility(View.VISIBLE);
                 itemHolder.dateTextView.setVisibility(View.VISIBLE);
-                itemHolder.deleteLayout.setVisibility(View.GONE);
+                itemHolder.deleteCheckBox.setVisibility(View.GONE);
             }
             Log.d("crecv","name = "+item.getToPath()+", recv = "+item.getRecvSize());
             if (item.getStatus() != DownloadStatus.SUCCESSED) {
@@ -447,8 +450,8 @@ public class DownloadAdapter extends BaseAdapter {
         TextView sizeTextView;
 //        ProgressBar progressBar;
         TextView progressLabelTextView;
-        RelativeLayout deleteLayout;
-        ImageView deleteImageView;
+  //      RelativeLayout deleteLayout;
+        CheckBox deleteCheckBox;
     }
 
     private class TitleViewHolder {

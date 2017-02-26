@@ -58,14 +58,6 @@ public class ShareVideoFragment extends MediaFragment {
         mListView = (ListView) view.findViewById(R.id.listview);
         mAdapter = new VideoAdapter(mContext, mType);
         mListView.setAdapter(mAdapter);
-        if (mType == GlobalParams.SHOW_MODE) {
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mAdapter.handleClick(position);
-                }
-            });
-        }
 
         initEmptyView(view, "视频");
 

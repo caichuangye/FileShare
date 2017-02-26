@@ -51,7 +51,7 @@ public abstract class FileBaseAdapter<T extends BaseItem> extends BaseAdapter {
     public final void updateSelectFiles(){
         List<String> list = ((ShareApplication)mContext.getApplicationContext()).
                 getSharedFileByType(getSharedType());
-        if(list == null){
+        if(list == null || list.size() == 0){
             for(T t : mDataList){
                 t.setSelected(false);
             }

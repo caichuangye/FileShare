@@ -5,6 +5,7 @@ import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,7 +47,7 @@ public class ImageAdapter extends FileBaseAdapter<ImageItem> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if(convertView == null){
             holder = new ViewHolder();
@@ -55,7 +56,7 @@ public class ImageAdapter extends FileBaseAdapter<ImageItem> {
             holder.folderInfoTextView = (TextView)convertView.findViewById(R.id.folder_info);
             holder.dateTextView = (TextView)convertView.findViewById(R.id.image_date);
             holder.coverView = convertView.findViewById(R.id.selected_cover);
-            holder.selectedImageView = (ImageView)convertView.findViewById(R.id.selected_icon);
+            holder.selectedCheckbox = (CheckBox)convertView.findViewById(R.id.selected_icon);
             holder.downloadTextView = (DownloadIcon) convertView.findViewById(R.id.download_icon);
             convertView.setTag(holder);
         }else{
@@ -69,8 +70,15 @@ public class ImageAdapter extends FileBaseAdapter<ImageItem> {
         holder.dateTextView.setVisibility(View.VISIBLE);
         holder.coverView.setVisibility(item.isSelected() ? View.VISIBLE : View.GONE);
 
+        holder.selectedCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleClick(position);
+            }
+        });
+
         if (mMode == GlobalParams.SCAN_MODE) {
-            holder.selectedImageView.setVisibility(View.GONE);
+            holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadTextView.setVisibility(View.VISIBLE);
             DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());
             if(status != null) {
@@ -82,8 +90,9 @@ public class ImageAdapter extends FileBaseAdapter<ImageItem> {
                 holder.downloadTextView.setOnClickListener(listener);
             }
         }else{
+            holder.selectedCheckbox.setVisibility(View.VISIBLE);
             holder.downloadTextView.setVisibility(View.GONE);
-            holder.selectedImageView.setVisibility(item.isSelected()?View.VISIBLE:View.GONE);
+            holder.selectedCheckbox.setChecked(item.isSelected());
         }
 
         return convertView;
@@ -94,7 +103,7 @@ public class ImageAdapter extends FileBaseAdapter<ImageItem> {
         TextView folderInfoTextView;
         TextView dateTextView;
         View coverView;
-        ImageView selectedImageView;
+        CheckBox selectedCheckbox;
         DownloadIcon downloadTextView;
     }
 }

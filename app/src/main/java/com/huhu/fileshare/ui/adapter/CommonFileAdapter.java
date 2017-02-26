@@ -6,18 +6,17 @@ import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
-import com.huhu.fileshare.model.ApkItem;
-import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.model.CommonFileItem;
+import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.ui.view.DownloadIcon;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
-import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.ImageCacher;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -53,7 +52,7 @@ public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(final int position, View convertView, ViewGroup parent){
         ViewHolder holder;
         if(convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(R.layout.file_item_layout,null);
@@ -62,7 +61,7 @@ public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
             holder.titleTextView = (TextView)convertView.findViewById(R.id.file_name);
             holder.typeTextView = (TextView)convertView.findViewById(R.id.file_info1);
             holder.sizeTextView = (TextView)convertView.findViewById(R.id.file_info2);
-            holder.selectedImageView = (ImageView) convertView.findViewById(R.id.file_selected);
+            holder.selectedCheckbox = (CheckBox) convertView.findViewById(R.id.file_selected);
             holder.downloadTextView = (DownloadIcon) convertView.findViewById(R.id.file_download);
             convertView.setTag(holder);
         }else{
@@ -70,7 +69,6 @@ public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
         }
         CommonFileItem item = mDataList.get(position);
 
-      //  holder.coverImageView.setImageBitmap(FileQueryHelper.getInstance(mContext).getSpecialFileCover(item.getType()));
         if(TextUtils.isEmpty(item.getCoverBitMap())) {
             item.setCoverBitMap(ImageCacher.getInstance().getCoverPath(item.getType().toString(), ImageCacher.Type.COMMON_FILE));
         }
@@ -80,14 +78,19 @@ public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
                 .build();
         ImageLoader.getInstance().displayImage("file://"+item.getCoverBitMap(),holder.coverImageView,options);
 
-
+        holder.selectedCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleClick(position);
+            }
+        });
 
         holder.titleTextView.setText(item.getShowName());
         holder.typeTextView.setText(item.getType().getTypeString());
         holder.sizeTextView.setText(Formatter.formatFileSize(mContext, item.getSize()));
 
         if (mMode == GlobalParams.SCAN_MODE) {
-            holder.selectedImageView.setVisibility(View.GONE);
+            holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadTextView.setVisibility(View.VISIBLE);
             DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());
             if(status != null) {
@@ -99,8 +102,9 @@ public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
                 holder.downloadTextView.setOnClickListener(listener);
             }
         }else{
+            holder.selectedCheckbox.setVisibility(View.VISIBLE);
             holder.downloadTextView.setVisibility(View.GONE);
-            holder.selectedImageView.setVisibility(item.isSelected()?View.VISIBLE:View.GONE);
+            holder.selectedCheckbox.setChecked(item.isSelected());
         }
 
         return convertView;
@@ -111,7 +115,7 @@ public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
         TextView titleTextView;
         TextView typeTextView;
         DownloadIcon downloadTextView;
-        ImageView selectedImageView;
+        CheckBox selectedCheckbox;
         TextView sizeTextView;
     }
 }

@@ -1,26 +1,22 @@
 package com.huhu.fileshare.ui.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.ImageItem;
-import com.huhu.fileshare.model.MusicItem;
 import com.huhu.fileshare.model.SharedCollection;
 import com.huhu.fileshare.ui.adapter.ImageAdapter;
 import com.huhu.fileshare.util.CommonUtil;
@@ -29,7 +25,6 @@ import com.huhu.fileshare.util.GlobalParams;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -100,22 +95,7 @@ public class ShareImagesFragment extends BaseFragment {
             mGridView.setEmptyView(textView);
             setData();
         }
-        if(mType == GlobalParams.SHOW_MODE) {
-            mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mAdapter.handleClick(position);
-                }
-            });
-        }
         return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
