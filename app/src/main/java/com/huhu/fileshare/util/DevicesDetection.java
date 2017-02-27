@@ -146,11 +146,11 @@ public class DevicesDetection {
 
     private void parseMessage(byte[] data, String ip) {
 
-        HLog.d(TAG, "===================================");
-        HLog.d(TAG, "parse: name = " + CommonUtil.parseUserName(data));
-        HLog.d(TAG, "parse: icon = " + CommonUtil.parseIconIndex(data));
-        HLog.d(TAG, "parse: has = " + CommonUtil.parseHasSharedFiles(data));
-        HLog.d(TAG, "parse: refresh = " + CommonUtil.parseNeedRefresh(data));
+//        HLog.d(TAG, "===================================");
+//        HLog.d(TAG, "parse: name = " + CommonUtil.parseUserName(data));
+//        HLog.d(TAG, "parse: icon = " + CommonUtil.parseIconIndex(data));
+//        HLog.d(TAG, "parse: has = " + CommonUtil.parseHasSharedFiles(data));
+//        HLog.d(TAG, "parse: refresh = " + CommonUtil.parseNeedRefresh(data));
 
         long now = System.currentTimeMillis();
         boolean isSame = false;
@@ -158,7 +158,7 @@ public class DevicesDetection {
         boolean refresh = CommonUtil.parseNeedRefresh(data);
         int index = CommonUtil.parseIconIndex(data);
         String name = CommonUtil.parseUserName(data);
-        DeviceItem item = new DeviceItem(index, name, ip, has, refresh, now);
+        DeviceItem item = new DeviceItem(index, name, ip, has, refresh, now,data[1]);
         List<String> tmp = new ArrayList<>();
         synchronized (DevicesDetection.class) {
             for (DeviceItem devicesItem : mDevicesList) {
@@ -168,6 +168,7 @@ public class DevicesDetection {
                     devicesItem.setIconIndex(index);
                     devicesItem.setUserName(name);
                     devicesItem.setRefresh(refresh);
+                    devicesItem.setSharedType(data[1]);
                     isSame = true;
                 } else {
                     if (now - devicesItem.getTimeStamp() > 1500) {

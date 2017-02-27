@@ -45,6 +45,25 @@ public class SharedCollection {
 
     public List<ApkItem> getApkList(){return mApkList; }
 
+    public byte getSharedType(){
+        byte b = 0x00;
+        if(mImagesList.size() > 0){
+            b |= 0x01;
+        }
+        if(mMusicList.size() > 0){
+            b |= 0x02;
+        }
+        if(mVideoList.size() > 0){
+            b |= 0x04;
+        }
+        if(mApkList.size() > 0){
+            b |= 0x08;
+        }
+        if(mCommonFileList.size() > 0){
+            b |= 0x10;
+        }
+        return b;
+    }
 
     public void clear(){
         mMusicList.clear();

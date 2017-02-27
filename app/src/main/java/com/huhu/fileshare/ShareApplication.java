@@ -268,6 +268,10 @@ public class ShareApplication extends Application {
     }
 
 
+    public byte getSharedType(){
+        return mSharedCollection.getSharedType();
+    }
+
     /**
      * 获取所有共享资源的json字符串
      */

@@ -115,17 +115,18 @@ public class CommonUtil {
         b |= iconIndex;
         String name = SystemSetting.getInstance(context).getUserNickName();
         byte[] tmp = name.getBytes();
-        byte[] data = new byte[tmp.length+1];
+        byte[] data = new byte[tmp.length+2];
         data[0] = b;
+        data[1] = shareApplication.getSharedType();
         for(int i = 0 ; i < tmp.length; i++){
-            data[i+1] = tmp[i];
+            data[i+2] = tmp[i];
         }
         return data;
     }
 
     public static String parseUserName(byte[] data){
         if(data != null){
-            return new String(data,1,data.length-1);
+            return new String(data,2,data.length-2);
         }
         return null;
     }
@@ -146,6 +147,33 @@ public class CommonUtil {
         b &= 0x80;
         return b != 0;
     }
+
+    public static boolean parseHasImages(byte data){
+        data &= 0x01;
+        return data != 0;
+    }
+
+    public static boolean parseHasMusics(byte data){
+        data &= 0x02;
+        return data != 0;
+    }
+
+    public static boolean parseHasVideos(byte data){
+        data &= 0x04;
+        return data != 0;
+    }
+
+    public static boolean parseHasApks(byte data){
+        data &= 0x08;
+        return data != 0;
+    }
+
+    public static boolean parseHascommonFiles(byte data){
+        data &= 0x10;
+        return data != 0;
+    }
+
+
 
     public static Bitmap roundBitmap(Bitmap src,int rx, int ry){
         int w = src.getWidth();

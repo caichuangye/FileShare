@@ -18,7 +18,9 @@ public class DeviceItem {
 
     private boolean mIsScanning;
 
-    public DeviceItem(int index,String name,String ip,boolean has,boolean refresh,long time){
+    private byte mSharedType;
+
+    public DeviceItem(int index,String name,String ip,boolean has,boolean refresh,long time,byte type){
         mIconIndex = index;
         mUserName = name;
         mIP = ip;
@@ -26,6 +28,15 @@ public class DeviceItem {
         mTimeStamp = time;
         mNeedRefresh = refresh;
         mIsScanning = false;
+        mSharedType = type;
+    }
+
+    public byte getSharedType(){
+        return mSharedType;
+    }
+
+    public void setSharedType(byte flag){
+        mSharedType = flag;
     }
 
     public int getIconIndex() {

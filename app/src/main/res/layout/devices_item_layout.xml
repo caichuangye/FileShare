@@ -29,7 +29,7 @@
             android:id="@+id/user_ip"
             android:layout_marginBottom="@dimen/huhu_8_dp"
             android:layout_marginLeft="@dimen/huhu_10_dp"
-            android:textColor="@color/black_57"
+            android:textColor="@color/title_color"
             android:textSize="12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

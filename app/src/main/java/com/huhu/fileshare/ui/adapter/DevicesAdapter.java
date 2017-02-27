@@ -1,6 +1,7 @@
 package com.huhu.fileshare.ui.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,7 @@ import android.widget.TextView;
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.DeviceItem;
-import com.huhu.fileshare.util.ComClient;
-import com.huhu.fileshare.util.GlobalParams;
-import com.huhu.fileshare.util.HLog;
+import com.huhu.fileshare.util.CommonUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,9 +85,34 @@ public class DevicesAdapter extends BaseAdapter {
         DeviceItem item = mDataList.get(position);
         viewHolder.iconImageView.setImageResource(((ShareApplication) mContext.getApplicationContext()).getUserIconList()[item.getIconIndex()]);
         viewHolder.nameTextView.setText(mDataList.get(position).getUserName());
-        viewHolder.ipTextView.setText(mDataList.get(position).getIP());
+        viewHolder.ipTextView.setText(getShardDesc(mDataList.get(position).getSharedType()));
         viewHolder.hasSharedImageView.setVisibility(mDataList.get(position).hasShared()? View.VISIBLE:View.INVISIBLE);
         return convertView;
+    }
+
+    private String getShardDesc(byte flag){
+        String desc = "";
+        if(CommonUtil.parseHasImages(flag)){
+            desc += "图片|";
+        }
+        if(CommonUtil.parseHasMusics(flag)){
+            desc += "音乐|";
+        }
+        if(CommonUtil.parseHasVideos(flag)){
+            desc += "视频|";
+        }
+        if(CommonUtil.parseHasApks(flag)){
+            desc += "应用|";
+        }
+        if(CommonUtil.parseHascommonFiles(flag)){
+            desc += "文件|";
+        }
+        if(!TextUtils.isEmpty(desc)){
+            desc = desc.substring(0,desc.length()-1);
+        }else{
+            desc = "暂无共享";
+        }
+        return desc;
     }
 
     private class ViewHolder{
