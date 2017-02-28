@@ -1,6 +1,10 @@
 package com.huhu.fileshare.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,15 +17,18 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
+import com.huhu.fileshare.model.ApkItem;
 import com.huhu.fileshare.model.ImageFolderItem;
 import com.huhu.fileshare.model.ImageItem;
 import com.huhu.fileshare.model.MusicItem;
 import com.huhu.fileshare.model.CommonFileItem;
 import com.huhu.fileshare.model.VideoItem;
 
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,13 +36,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static android.content.pm.PackageManager.GET_UNINSTALLED_PACKAGES;
 
 /**
  * Created by Administrator on 2016/4/12.
  */
 public class FileQueryHelper {
-
-    private Handler mHandler;
 
     private static FileQueryHelper sInstance;
 
@@ -43,10 +53,7 @@ public class FileQueryHelper {
 
     private List<ImageItem> mAllImagesList;
 
-    private List<MusicItem> mMusicList;
-
-    private List<VideoItem> mVideoList;
-
+    private Executor mThreadPool;
 
     public static FileQueryHelper getInstance(Context context){
         if(sInstance == null){
@@ -61,19 +68,26 @@ public class FileQueryHelper {
 
     private FileQueryHelper(Context context){
         mContext = context;
-        HandlerThread thread = new HandlerThread("scan1");
-        thread.start();
-        mHandler = new Handler(thread.getLooper());
+        mThreadPool = Executors.newFixedThreadPool(5);
     }
 
     public void scanFileByType(final GlobalParams.ShareType type){
-        mHandler.post(new Runnable() {
+
+        mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 Uri uri = buildUri(type);
                 if(uri != null){
-                    Cursor cursor = mContext.getContentResolver().query(uri,null,null,null,null);
+                    String order = null;
+                    if(type == GlobalParams.ShareType.AUDIO){
+                        order =  MediaStore.Audio.Media.DEFAULT_SORT_ORDER+" asc";
+                    }else if(type == GlobalParams.ShareType.VIDEO){
+                        order =  MediaStore.Video.Media.DEFAULT_SORT_ORDER+" desc";
+                    }
+                    Cursor cursor = mContext.getContentResolver().query(uri,null,null,null,order);
                     buildResultList(type,cursor);
+                }else if(type == GlobalParams.ShareType.APK){
+                    parseInstalledApp();
                 }
             }
         });
@@ -99,13 +113,36 @@ public class FileQueryHelper {
         return uri;
     }
 
+
+    private void parseInstalledApp(){
+        PackageManager packageManager = mContext.getPackageManager();
+        List<ApplicationInfo> list = packageManager.getInstalledApplications(GET_UNINSTALLED_PACKAGES);
+        if (list != null) {
+            for (ApplicationInfo info : list) {
+                String path = info.sourceDir;
+                if (!TextUtils.isEmpty(path) && path.startsWith("/data/app")) {
+                    String name = String.valueOf(info.loadLabel(packageManager));
+                    try {
+                        FileInputStream inputStream = new FileInputStream(path);
+                        long size = inputStream.available();
+                        PackageInfo pi = packageManager.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
+                        final ApkItem item = new ApkItem(name, path, size, false, null, pi.versionName);
+                        ImageCacher.getInstance().cacheDrawable(path, info.loadIcon(packageManager), ImageCacher.Type.APK);
+                        EventBus.getDefault().post(new EventBusType.ShareApkInfo(item));
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+            ImageCacher.getInstance().exit();
+        }
+    }
+
     private void buildResultList(GlobalParams.ShareType type,Cursor cursor){
         int titleIndex = cursor.getColumnIndex(MediaStore.Video.Media.TITLE);
         int pathIndex = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
         int sizeIndex = cursor.getColumnIndex(MediaStore.Audio.Media.SIZE);
         if(type == GlobalParams.ShareType.AUDIO){
-            if(mMusicList == null) {
-                mMusicList  = new ArrayList<>();
                 if (cursor != null) {
                     while (cursor.moveToNext()) {
                         int albumIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
@@ -113,24 +150,19 @@ public class FileQueryHelper {
                         int artistIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
                         MusicItem item = new MusicItem(cursor.getString(titleIndex), cursor.getString(pathIndex),
                                 cursor.getLong(sizeIndex), false, url, cursor.getString(artistIndex));
-                        mMusicList.add(item);
+                        EventBus.getDefault().post(new EventBusType.ShareMusicInfo(item));
                     }
                 }
-            }
-            EventBus.getDefault().post(new EventBusType.ShareMusicInfo(mMusicList));
         }else if(type == GlobalParams.ShareType.VIDEO){
-            if(mVideoList == null) {
-                mVideoList = new ArrayList<>();
                 if (cursor != null) {
                     while (cursor.moveToNext()) {
                         int durationIndex = cursor.getColumnIndex(MediaStore.Video.Media.DURATION);
                         VideoItem item = new VideoItem(cursor.getString(titleIndex), cursor.getString(pathIndex),
                                 cursor.getLong(sizeIndex), false, null, cursor.getLong(durationIndex));
-                        mVideoList.add(item);
+                        EventBus.getDefault().post(new EventBusType.ShareVideoInfo(item));
                     }
-                }
             }
-            EventBus.getDefault().post(new EventBusType.ShareVideoInfo(mVideoList));
+
         }else if(type == GlobalParams.ShareType.IMAGE){
             if(mAllImagesList == null) {
                 mAllImagesList = new ArrayList<>();

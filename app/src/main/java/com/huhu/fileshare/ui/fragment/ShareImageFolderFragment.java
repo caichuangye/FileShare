@@ -49,6 +49,7 @@ public class ShareImageFolderFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAdapter = new ImageFolderAdapter(mContext);
     }
 
     @Override
@@ -56,7 +57,6 @@ public class ShareImageFolderFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_share_image_folder, container, false);
         mGridView = (GridView)view.findViewById(R.id.gridview);
-        mAdapter = new ImageFolderAdapter(mContext);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -72,8 +72,9 @@ public class ShareImageFolderFragment extends BaseFragment {
         });
 
         initEmptyView(view,"图片");
-
-        FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.IMAGE);
+      //  if(mAdapter.getCount() == 0) {
+            FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.IMAGE);
+     //   }
         return view;
     }
 

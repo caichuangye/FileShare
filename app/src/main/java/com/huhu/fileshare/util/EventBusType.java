@@ -1,5 +1,6 @@
 package com.huhu.fileshare.util;
 
+import com.huhu.fileshare.model.ApkItem;
 import com.huhu.fileshare.model.BaseItem;
 import com.huhu.fileshare.model.DeviceItem;
 import com.huhu.fileshare.model.DownloadItem;
@@ -115,13 +116,29 @@ public class EventBusType {
      *
      */
     public static class ShareMusicInfo{
-        private List<MusicItem> mData;
 
-        public ShareMusicInfo(List<MusicItem> items){
-            mData = items;
+        private MusicItem mSingleData;
+
+        public ShareMusicInfo(MusicItem item){
+            mSingleData = item;
         }
 
-        public List<MusicItem> getData(){
+        public MusicItem getData(){
+            return mSingleData;
+        }
+    }
+
+    /**
+     *
+     */
+    public static class ShareApkInfo{
+        private ApkItem mData;
+
+        public ShareApkInfo(ApkItem item){
+            mData = item;
+        }
+
+        public ApkItem getData(){
             return mData;
         }
     }
@@ -130,13 +147,13 @@ public class EventBusType {
      *
      */
     public static class ShareVideoInfo{
-        private List<VideoItem> mData;
+        private VideoItem mData;
 
-        public ShareVideoInfo(List<VideoItem> items){
-            mData = items;
+        public ShareVideoInfo(VideoItem item){
+            mData = item;
         }
 
-        public List<VideoItem> getData(){
+        public VideoItem getData(){
             return mData;
         }
     }
@@ -171,6 +188,7 @@ public class EventBusType {
             return mData;
         }
     }
+
 
     /**
      *

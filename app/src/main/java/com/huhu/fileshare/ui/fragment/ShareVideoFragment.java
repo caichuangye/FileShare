@@ -49,6 +49,7 @@ public class ShareVideoFragment extends MediaFragment {
             mType = getArguments().getInt(TYPE);
             mIP = getArguments().getString(IP);
         }
+        mAdapter = new VideoAdapter(mContext, mType);
     }
 
     @Override
@@ -56,12 +57,11 @@ public class ShareVideoFragment extends MediaFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_share_mediafiles, container, false);
         mListView = (ListView) view.findViewById(R.id.listview);
-        mAdapter = new VideoAdapter(mContext, mType);
         mListView.setAdapter(mAdapter);
 
         initEmptyView(view, "视频");
 
-        if (mType == GlobalParams.SHOW_MODE) {
+        if (mType == GlobalParams.SHOW_MODE && mAdapter.getCount() == 0) {
             FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.VIDEO);
         } else {
             setData();
@@ -90,11 +90,9 @@ public class ShareVideoFragment extends MediaFragment {
 
     public void onEventMainThread(EventBusType.ShareVideoInfo info){
         getData();
-        List<VideoItem> list = info.getData();
-        for(VideoItem item : list){
-            ImageCacher.getInstance().cacheVideo(item.getPath(),150,150);
-        }
-        mAdapter.setData(list);
+        VideoItem item = info.getData();
+        ImageCacher.getInstance().cacheVideo(item.getPath(),150,150);
+        mAdapter.addItem(item);
     }
 
     public void onEventMainThread(EventBusType.ClearShared info){

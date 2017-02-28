@@ -39,9 +39,11 @@ public class ScanSharedFilesActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_sdcard);
+        int index = 0;
         if(getIntent() != null){
             mIP = getIntent().getStringExtra("IP");
             mOwner = getIntent().getStringExtra("USER_NAME");
+            index = getIntent().getIntExtra("INDEX",0);
             initToolbar(mOwner,mIP);
         }else {
             initToolbar(null,null);
@@ -52,6 +54,7 @@ public class ScanSharedFilesActivity extends BaseActivity {
         mAdapter = new ScanSharedViewPagerAdapter(getSupportFragmentManager(),mIP);
         mViewPager.setAdapter(mAdapter);
         mTabs.setViewPager(mViewPager);
+        mViewPager.setCurrentItem(index);
     }
 
     @Override

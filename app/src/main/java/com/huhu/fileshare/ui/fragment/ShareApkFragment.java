@@ -1,18 +1,12 @@
 package com.huhu.fileshare.ui.fragment;
 
-import android.app.Activity;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.huhu.fileshare.R;
@@ -20,25 +14,19 @@ import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.ApkItem;
 import com.huhu.fileshare.model.SharedCollection;
 import com.huhu.fileshare.ui.adapter.ApkAdapter;
-import com.huhu.fileshare.util.ImageCacher;
 import com.huhu.fileshare.util.EventBusType;
+import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
+import com.huhu.fileshare.util.ImageCacher;
 
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.pm.PackageManager.GET_UNINSTALLED_PACKAGES;
 
 
 public class ShareApkFragment extends MediaFragment {
 
     private ApkAdapter mAdapter;
-
-    private List<ApkItem> mApkList;
-
-    private Handler mWorkHandler;
 
     public static ShareApkFragment newInstance(int type, String data) {
         ShareApkFragment fragment = new ShareApkFragment();
@@ -61,6 +49,7 @@ public class ShareApkFragment extends MediaFragment {
             mType = getArguments().getInt(TYPE);
             mIP = getArguments().getString(IP);
         }
+        mAdapter = new ApkAdapter(mContext, mType);
     }
 
     @Override
@@ -69,17 +58,12 @@ public class ShareApkFragment extends MediaFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_share_mediafiles, container, false);
         mListView = (ListView) view.findViewById(R.id.listview);
-        mAdapter = new ApkAdapter(mContext, mType);
         mListView.setAdapter(mAdapter);
 
         initEmptyView(view, "应用");
 
-        HandlerThread thread = new HandlerThread("getapp");
-        thread.start();
-        mWorkHandler = new Handler(thread.getLooper());
-        mApkList = new ArrayList<>();
-        if (mType == GlobalParams.SHOW_MODE) {
-            queryAllApks();
+        if (mType == GlobalParams.SHOW_MODE && mAdapter.getCount() == 0) {
+            FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.APK);
         } else {
             setData();
         }
@@ -92,39 +76,9 @@ public class ShareApkFragment extends MediaFragment {
     }
 
 
-    private void queryAllApks() {
-        mWorkHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                PackageManager packageManager = mContext.getPackageManager();
-                List<ApplicationInfo> list = packageManager.getInstalledApplications(GET_UNINSTALLED_PACKAGES);
-                if (list != null) {
-                    for (ApplicationInfo info : list) {
-                        String path = info.sourceDir;
-                        if (!TextUtils.isEmpty(path) && path.startsWith("/data/app")) {
-                            String name = String.valueOf(info.loadLabel(packageManager));
-                            try {
-                                FileInputStream inputStream = new FileInputStream(path);
-                                long size = inputStream.available();
-                                PackageInfo pi = packageManager.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
-                                final ApkItem item = new ApkItem(name, path, size, false, null, pi.versionName);
-                                ImageCacher.getInstance().cacheDrawable(path, info.loadIcon(packageManager), ImageCacher.Type.APK);
-                                ((Activity) mContext).runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        getData();
-                                        mAdapter.addItem(item);
-                                    }
-                                });
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    }
-                    ImageCacher.getInstance().exit();
-                }
-            }
-        });
+    public void onEventMainThread(EventBusType.ShareApkInfo info) {
+        getData();
+        mAdapter.addItem(info.getData());
     }
 
 

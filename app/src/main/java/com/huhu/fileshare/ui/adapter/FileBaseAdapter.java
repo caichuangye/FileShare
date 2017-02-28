@@ -10,6 +10,7 @@ import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.BaseItem;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.HLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,23 @@ public abstract class FileBaseAdapter<T extends BaseItem> extends BaseAdapter {
                 mDataList.add(t);
             }
         }
+        notifyDataSetChanged();
+    }
+
+    public  void addItem(T item) {
+        for(T t : mDataList){
+            if(t.getPath().equals(item.getPath())){
+                return;
+            }
+        }
+        List<String> selectedList = ((ShareApplication) mContext.getApplicationContext()).
+                getSharedFileByType(getSharedType());
+        if (selectedList != null && selectedList.contains(item.getPath())) {
+            item.setSelected(true);
+        } else {
+            item.setSelected(false);
+        }
+        mDataList.add(item);
         notifyDataSetChanged();
     }
 

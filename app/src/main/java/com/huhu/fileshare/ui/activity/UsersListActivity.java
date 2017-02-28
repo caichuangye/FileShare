@@ -53,6 +53,7 @@ public class UsersListActivity extends BaseActivity {
                     Intent intent = new Intent(UsersListActivity.this, ScanSharedFilesActivity.class);
                     intent.putExtra("USER_NAME", mUserName);
                     intent.putExtra("IP", mSelectedIP);
+                    intent.putExtra("INDEX",mAdapter.getFirstSharedFileIndex(position));
                     startActivity(intent);
                     ComClient.getInstance(mSelectedIP).sendMessage(GlobalParams.REQUEST_SHARED_FILES);
                     Log.d("shareinfo","client send REQUEST_SHARED_FILES");

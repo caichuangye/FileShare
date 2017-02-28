@@ -14,6 +14,7 @@ import com.huhu.fileshare.ui.adapter.MusicAdapter;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.HLog;
 
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class ShareMusicFragment extends MediaFragment {
             mType = getArguments().getInt(TYPE);
             mIP = getArguments().getString(IP);
         }
+        mAdapter = new MusicAdapter(mContext, mType);
     }
 
     @Override
@@ -50,12 +52,10 @@ public class ShareMusicFragment extends MediaFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_share_mediafiles, container, false);
         mListView = (ListView) view.findViewById(R.id.listview);
-        mAdapter = new MusicAdapter(mContext, mType);
         mListView.setAdapter(mAdapter);
-
         initEmptyView(view, "音乐");
-
-        if (mType == GlobalParams.SHOW_MODE) {
+        if (mType == GlobalParams.SHOW_MODE && mAdapter.getCount() == 0) {
+            HLog.d("ccload","start audio: "+System.currentTimeMillis());
             FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.AUDIO);
         } else {
             setData();
@@ -71,7 +71,7 @@ public class ShareMusicFragment extends MediaFragment {
 
     public void onEventMainThread(EventBusType.ShareMusicInfo info) {
         getData();
-        mAdapter.setData(info.getData());
+        mAdapter.addItem(info.getData());
     }
 
     public void onEventMainThread(EventBusType.ClearShared info) {

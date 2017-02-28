@@ -115,6 +115,26 @@ public class DevicesAdapter extends BaseAdapter {
         return desc;
     }
 
+    public int getFirstSharedFileIndex(int pos){
+        byte flag = mDataList.get(pos).getSharedType();
+        if(CommonUtil.parseHasImages(flag)){
+            return 0;
+        }
+        if(CommonUtil.parseHasMusics(flag)){
+            return 1;
+        }
+        if(CommonUtil.parseHasVideos(flag)){
+            return 2;
+        }
+        if(CommonUtil.parseHasApks(flag)){
+            return 3;
+        }
+        if(CommonUtil.parseHascommonFiles(flag)){
+            return 4;
+        }
+        return 0;
+    }
+
     private class ViewHolder{
         ImageView iconImageView;
         TextView nameTextView;
