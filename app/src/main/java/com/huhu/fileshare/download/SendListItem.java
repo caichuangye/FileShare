@@ -21,9 +21,6 @@ public class SendListItem extends TransferItem<DownloadItem>{
         mSocket = socket;
         if(list != null && list.size() > 0) {
             mSourceFileList.addAll(list);
-            for(DownloadItem i : list){
-                Log.d("testt","-----: "+i.getFromPath());
-            }
         }
     }
 
@@ -45,14 +42,7 @@ public class SendListItem extends TransferItem<DownloadItem>{
 
     @Override
     protected void out(){
-        if(mSourceFileList == null){
-            Log.d("transfer-s", "getFile.out: ---------send list is null---------");
-        }else {
-            Log.d("transfer-s", "getFile.out: ---------" + mIndex + "---------");
-            for (int i = 0; i < mSourceFileList.size(); i++) {
-                Log.d("transfer-s", i+": "+mSourceFileList.get(i).getFromPath());
-            }
-        }
+
     }
 
     @Override

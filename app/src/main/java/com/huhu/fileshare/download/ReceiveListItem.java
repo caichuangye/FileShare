@@ -40,11 +40,11 @@ public class ReceiveListItem extends TransferItem<DownloadItem>{
     @Override
     protected void out(){
         if(mSourceFileList == null){
-            Log.d("transfer-c", "getFile.out: ---------send list is null---------");
+      //      Log.d("transfer-c", "getFile.out: ---------send list is null---------");
         }else {
-            Log.d("transfer-c", "getFile.out: ---------" + mIndex + "---------");
+      //      Log.d("transfer-c", "getFile.out: ---------" + mIndex + "---------");
             for (int i = 0; i < mSourceFileList.size(); i++) {
-                Log.d("transfer-c", i+": "+mSourceFileList.get(i).getFromPath());
+            //    Log.d("transfer-c", i+": "+mSourceFileList.get(i).getFromPath());
             }
         }
     }

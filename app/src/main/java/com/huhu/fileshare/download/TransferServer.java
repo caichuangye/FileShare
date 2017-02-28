@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.DownloadItem;
+import com.huhu.fileshare.util.HLog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +27,7 @@ import java.util.concurrent.Executors;
  * Created by caichuangye on 2017-01-16.
  */
 
-public class TransferServer implements Runnable {
+public class TransferServer {
 
     public static String TAG = TransferServer.class.getSimpleName();
 
@@ -54,8 +55,7 @@ public class TransferServer implements Runnable {
     private TransferServer(Context context) {
         mContext = context;
         mQuit = false;
-            mWorkThreadPool = Executors.newCachedThreadPool();
-      //  mWorkThreadPool = Executors.newFixedThreadPool(5);
+        mWorkThreadPool = Executors.newCachedThreadPool();
         mSendMap = new ConcurrentHashMap<>();
     }
 
@@ -64,126 +64,12 @@ public class TransferServer implements Runnable {
      */
     public void startServer(int port) {
         mPort = port;
-        mWorkThreadPool.execute(this);
         initServerSocket();
     }
 
-    private void initServerSocket() {
-        try {
-            mServerSocket = new ServerSocket(mPort);
-            mWorkThreadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    while (true) {
-                        if (mQuit == true) {
-                            break;
-                        }
-                        try {
-                            Log.d(TAG, "server waiting...");
-                            Socket socket = mServerSocket.accept();
-                            String destIP = socket.getInetAddress().getHostAddress();
-                            List<DownloadItem> list = getSendFilesByIP(destIP);
-
-                            if(list == null){
-                                int times = 3;
-                                while (times > 0){
-                                    list = getSendFilesByIP(destIP);
-                                    if(list != null){
-                                        break;
-                                    }else{
-                                        times--;
-                                        try {
-                                            Thread.sleep(150);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
-                            }
-
-                            if(list != null) {
-                                Log.d(TAG, "get connect, ip = " + destIP + ", request file size = " + list.size());
-                            }else{
-                                Log.e(TAG, "get connect, ip = " + destIP + ", request file size = 0, it's wrong!");
-                            }
-                            SendListItem listItem = mSendMap.get(destIP);
-                            if(listItem == null) {
-                                mSendMap.put(destIP, new SendListItem(socket, list));
-                            }else{
-                                listItem.appendFilesList(list);
-                                mSendMap.put(destIP,listItem);
-                            }
-
-                        } catch (IOException e) {
-                        //    Log.e(TAG, "accept rr: " + e.getMessage());
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            Log.e(TAG, e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
-
-    }
-
-
-    @Override
-    public void run() {
-        while (true) {
-                if (mQuit == true) {
-                    Log.d(TAG,"quit server");
-                    break;
-            }
-//                Log.d(TAG,"map size = "+mSendMap.size()+": "+ Thread.currentThread().getName());
-            try {
-                for (Map.Entry<String, SendListItem> entry : mSendMap.entrySet()) {
-                    SendListItem info = entry.getValue();
-                    if (!info.isHandleOver()) {
-                     //   info.setHandle();
-                        Log.d(TAG, "---begin send " + entry.getKey());
-                        handleConnection(entry.getValue());
-                    } else {
-                    //    Log.d(TAG, entry.getKey() + " handle over");
-                    }
-                }
-                Thread.sleep(1000);
-            } catch (Exception e) {
-                Log.e(TAG, "iter error: " + e.getMessage());
-                e.printStackTrace();
-            }
-
-        }
-    }
 
     private List<DownloadItem> getSendFilesByIP(String ip) {
         return ShareApplication.getInstance().getSendList(ip);
-    }
-
-    private void handleConnection(final SendListItem info) {
-        mWorkThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                sendFilesList(info);
-            }
-        });
-    }
-
-    private void sendFilesList(SendListItem info) {
-        if (info != null && info.getSocket() != null) {
-            while (true) {
-                DownloadItem item = info.getFile();
-                if (item == null) {
-                    break;
-                } else {
-                    Log.d("transfer-s", "send: " + item.getFromPath());
-                    sendFile(item.getFromPath(), info.getSocket());
-                }
-            }
-        }
     }
 
     private boolean sendFile(String path, Socket socket) {
@@ -191,6 +77,8 @@ public class TransferServer implements Runnable {
             Log.e(TAG, "socket is closed, can not send file");
             return false;
         }
+        long start = System.currentTimeMillis();
+        long size = 0;
         boolean res = false;
         File file = new File(path);
         if (!file.exists()) {
@@ -202,7 +90,7 @@ public class TransferServer implements Runnable {
         Log.d(TAG, "start send: " + path);
         try {
             inputStream = new FileInputStream(file);
-            long size = file.length();
+            size = file.length();
             long offset = 0;
             int length = 1024 * 4;
             outputStream = socket.getOutputStream();
@@ -214,7 +102,6 @@ public class TransferServer implements Runnable {
                 int tmp = inputStream.read(bytes, 0, length);
                 outputStream.write(bytes, 0, tmp);
                 offset += tmp;
-            //    Log.d(TAG,path+": "+size+", tmp = "+tmp+", offset = "+offset);
             }
             res = true;
             Log.d(TAG, "end send: " + path);
@@ -225,11 +112,17 @@ public class TransferServer implements Runnable {
         } finally {
             try {
                 outputStream.flush();
+                outputStream.close();
                 inputStream.close();
+                socket.close();
             } catch (Exception e) {
 
             }
         }
+        long consume = System.currentTimeMillis() - start;
+        float rate = size/consume;
+        rate = rate*(1000/1024f);
+        HLog.d(TAG,"rate = "+rate+"KB/s"+", size = "+size+", time = "+consume);
         return res;
     }
 
@@ -270,6 +163,65 @@ public class TransferServer implements Runnable {
         if (info != null && list != null) {
             info.deleteFileList(list);
             mSendMap.put(ip, info);
+        }
+    }
+
+    private int mCurrentIndex = 0;
+
+    private void initServerSocket() {
+        try {
+            mServerSocket = new ServerSocket(mPort);
+            mWorkThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        if (mQuit == true) {
+                            break;
+                        }
+                        try {
+                            Log.d(TAG, "server waiting...");
+                            final Socket socket = mServerSocket.accept();
+                            Log.d(TAG, "socket = " + socket.toString());
+                            String destIP = socket.getInetAddress().getHostAddress();
+                            List<DownloadItem> list = getSendFilesByIP(destIP);
+
+                            if (list == null) {
+                                int times = 3;
+                                while (times > 0) {
+                                    list = getSendFilesByIP(destIP);
+                                    if (list != null) {
+                                        break;
+                                    } else {
+                                        times--;
+                                        try {
+                                            Thread.sleep(150);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+
+                            final String path = list.get(mCurrentIndex++).getFromPath();
+
+                            mWorkThreadPool.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sendFile(path, socket);
+                                }
+                            });
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
         }
     }
 
