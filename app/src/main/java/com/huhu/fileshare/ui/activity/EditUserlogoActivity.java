@@ -72,6 +72,7 @@ public class EditUserlogoActivity extends BaseActivity {
         mIconIndex = SystemSetting.getInstance(this).getUserIconIndex();
         final ChangeUserIconAdapter adapter = new ChangeUserIconAdapter(this);
         mIconGridView.setAdapter(adapter);
+        adapter.setSelectedIndex(mIconIndex);
         mIconGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

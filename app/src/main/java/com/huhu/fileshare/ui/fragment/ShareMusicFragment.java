@@ -55,7 +55,6 @@ public class ShareMusicFragment extends MediaFragment {
         mListView.setAdapter(mAdapter);
         initEmptyView(view, "音乐");
         if (mType == GlobalParams.SHOW_MODE && mAdapter.getCount() == 0) {
-            HLog.d("ccload","start audio: "+System.currentTimeMillis());
             FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.AUDIO);
         } else {
             setData();

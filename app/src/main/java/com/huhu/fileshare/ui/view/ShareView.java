@@ -49,7 +49,7 @@ public class ShareView extends View implements Runnable {
     @Override
     public void run() {
         postInvalidate();
-        mWorkHandler.postDelayed(this, mRefreshInternal);
+      //  mWorkHandler.postDelayed(this, mRefreshInternal);
     }
 
     @Override

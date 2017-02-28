@@ -64,10 +64,10 @@
         <CheckBox
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="20dp"
             android:id="@+id/file_selected"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+
 
         <com.huhu.fileshare.ui.view.DownloadIcon
             android:id="@+id/file_download"
