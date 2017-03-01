@@ -28,8 +28,8 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
  */
 public class MusicAdapter extends FileBaseAdapter<MusicItem> {
 
-    public MusicAdapter(Context context,int mode){
-        super(context,mode);
+    public MusicAdapter(Context context, int mode) {
+        super(context, mode);
     }
 
     @Override
@@ -40,28 +40,28 @@ public class MusicAdapter extends FileBaseAdapter<MusicItem> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        if(convertView == null){
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.file_item_layout,null);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.file_item_layout, null);
             holder = new ViewHolder();
-            holder.coverImageView = (ImageView)convertView.findViewById(R.id.file_cover);
-            holder.titleTextView = (TextView)convertView.findViewById(R.id.file_name);
-            holder.artistTextView = (TextView)convertView.findViewById(R.id.file_info1);
+            holder.coverImageView = (ImageView) convertView.findViewById(R.id.file_cover);
+            holder.titleTextView = (TextView) convertView.findViewById(R.id.file_name);
+            holder.artistTextView = (TextView) convertView.findViewById(R.id.file_info1);
             holder.selectedCheckbox = (CheckBox) convertView.findViewById(R.id.file_selected);
-            holder.sizeTextView = (TextView)convertView.findViewById(R.id.file_info2);
+            holder.sizeTextView = (TextView) convertView.findViewById(R.id.file_info2);
             holder.downloadTextView = (DownloadIcon) convertView.findViewById(R.id.file_download);
             convertView.setTag(holder);
-        }else{
-            holder = (ViewHolder)convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
         MusicItem item = mDataList.get(position);
         String uri = null;
-        if(!TextUtils.isEmpty(item.getCoverBitMap())) {
-            uri = "file://"+item.getCoverBitMap();
-        }else{
-            uri = "drawable://"+R.mipmap.mp3;
+        if (!TextUtils.isEmpty(item.getCoverBitMap())) {
+            uri = "file://" + item.getCoverBitMap();
+        } else {
+            uri = "drawable://" + R.mipmap.mp3;
         }
-        DisplayImageOptions options =  new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(15)).build();
-        ImageLoader.getInstance().displayImage(uri,holder.coverImageView,options);
+        DisplayImageOptions options = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(15)).build();
+        ImageLoader.getInstance().displayImage(uri, holder.coverImageView, options);
 
         holder.selectedCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,15 +78,13 @@ public class MusicAdapter extends FileBaseAdapter<MusicItem> {
             holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadTextView.setVisibility(View.VISIBLE);
             DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());
-            if(status != null) {
+            if (status != null) {
                 holder.downloadTextView.setStatus(CommonUtil.getStatus(status));
             }
-            if(holder.downloadTextView.getStatus() == DownloadIcon.Status.INIT) {
-                EventBusType.SharedFileInfo info = new EventBusType.SharedFileInfo(item, getSharedType(), true);
-                DownLoadListener listener = new DownLoadListener(info);
-                holder.downloadTextView.setOnClickListener(listener);
-            }
-        }else{
+            EventBusType.SharedFileInfo info = new EventBusType.SharedFileInfo(item, getSharedType(), true);
+            DownLoadListener listener = new DownLoadListener(info);
+            holder.downloadTextView.setOnClickListener(listener);
+        } else {
             holder.selectedCheckbox.setVisibility(View.VISIBLE);
             holder.downloadTextView.setVisibility(View.GONE);
             holder.selectedCheckbox.setChecked(item.isSelected());
@@ -96,7 +94,7 @@ public class MusicAdapter extends FileBaseAdapter<MusicItem> {
     }
 
 
-    private class ViewHolder{
+    private class ViewHolder {
         ImageView coverImageView;
         TextView titleTextView;
         TextView artistTextView;

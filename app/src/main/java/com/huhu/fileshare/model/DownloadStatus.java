@@ -5,10 +5,10 @@ package com.huhu.fileshare.model;
  */
 
 public enum  DownloadStatus {
+    INIT("init"),
     WAIT("wait"),
     DOWNLOADING("downloading"),
     PAUSED("paused"),
-    REMOVED("removed"),
     SUCCESSED("successed");
 
     private String mStatus;

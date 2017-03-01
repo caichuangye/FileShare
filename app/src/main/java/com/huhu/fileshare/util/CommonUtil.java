@@ -202,7 +202,9 @@ public class CommonUtil {
     }
 
     public static DownloadIcon.Status getStatus(DownloadStatus status){
-        if(status == DownloadStatus.WAIT){
+        if(status == DownloadStatus.INIT){
+            return DownloadIcon.Status.INIT;
+        }else if(status == DownloadStatus.WAIT){
             return DownloadIcon.Status.WAIT;
         }else if(status == DownloadStatus.DOWNLOADING){
             return DownloadIcon.Status.DOWNLOADING;

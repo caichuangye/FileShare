@@ -110,7 +110,6 @@ public class DownloadAdapter extends BaseAdapter {
                 mDataList.get(i).setRecvSize(item.getRecvSize());
                 mDataList.get(i).setStatus(item.getStatus());
                 mDataList.get(i).setEndTime(item.getEndTime());
-                Log.d("crecv","total = "+item.getTotalSize()+", recv = "+item.getRecvSize()+", per = "+100*item.getRecvSize()/item.getTotalSize());
                 break;
             }
         }
@@ -170,7 +169,6 @@ public class DownloadAdapter extends BaseAdapter {
                 itemHolder.sizeTextView = (TextView) convertView.findViewById(R.id.file_size);
                 itemHolder.dateTextView = (TextView) convertView.findViewById(R.id.date);
                 itemHolder.progressLabelTextView = (TextView) convertView.findViewById(R.id.progress_label);
-          //      itemHolder.deleteLayout = (RelativeLayout) convertView.findViewById(R.id.delete);
                 itemHolder.deleteCheckBox = (CheckBox) convertView.findViewById(R.id.deleteCheckbox);
                 convertView.setTag(itemHolder);
             } else {
@@ -203,7 +201,6 @@ public class DownloadAdapter extends BaseAdapter {
             itemHolder.deleteCheckBox.setChecked(mSelectedList.contains(item.getUUID()));
 
             final CheckBox checkBox = itemHolder.deleteCheckBox;
-         //   itemHolder.deleteLayout.setOnClickListener(new View.OnClickListener() {
             itemHolder.deleteCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -230,7 +227,6 @@ public class DownloadAdapter extends BaseAdapter {
                 itemHolder.dateTextView.setVisibility(View.VISIBLE);
                 itemHolder.deleteCheckBox.setVisibility(View.GONE);
             }
-            Log.d("crecv","name = "+item.getToPath()+", recv = "+item.getRecvSize());
             if (item.getStatus() != DownloadStatus.SUCCESSED) {
                 if(item.getRecvSize() > 0) {
                     int progress = (int) (item.getRecvSize() * 100 / item.getTotalSize());
@@ -279,6 +275,9 @@ public class DownloadAdapter extends BaseAdapter {
 
     public void setGroup(final CommonUtil.Flag flag) {
         mFlag = flag;
+        if(mDataList.size() == 0){
+            return;
+        }
         Iterator<ItemImpl> iterator = mDataList.iterator();
         //删除之前添加的标题项
         while (iterator.hasNext()) {
@@ -436,10 +435,12 @@ public class DownloadAdapter extends BaseAdapter {
                 }
             }
         }
-        ItemImpl firstTitle = ItemImpl.get(mDataList.get(0));
-        firstTitle.setIsTitle(true);
-        mDataList.add(0, firstTitle);
-        notifyDataSetChanged();
+        if(mDataList.size() > 0) {
+            ItemImpl firstTitle = ItemImpl.get(mDataList.get(0));
+            firstTitle.setIsTitle(true);
+            mDataList.add(0, firstTitle);
+            notifyDataSetChanged();
+        }
     }
 
     private class ItemViewHolder {
@@ -448,9 +449,7 @@ public class DownloadAdapter extends BaseAdapter {
         TextView ownerTextView;
         TextView dateTextView;
         TextView sizeTextView;
-//        ProgressBar progressBar;
         TextView progressLabelTextView;
-  //      RelativeLayout deleteLayout;
         CheckBox deleteCheckBox;
     }
 

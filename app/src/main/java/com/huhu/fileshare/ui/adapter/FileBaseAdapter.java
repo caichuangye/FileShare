@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.BaseItem;
+import com.huhu.fileshare.model.DownloadStatus;
+import com.huhu.fileshare.ui.view.DownloadIcon;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
@@ -126,7 +128,10 @@ public abstract class FileBaseAdapter<T extends BaseItem> extends BaseAdapter {
 
         @Override
         public void onClick(View v){
-            ShareApplication.getInstance().tellServerRequestFiles(mInfo);
+            BaseItem item = (BaseItem)mInfo.getData();
+            if(ShareApplication.getInstance().getFileDownloadStatus(item.getPath()) == DownloadStatus.INIT) {
+                ShareApplication.getInstance().tellServerRequestFiles(mInfo);
+            }
         }
 
     }

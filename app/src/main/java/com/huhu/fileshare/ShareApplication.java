@@ -410,7 +410,7 @@ public class ShareApplication extends Application {
 
     public DownloadStatus getFileDownloadStatus(String path){
         DownloadItem item = mRequestCollection.getItemByPath(path);
-        return item != null? item.getStatus() : null;
+        return item != null? item.getStatus() : DownloadStatus.INIT;
     }
 
     public void updateDownloadItem(final String uuid, final long total, final long recv) {
