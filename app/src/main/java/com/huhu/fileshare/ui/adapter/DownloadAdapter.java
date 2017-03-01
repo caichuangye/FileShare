@@ -289,7 +289,7 @@ public class DownloadAdapter extends BaseAdapter {
             Collections.sort(mDataList, new Comparator<ItemImpl>() {
                 @Override
                 public int compare(ItemImpl o1, ItemImpl o2) {
-                    return o2.getDate().compareTo(o1.getDate());
+                    return o2.getStartTime().compareTo(o1.getStartTime());
                 }
             });
             out("3");

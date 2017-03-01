@@ -95,12 +95,6 @@ public class DownloadService extends Service{
             TransferClient.getInstance().requestFiles(item,ip);
         }
 
-//        @Override
-//        public void addDownloadItem(DownloadItem item)
-//                throws RemoteException {
-//
-//        }
-
         @Override
         public void deleteDownloadItem(String uuid) throws RemoteException {
             DownloadItem item = new DownloadItem();

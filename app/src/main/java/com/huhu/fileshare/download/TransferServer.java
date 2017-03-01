@@ -202,14 +202,18 @@ public class TransferServer {
                                 }
                             }
 
-                            final String path = list.get(mCurrentIndex++).getFromPath();
+                            if(mCurrentIndex < list.size()) {
+                                final String path = list.get(mCurrentIndex++).getFromPath();
 
-                            mWorkThreadPool.execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    sendFile(path, socket);
-                                }
-                            });
+                                mWorkThreadPool.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        sendFile(path, socket);
+                                    }
+                                });
+                            }else{
+                                HLog.e(TAG,"------------------send sequence go wrong, index out of range!-------------------------");
+                            }
 
                         } catch (IOException e) {
                             e.printStackTrace();
