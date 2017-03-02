@@ -55,10 +55,10 @@ public class FileQueryHelper {
 
     private Executor mThreadPool;
 
-    public static FileQueryHelper getInstance(Context context){
-        if(sInstance == null){
-            synchronized (FileQueryHelper.class){
-                if(sInstance == null){
+    public static FileQueryHelper getInstance(Context context) {
+        if (sInstance == null) {
+            synchronized (FileQueryHelper.class) {
+                if (sInstance == null) {
                     sInstance = new FileQueryHelper(context);
                 }
             }
@@ -66,27 +66,27 @@ public class FileQueryHelper {
         return sInstance;
     }
 
-    private FileQueryHelper(Context context){
+    private FileQueryHelper(Context context) {
         mContext = context;
         mThreadPool = Executors.newFixedThreadPool(5);
     }
 
-    public void scanFileByType(final GlobalParams.ShareType type){
+    public void scanFileByType(final GlobalParams.ShareType type) {
 
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
                 Uri uri = buildUri(type);
-                if(uri != null){
+                if (uri != null) {
                     String order = null;
-                    if(type == GlobalParams.ShareType.AUDIO){
-                        order =  MediaStore.Audio.Media.DEFAULT_SORT_ORDER+" asc";
-                    }else if(type == GlobalParams.ShareType.VIDEO){
-                        order =  MediaStore.Video.Media.DEFAULT_SORT_ORDER+" desc";
+                    if (type == GlobalParams.ShareType.AUDIO) {
+                        order = MediaStore.Audio.Media.DEFAULT_SORT_ORDER + " asc";
+                    } else if (type == GlobalParams.ShareType.VIDEO) {
+                        order = MediaStore.Video.Media.DEFAULT_SORT_ORDER + " desc";
                     }
-                    Cursor cursor = mContext.getContentResolver().query(uri,null,null,null,order);
-                    buildResultList(type,cursor);
-                }else if(type == GlobalParams.ShareType.APK){
+                    Cursor cursor = mContext.getContentResolver().query(uri, null, null, null, order);
+                    buildResultList(type, cursor);
+                } else if (type == GlobalParams.ShareType.APK) {
                     parseInstalledApp();
                 }
             }
@@ -94,9 +94,9 @@ public class FileQueryHelper {
 
     }
 
-    private Uri buildUri(GlobalParams.ShareType type){
+    private Uri buildUri(GlobalParams.ShareType type) {
         Uri uri = null;
-        switch (type){
+        switch (type) {
             case IMAGE:
                 uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 break;
@@ -114,7 +114,7 @@ public class FileQueryHelper {
     }
 
 
-    private void parseInstalledApp(){
+    private void parseInstalledApp() {
         PackageManager packageManager = mContext.getPackageManager();
         List<ApplicationInfo> list = packageManager.getInstalledApplications(GET_UNINSTALLED_PACKAGES);
         if (list != null) {
@@ -138,102 +138,100 @@ public class FileQueryHelper {
         }
     }
 
-    private void buildResultList(GlobalParams.ShareType type,Cursor cursor){
+    private void buildResultList(GlobalParams.ShareType type, Cursor cursor) {
+        if (cursor == null || cursor.getCount() == 0) {
+            EventBus.getDefault().post(new EventBusType.NoLocalFiles(type));
+            return;
+        }
         int titleIndex = cursor.getColumnIndex(MediaStore.Video.Media.TITLE);
         int pathIndex = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
         int sizeIndex = cursor.getColumnIndex(MediaStore.Audio.Media.SIZE);
-        if(type == GlobalParams.ShareType.AUDIO){
-                if (cursor != null) {
-                    while (cursor.moveToNext()) {
-                        int albumIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
-                        String url = getAlbumArt(cursor.getInt(albumIndex));
-                        int artistIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-                        MusicItem item = new MusicItem(cursor.getString(titleIndex), cursor.getString(pathIndex),
-                                cursor.getLong(sizeIndex), false, url, cursor.getString(artistIndex));
-                        EventBus.getDefault().post(new EventBusType.ShareMusicInfo(item));
-                    }
-                }
-        }else if(type == GlobalParams.ShareType.VIDEO){
-                if (cursor != null) {
-                    while (cursor.moveToNext()) {
-                        int durationIndex = cursor.getColumnIndex(MediaStore.Video.Media.DURATION);
-                        VideoItem item = new VideoItem(cursor.getString(titleIndex), cursor.getString(pathIndex),
-                                cursor.getLong(sizeIndex), false, null, cursor.getLong(durationIndex));
-                        EventBus.getDefault().post(new EventBusType.ShareVideoInfo(item));
-                    }
+        if (type == GlobalParams.ShareType.AUDIO) {
+            while (cursor.moveToNext()) {
+                int albumIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
+                String url = getAlbumArt(cursor.getInt(albumIndex));
+                int artistIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
+                MusicItem item = new MusicItem(cursor.getString(titleIndex), cursor.getString(pathIndex),
+                        cursor.getLong(sizeIndex), false, url, cursor.getString(artistIndex));
+                EventBus.getDefault().post(new EventBusType.ShareMusicInfo(item));
+            }
+        } else if (type == GlobalParams.ShareType.VIDEO) {
+            while (cursor.moveToNext()) {
+                int durationIndex = cursor.getColumnIndex(MediaStore.Video.Media.DURATION);
+                VideoItem item = new VideoItem(cursor.getString(titleIndex), cursor.getString(pathIndex),
+                        cursor.getLong(sizeIndex), false, null, cursor.getLong(durationIndex));
+                EventBus.getDefault().post(new EventBusType.ShareVideoInfo(item));
             }
 
-        }else if(type == GlobalParams.ShareType.IMAGE){
-            if(mAllImagesList == null) {
+        } else if (type == GlobalParams.ShareType.IMAGE) {
+            if (mAllImagesList == null) {
                 mAllImagesList = new ArrayList<>();
-                if (cursor != null) {
-                    while (cursor.moveToNext()) {
-                        int dateIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
-                        SimpleDateFormat sDateFormat = new SimpleDateFormat("yy-MM-dd");
-                        String d = sDateFormat.format(new Date(cursor.getLong(dateIndex) * 1000));
-                        String path = cursor.getString(pathIndex);
-                        ImageItem item = new ImageItem(cursor.getString(titleIndex), path,
-                                cursor.getLong(sizeIndex), false, null, d);
-                        mAllImagesList.add(item);
-                    }
+                while (cursor.moveToNext()) {
+                    int dateIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
+                    SimpleDateFormat sDateFormat = new SimpleDateFormat("yy-MM-dd");
+                    String d = sDateFormat.format(new Date(cursor.getLong(dateIndex) * 1000));
+                    String path = cursor.getString(pathIndex);
+                    ImageItem item = new ImageItem(cursor.getString(titleIndex), path,
+                            cursor.getLong(sizeIndex), false, null, d);
+                    mAllImagesList.add(item);
                 }
             }
             EventBus.getDefault().post(new EventBusType.ShareImageFolderInfo(convert(mAllImagesList)));
         }
     }
 
-    private List<ImageFolderItem> convert(final List<ImageItem> imageList){
+    private List<ImageFolderItem> convert(final List<ImageItem> imageList) {
         List<ImageFolderItem> folderList = new ArrayList<>();
-        Map<String,Long> map = new HashMap<>();
+        Map<String, Long> map = new HashMap<>();
         List<String> coverList = new ArrayList<>();
-        if(imageList != null){
-            for(int i = 0 ; i < imageList.size(); i++){
+        if (imageList != null) {
+            for (int i = 0; i < imageList.size(); i++) {
                 ImageItem item = imageList.get(i);
                 String foldPath = getFolderPath(item.getPath());
                 Long count = map.get(foldPath);
-                if (count == null){
+                if (count == null) {
                     count = new Long(0);
                     coverList.add(item.getPath());
                 }
-                map.put(foldPath,count+1);
+                map.put(foldPath, count + 1);
             }
         }
         Set<String> set = map.keySet();
-        for(String str : set){
+        for (String str : set) {
             String folderName = getFolderName(str);
             long count = map.get(str);
             String coverPath = null;
-            for(String p : coverList){
-                if(CommonUtil.isDirectFolder(p,str)){
+            for (String p : coverList) {
+                if (CommonUtil.isDirectFolder(p, str)) {
                     coverPath = p;
                     break;
                 }
             }
-            ImageFolderItem folderItem = new ImageFolderItem(coverPath,folderName,count);
+            ImageFolderItem folderItem = new ImageFolderItem(coverPath, folderName, count);
             folderList.add(folderItem);
 
         }
         return folderList;
     }
 
-    private String getFolderName(String path){
+    private String getFolderName(String path) {
         int index1 = path.lastIndexOf("/");
-        return path.substring(index1+1);
+        return path.substring(index1 + 1);
     }
 
-    private String getFolderPath(String path){
+    private String getFolderPath(String path) {
         int index1 = path.lastIndexOf("/");
-        return path.substring(0,index1);
+        return path.substring(0, index1);
     }
 
-    public List<ImageItem> getAllImages(){
+    public List<ImageItem> getAllImages() {
         return mAllImagesList;
     }
 
 
     private String getAlbumArt(int album_id) {
         String mUriAlbums = "content://media/external/audio/albums";
-        String[] projection = new String[] { "album_art" };
+        String[] projection = new String[]{"album_art"};
         Cursor cur = mContext.getContentResolver().query(
                 Uri.parse(mUriAlbums + "/" + Integer.toString(album_id)),
                 projection, null, null, null);

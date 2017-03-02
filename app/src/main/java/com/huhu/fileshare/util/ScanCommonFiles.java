@@ -93,8 +93,10 @@ public class ScanCommonFiles implements Runnable {
                             String path = cursor.getString(pathIndex);
                             String title = cursor.getString(titleIndex);
                             long size = cursor.getLong(sizeIndex);
-                            CommonFileItem item = new CommonFileItem(title, path, size, false, null, CommonFileItem.FileType.valueOfString(typeStr));
-                            mFileList.add(item);
+                            if(size > 0) {
+                                CommonFileItem item = new CommonFileItem(title, path, size, false, null, CommonFileItem.FileType.valueOfString(typeStr));
+                                mFileList.add(item);
+                            }
                         }
                     }
                 } finally {

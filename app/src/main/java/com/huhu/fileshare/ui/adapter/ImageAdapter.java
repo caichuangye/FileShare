@@ -77,7 +77,7 @@ public class ImageAdapter extends FileBaseAdapter<ImageItem> {
             }
         });
 
-        if (mMode == GlobalParams.SCAN_MODE) {
+        if (mMode == GlobalParams.SERVER_MODE) {
             holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadTextView.setVisibility(View.VISIBLE);
             DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());

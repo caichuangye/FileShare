@@ -3,12 +3,10 @@ package com.huhu.fileshare.ui.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -102,7 +100,7 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
             }
         });
 
-        if (mMode == GlobalParams.SCAN_MODE) {
+        if (mMode == GlobalParams.SERVER_MODE) {
             holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadTextView.setVisibility(View.VISIBLE);
             DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());

@@ -33,7 +33,6 @@ public class ShareMusicFragment extends MediaFragment {
     }
 
     public ShareMusicFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -49,12 +48,11 @@ public class ShareMusicFragment extends MediaFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_share_mediafiles, container, false);
         mListView = (ListView) view.findViewById(R.id.listview);
         mListView.setAdapter(mAdapter);
         initEmptyView(view, "音乐");
-        if (mType == GlobalParams.SHOW_MODE && mAdapter.getCount() == 0) {
+        if (mType == GlobalParams.LOCAL_MODE && mAdapter.getCount() == 0) {
             FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.AUDIO);
         } else {
             setData();
@@ -78,13 +76,21 @@ public class ShareMusicFragment extends MediaFragment {
     }
 
     public void onEventMainThread(EventBusType.UpdateSharedFiles info) {
-        if (mType == GlobalParams.SCAN_MODE) {
+        if (mType == GlobalParams.SERVER_MODE) {
             setData();
         }
     }
 
+    public void onEventMainThread(EventBusType.NoLocalFiles info) {
+        if(info.getType() == GlobalParams.ShareType.AUDIO && mType == GlobalParams.LOCAL_MODE) {
+            HLog.d("ccload","no music");
+            getData();
+            mAdapter.setData(null);
+        }
+    }
+
     public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
-        if (mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
+        if (mType == GlobalParams.SERVER_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
                 || info.getOper() == GlobalParams.DownloadOper.ADD)) {
             mAdapter.notifyDataSetChanged();

@@ -80,7 +80,7 @@ public class ShareImagesFragment extends BaseFragment {
         mGridView.setAdapter(mAdapter);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
-        if(mType == GlobalParams.SHOW_MODE) {
+        if(mType == GlobalParams.LOCAL_MODE) {
             ProgressBar progressBar = new ProgressBar(mContext);
             ViewGroup parent = (ViewGroup)mGridView.getParent();
             parent.addView(progressBar,params);
@@ -124,13 +124,13 @@ public class ShareImagesFragment extends BaseFragment {
     }
 
     public void onEventMainThread(EventBusType.UpdateSharedFiles info){
-        if(mType == GlobalParams.SCAN_MODE) {
+        if(mType == GlobalParams.SERVER_MODE) {
             setData();
         }
     }
 
     public void onEventMainThread(EventBusType.UpdateDownloadFile info){
-        if(mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
+        if(mType == GlobalParams.SERVER_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
                 || info.getOper() == GlobalParams.DownloadOper.ADD)) {
             Log.d("ooo","just change tag");

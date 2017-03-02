@@ -24,15 +24,15 @@ public class ScanSharedViewPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         for(int i = 0; i < 5; i++) {
             if(i == 0){
-                mFragmentList[i] = ShareImagesFragment.newInstance(GlobalParams.SCAN_MODE,ip);
+                mFragmentList[i] = ShareImagesFragment.newInstance(GlobalParams.SERVER_MODE,ip);
             }else if(i == 1){
-                mFragmentList[i] = ShareMusicFragment.newInstance(GlobalParams.SCAN_MODE,ip);
+                mFragmentList[i] = ShareMusicFragment.newInstance(GlobalParams.SERVER_MODE,ip);
             }else if(i == 2){
-                mFragmentList[i] = ShareVideoFragment.newInstance(GlobalParams.SCAN_MODE, ip);
+                mFragmentList[i] = ShareVideoFragment.newInstance(GlobalParams.SERVER_MODE, ip);
             } else if(i == 3){
-                mFragmentList[i] = ShareApkFragment.newInstance(GlobalParams.SCAN_MODE, ip);
+                mFragmentList[i] = ShareApkFragment.newInstance(GlobalParams.SERVER_MODE, ip);
             }else{
-                mFragmentList[i] = ShareCommonFileFragment.newInstance(GlobalParams.SCAN_MODE, ip);
+                mFragmentList[i] = ShareCommonFileFragment.newInstance(GlobalParams.SERVER_MODE, ip);
             }
         }
     }

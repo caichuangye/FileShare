@@ -19,7 +19,7 @@ public class ShareImagesActivity extends BaseActivity {
         setContentView(R.layout.activity_share_images);
         Intent intent = getIntent();
         String folderPath = intent.getStringExtra("FOLDER");
-        ShareImagesFragment fragment = ShareImagesFragment.newInstance(GlobalParams.SHOW_MODE,folderPath);
+        ShareImagesFragment fragment = ShareImagesFragment.newInstance(GlobalParams.LOCAL_MODE,folderPath);
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.container, fragment);

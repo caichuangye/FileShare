@@ -1,8 +1,6 @@
 package com.huhu.fileshare.ui.fragment;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +18,6 @@ import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
 import com.huhu.fileshare.util.ImageCacher;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -62,7 +59,7 @@ public class ShareApkFragment extends MediaFragment {
 
         initEmptyView(view, "应用");
 
-        if (mType == GlobalParams.SHOW_MODE && mAdapter.getCount() == 0) {
+        if (mType == GlobalParams.LOCAL_MODE && mAdapter.getCount() == 0) {
             FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.APK);
         } else {
             setData();
@@ -93,16 +90,15 @@ public class ShareApkFragment extends MediaFragment {
     }
 
     public void onEventMainThread(EventBusType.UpdateSharedFiles info) {
-        if (mType == GlobalParams.SCAN_MODE) {
+        if (mType == GlobalParams.SERVER_MODE) {
             setData();
         }
     }
 
     public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
-        if (mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
+        if (mType == GlobalParams.SERVER_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
                 || info.getOper() == GlobalParams.DownloadOper.ADD)) {
-            Log.d("ooo", "just change tag");
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -111,11 +107,9 @@ public class ShareApkFragment extends MediaFragment {
      * 更新目标机器上共享的apk文件
      */
     private void setData() {
-        HLog.d("RECCY", "---------------------in music fragment,  to update----------------------");
         SharedCollection collection = ShareApplication.getInstance().getDestAllSharedFiles(mIP);
         getData();
         if (collection != null && mAdapter != null) {
-            HLog.d("RECCY", "---------------------real to update----------------------");
             List<ApkItem> list = collection.getApkList();
             mAdapter.setData(list);
         }

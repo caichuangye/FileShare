@@ -40,22 +40,22 @@ public class EventBusType {
     /**
      *
      */
-    public static class ChangeMainFragment{
+    public static class ChangeMainFragment {
 
         private String mTitle;
 
         private int mId;
 
-        public ChangeMainFragment(int id,String title){
+        public ChangeMainFragment(int id, String title) {
             this.mId = id;
             mTitle = title;
         }
 
-        public int getId(){
+        public int getId() {
             return mId;
         }
 
-        public String getTitle(){
+        public String getTitle() {
             return mTitle;
         }
     }
@@ -64,15 +64,15 @@ public class EventBusType {
     /**
      *
      */
-    public static class FileItemsInfo{
+    public static class FileItemsInfo {
 
         private List<SDCardFileItem> mDataList;
 
-        public FileItemsInfo(List<SDCardFileItem> list){
+        public FileItemsInfo(List<SDCardFileItem> list) {
             mDataList = list;
         }
 
-        public List<SDCardFileItem> getData(){
+        public List<SDCardFileItem> getData() {
             return mDataList;
         }
     }
@@ -80,7 +80,7 @@ public class EventBusType {
     /**
      *
      */
-    public static class SharedFileInfo{
+    public static class SharedFileInfo {
 
         private Object mData;
 
@@ -88,25 +88,25 @@ public class EventBusType {
 
         private boolean mIsAdd;
 
-        public SharedFileInfo(Object data,GlobalParams.ShareType type,boolean isAdd){
+        public SharedFileInfo(Object data, GlobalParams.ShareType type, boolean isAdd) {
             mData = data;
             mType = type;
             mIsAdd = isAdd;
         }
 
-        public String getPath(){
-            return ((BaseItem)mData).getPath();
+        public String getPath() {
+            return ((BaseItem) mData).getPath();
         }
 
-        public GlobalParams.ShareType getType(){
+        public GlobalParams.ShareType getType() {
             return mType;
         }
 
-        public boolean isAdd(){
+        public boolean isAdd() {
             return mIsAdd;
         }
 
-        public Object getData(){
+        public Object getData() {
             return mData;
         }
 
@@ -115,15 +115,15 @@ public class EventBusType {
     /**
      *
      */
-    public static class ShareMusicInfo{
+    public static class ShareMusicInfo {
 
         private MusicItem mSingleData;
 
-        public ShareMusicInfo(MusicItem item){
+        public ShareMusicInfo(MusicItem item) {
             mSingleData = item;
         }
 
-        public MusicItem getData(){
+        public MusicItem getData() {
             return mSingleData;
         }
     }
@@ -131,14 +131,14 @@ public class EventBusType {
     /**
      *
      */
-    public static class ShareApkInfo{
+    public static class ShareApkInfo {
         private ApkItem mData;
 
-        public ShareApkInfo(ApkItem item){
+        public ShareApkInfo(ApkItem item) {
             mData = item;
         }
 
-        public ApkItem getData(){
+        public ApkItem getData() {
             return mData;
         }
     }
@@ -146,14 +146,14 @@ public class EventBusType {
     /**
      *
      */
-    public static class ShareVideoInfo{
+    public static class ShareVideoInfo {
         private VideoItem mData;
 
-        public ShareVideoInfo(VideoItem item){
+        public ShareVideoInfo(VideoItem item) {
             mData = item;
         }
 
-        public VideoItem getData(){
+        public VideoItem getData() {
             return mData;
         }
     }
@@ -161,14 +161,14 @@ public class EventBusType {
     /**
      *
      */
-    public static class ShareImageFolderInfo{
+    public static class ShareImageFolderInfo {
         private List<ImageFolderItem> mData;
 
-        public ShareImageFolderInfo(List<ImageFolderItem> items){
+        public ShareImageFolderInfo(List<ImageFolderItem> items) {
             mData = items;
         }
 
-        public List<ImageFolderItem> getData(){
+        public List<ImageFolderItem> getData() {
             return mData;
         }
     }
@@ -180,11 +180,11 @@ public class EventBusType {
     public static class ShareCommonFileInfo {
         private List<CommonFileItem> mData;
 
-        public ShareCommonFileInfo(List<CommonFileItem> items){
+        public ShareCommonFileInfo(List<CommonFileItem> items) {
             mData = items;
         }
 
-        public List<CommonFileItem> getData(){
+        public List<CommonFileItem> getData() {
             return mData;
         }
     }
@@ -193,14 +193,14 @@ public class EventBusType {
     /**
      *
      */
-    public static class OnlineDevicesInfo{
+    public static class OnlineDevicesInfo {
         private List<DeviceItem> mData;
 
-        public OnlineDevicesInfo(List<DeviceItem> items){
+        public OnlineDevicesInfo(List<DeviceItem> items) {
             mData = items;
         }
 
-        public List<DeviceItem> getData(){
+        public List<DeviceItem> getData() {
             return mData;
         }
     }
@@ -208,21 +208,21 @@ public class EventBusType {
     /**
      *
      */
-    public static class SharedFilesReply{
+    public static class SharedFilesReply {
         private String mData;
 
         private String mIP;
 
-        public SharedFilesReply(String str,String ip){
+        public SharedFilesReply(String str, String ip) {
             mData = str;
             mIP = ip;
         }
 
-        public String getData(){
+        public String getData() {
             return mData;
         }
 
-        public String getIP(){
+        public String getIP() {
             return mIP;
         }
     }
@@ -230,14 +230,14 @@ public class EventBusType {
     /**
      *
      */
-    public static class SharedFilesCount{
+    public static class SharedFilesCount {
         private int mCount;
 
-        public SharedFilesCount(int count){
+        public SharedFilesCount(int count) {
             mCount = count;
         }
 
-        public int getCount(){
+        public int getCount() {
             return mCount;
         }
     }
@@ -245,14 +245,14 @@ public class EventBusType {
     /**
      *
      */
-    public static class WiFiStatus{
+    public static class WiFiStatus {
         private boolean mIsConnected;
 
-        public WiFiStatus(boolean connect){
+        public WiFiStatus(boolean connect) {
             mIsConnected = connect;
         }
 
-        public boolean isConnected(){
+        public boolean isConnected() {
             return mIsConnected;
         }
     }
@@ -260,7 +260,7 @@ public class EventBusType {
     /**
      *
      */
-    public static class ConnectInfo{
+    public static class ConnectInfo {
         private int mStatus;
 
         private boolean mIsWiFiAvailble;
@@ -269,41 +269,41 @@ public class EventBusType {
 
         private String mBSSID;
 
-        public ConnectInfo(boolean enable, int status,String bssid,String ssid){
+        public ConnectInfo(boolean enable, int status, String bssid, String ssid) {
             mIsWiFiAvailble = enable;
             mStatus = status;
             mBSSID = bssid;
             mSSID = ssid;
         }
 
-        public int getStatus(){
+        public int getStatus() {
             return mStatus;
         }
 
-        public String getBSSID(){
+        public String getBSSID() {
             return mBSSID;
         }
 
-        public String getSSID(){
+        public String getSSID() {
             return mSSID;
         }
 
-        public boolean wifiAvailvle(){
+        public boolean wifiAvailvle() {
             return mIsWiFiAvailble;
         }
 
         @Override
-        public String toString(){
-            return "["+mStatus+" "+mSSID+" "+mBSSID+"]";
+        public String toString() {
+            return "[" + mStatus + " " + mSSID + " " + mBSSID + "]";
         }
     }
 
     /**
      *
      */
-    public static class ClearShared{
+    public static class ClearShared {
 
-        public ClearShared(){
+        public ClearShared() {
         }
 
     }
@@ -311,14 +311,14 @@ public class EventBusType {
     /**
      *
      */
-    public static class DeleteDownloadFile{
+    public static class DeleteDownloadFile {
         private DownloadItem mData;
 
-        public DeleteDownloadFile(DownloadItem item){
+        public DeleteDownloadFile(DownloadItem item) {
             mData = item;
         }
 
-        public DownloadItem getData(){
+        public DownloadItem getData() {
             return mData;
         }
     }
@@ -326,21 +326,21 @@ public class EventBusType {
     /**
      *
      */
-    public static class UpdateDownloadFile{
+    public static class UpdateDownloadFile {
         private DownloadItem mData;
 
         private GlobalParams.DownloadOper mOper;
 
-        public UpdateDownloadFile(DownloadItem item,GlobalParams.DownloadOper oper){
+        public UpdateDownloadFile(DownloadItem item, GlobalParams.DownloadOper oper) {
             mData = item;
             mOper = oper;
         }
 
-        public GlobalParams.DownloadOper getOper(){
+        public GlobalParams.DownloadOper getOper() {
             return mOper;
         }
 
-        public DownloadItem getData(){
+        public DownloadItem getData() {
             return mData;
         }
     }
@@ -348,9 +348,9 @@ public class EventBusType {
     /**
      *
      */
-    public static class UpdateSharedFiles{
+    public static class UpdateSharedFiles {
 
-        public UpdateSharedFiles(){
+        public UpdateSharedFiles() {
 
         }
 
@@ -358,6 +358,24 @@ public class EventBusType {
 
     /**
      *
+     */
+    public static class NoLocalFiles {
+
+        private GlobalParams.ShareType mType;
+
+        public NoLocalFiles(GlobalParams.ShareType type) {
+            mType = type;
+        }
+
+        public GlobalParams.ShareType getType(){
+            return mType;
+        }
+
+    }
+
+    /**
+     * 浏览服务端共享页时，点击已近点击下载的按钮时，跳转到下载页面
+     * 即第一次点击时开始下载，再次点击时跳到下载页
      */
     public static class GoToDownloadActivity {
 
@@ -366,11 +384,11 @@ public class EventBusType {
         }
     }
 
-        public static class CacheImageComplete {
+    public static class CacheImageComplete {
 
         public ImageCacher.CacheResult result;
 
-        public CacheImageComplete(ImageCacher.CacheResult result){
+        public CacheImageComplete(ImageCacher.CacheResult result) {
             this.result = result;
         }
 

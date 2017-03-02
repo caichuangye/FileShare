@@ -23,7 +23,7 @@ import com.nostra13.universalimageloader.core.assist.ImageSize;
 public class ImageFolderAdapter extends FileBaseAdapter<ImageFolderItem> {
 
     public ImageFolderAdapter(Context context){
-        super(context,GlobalParams.SHOW_MODE);
+        super(context,GlobalParams.SERVER_MODE);
     }
 
     @Override

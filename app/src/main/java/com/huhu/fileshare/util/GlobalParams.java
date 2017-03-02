@@ -7,12 +7,12 @@ public class GlobalParams {
 
     /**
      * 浏览服务器端共享资源页面的中的各个fragment与设置本地共享资源的各个fragment是相同的，但内部逻辑不一样
-     * SHOW_MODE：表明该fragment是用来显示本地共享资源
-     * SCAN_MODE：表明该fragment是用来显示服务器端的共享资源
+     * SERVER_MODE：表明该fragment是用来显示本地共享资源
+     * LOCAL_MODE：表明该fragment是用来显示服务器端的共享资源
      */
-    public static int SHOW_MODE = 0;
+    public static int SERVER_MODE = 0;
 
-    public static int SCAN_MODE = 1;
+    public static int LOCAL_MODE = 1;
 
     /**
      * 网络已连接

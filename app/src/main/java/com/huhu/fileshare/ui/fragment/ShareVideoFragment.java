@@ -3,15 +3,10 @@ package com.huhu.fileshare.ui.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
@@ -21,6 +16,7 @@ import com.huhu.fileshare.ui.adapter.VideoAdapter;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.HLog;
 import com.huhu.fileshare.util.ImageCacher;
 
 import java.util.List;
@@ -61,7 +57,7 @@ public class ShareVideoFragment extends MediaFragment {
 
         initEmptyView(view, "视频");
 
-        if (mType == GlobalParams.SHOW_MODE && mAdapter.getCount() == 0) {
+        if (mType == GlobalParams.LOCAL_MODE && mAdapter.getCount() == 0) {
             FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.VIDEO);
         } else {
             setData();
@@ -73,7 +69,6 @@ public class ShareVideoFragment extends MediaFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
     }
 
     @Override
@@ -81,6 +76,15 @@ public class ShareVideoFragment extends MediaFragment {
         super.onDetach();
     }
 
+
+    public void onEventMainThread(EventBusType.NoLocalFiles info) {
+        HLog.d("ccload",info.getType().toString()+", fragment: "+mType);
+        if(info.getType() == GlobalParams.ShareType.VIDEO && mType == GlobalParams.LOCAL_MODE) {
+            HLog.d("ccload","no video");
+            getData();
+            mAdapter.setData(null);
+        }
+    }
 
     public void onEventMainThread(EventBusType.CacheImageComplete info){
         if(info.result.type == ImageCacher.Type.VIDEO) {
@@ -100,13 +104,13 @@ public class ShareVideoFragment extends MediaFragment {
     }
 
     public void onEventMainThread(EventBusType.UpdateSharedFiles info){
-        if(mType == GlobalParams.SCAN_MODE) {
+        if(mType == GlobalParams.SERVER_MODE) {
             setData();
         }
     }
 
     public void onEventMainThread(EventBusType.UpdateDownloadFile info){
-        if(mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
+        if(mType == GlobalParams.SERVER_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
                 || info.getOper() == GlobalParams.DownloadOper.ADD)) {
             Log.d("ooo","just change tag");

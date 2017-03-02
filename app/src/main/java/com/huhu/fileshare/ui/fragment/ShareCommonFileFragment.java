@@ -63,7 +63,7 @@ public class ShareCommonFileFragment extends MediaFragment {
 
         initEmptyView(view, "文件");
 
-        if (mType == GlobalParams.SHOW_MODE) {
+        if (mType == GlobalParams.LOCAL_MODE) {
             ScanCommonFiles.getInstance(mContext).start();
         } else {
             setData();
@@ -106,13 +106,13 @@ public class ShareCommonFileFragment extends MediaFragment {
     }
 
     public void onEventMainThread(EventBusType.UpdateSharedFiles info) {
-        if (mType == GlobalParams.SCAN_MODE) {
+        if (mType == GlobalParams.SERVER_MODE) {
             setData();
         }
     }
 
     public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
-        if (mType == GlobalParams.SCAN_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
+        if (mType == GlobalParams.SERVER_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
                 || info.getOper() == GlobalParams.DownloadOper.ADD)) {
             mAdapter.notifyDataSetChanged();

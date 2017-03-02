@@ -32,7 +32,7 @@ public class MediaFragment extends BaseFragment {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
         TextView textView = new TextView(mContext);
         textView.setTextColor(mContext.getResources().getColor(R.color.black_57));
-        if(mType == GlobalParams.SHOW_MODE) {
+        if(mType == GlobalParams.SERVER_MODE) {
             textView.setText("暂无"+msg);
         }else {
             textView.setText("暂无共享的"+msg);
