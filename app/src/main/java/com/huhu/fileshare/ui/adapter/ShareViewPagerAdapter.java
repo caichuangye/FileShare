@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.huhu.fileshare.ui.fragment.ShareApkFragment;
-import com.huhu.fileshare.ui.fragment.ShareSDCardFragment;
 import com.huhu.fileshare.ui.fragment.ShareImageFolderFragment;
 import com.huhu.fileshare.ui.fragment.ShareMusicFragment;
 import com.huhu.fileshare.ui.fragment.ShareCommonFileFragment;
@@ -27,13 +26,13 @@ public class ShareViewPagerAdapter extends FragmentPagerAdapter{
             if(i == 0){
                 mFragmentList[i] = ShareImageFolderFragment.newInstance(null, null);
             }else if(i == 1){
-                mFragmentList[i] = ShareMusicFragment.newInstance(GlobalParams.SHOW_MODE, null);
+                mFragmentList[i] = ShareMusicFragment.newInstance(GlobalParams.LOCAL_MODE, null);
             }else if(i == 2){
-                mFragmentList[i] = ShareVideoFragment.newInstance(GlobalParams.SHOW_MODE, null);
+                mFragmentList[i] = ShareVideoFragment.newInstance(GlobalParams.LOCAL_MODE, null);
             } else if(i == 3){
-                mFragmentList[i] = ShareApkFragment.newInstance(GlobalParams.SHOW_MODE, null);
+                mFragmentList[i] = ShareApkFragment.newInstance(GlobalParams.LOCAL_MODE, null);
             } else{
-                mFragmentList[i] = ShareCommonFileFragment.newInstance(GlobalParams.SHOW_MODE, null);
+                mFragmentList[i] = ShareCommonFileFragment.newInstance(GlobalParams.LOCAL_MODE, null);
             }
         }
     }

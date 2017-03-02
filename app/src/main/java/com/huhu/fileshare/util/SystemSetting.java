@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
 
 import java.io.File;
+import java.util.Random;
 
 /**
  * Created by Administrator on 2016/4/16.
@@ -46,7 +48,13 @@ public class SystemSetting {
     }
 
     public int getUserIconIndex(){
-        return mSharedPreferences.getInt(USER_ICON_INDEX,0);
+        int index =  mSharedPreferences.getInt(USER_ICON_INDEX,-1);
+        if(index == -1){
+            Random random = new Random(System.currentTimeMillis());
+            index = random.nextInt(12);
+            setUserIconIndex(index);
+        }
+        return index;
     }
 
     public void setUserIconIndex(int index){
@@ -66,7 +74,7 @@ public class SystemSetting {
     }
 
     public String getUserNickName(){
-        return mSharedPreferences.getString(USER_NICKNAME,"user");
+        return mSharedPreferences.getString(USER_NICKNAME,Build.BRAND+"-"+Build.MODEL);
     }
 
     public void setUserNickName(String name){
@@ -96,7 +104,7 @@ public class SystemSetting {
     }
 
     public String getStoragePath(){
-        return mSharedPreferences.getString(STORAGE_PATH,getDefaultStotagePath());
+        return mSharedPreferences.getString(STORAGE_PATH, getDefaultStoragePath());
     }
 
     public void setStoragePath(String path){
@@ -126,8 +134,8 @@ public class SystemSetting {
         return info.versionName;
     }
 
-    public String getDefaultStotagePath(){
-        String path = Environment.getExternalStorageDirectory().getPath()+"/fileshare";
+    public String getDefaultStoragePath(){
+        String path = Environment.getExternalStorageDirectory().getPath()+"/"+GlobalParams.FOLDER;
         File file = new File(path);
         if(file != null && !file.exists()){
             file.mkdir();
