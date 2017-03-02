@@ -22,4 +22,10 @@ public class HLog {
         }
     }
 
+    public static void w(String tag,String msg){
+        if(sDebug){
+            Log.w(tag,msg);
+        }
+    }
+
 }

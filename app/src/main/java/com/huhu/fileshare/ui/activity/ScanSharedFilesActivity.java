@@ -7,10 +7,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.huhu.fileshare.R;
-import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.BaseItem;
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
@@ -18,7 +16,6 @@ import com.huhu.fileshare.ui.adapter.ScanSharedViewPagerAdapter;
 import com.huhu.fileshare.ui.view.PagerSlidingTabStrip;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
-import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
 
 import java.util.ArrayList;
@@ -40,26 +37,26 @@ public class ScanSharedFilesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_sdcard);
         int index = 0;
-        if(getIntent() != null){
+        if (getIntent() != null) {
             mIP = getIntent().getStringExtra("IP");
             mOwner = getIntent().getStringExtra("USER_NAME");
-            index = getIntent().getIntExtra("INDEX",0);
-            initToolbar(mOwner,mIP);
-        }else {
-            initToolbar(null,null);
+            index = getIntent().getIntExtra("INDEX", 0);
+            initToolbar(mOwner, mIP);
+        } else {
+            initToolbar(null, null);
         }
 
-        mTabs = (PagerSlidingTabStrip)findViewById(R.id.tabs);
+        mTabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.share_viewpager);
-        mAdapter = new ScanSharedViewPagerAdapter(getSupportFragmentManager(),mIP);
+        mAdapter = new ScanSharedViewPagerAdapter(getSupportFragmentManager(), mIP);
         mViewPager.setAdapter(mAdapter);
         mTabs.setViewPager(mViewPager);
         mViewPager.setCurrentItem(index);
     }
 
     @Override
-    public void initToolbar(String title, String subtitle){
-        mToolbar = (Toolbar)findViewById(R.id.toolbar);
+    public void initToolbar(String title, String subtitle) {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle(title);
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black_57));
         setSupportActionBar(mToolbar);
@@ -81,42 +78,44 @@ public class ScanSharedFilesActivity extends BaseActivity {
                 onBackPressed();
                 break;
             case R.id.download:
-                startActivity(new Intent(ScanSharedFilesActivity.this,DownloadActivity.class));
+                startActivity(new Intent(ScanSharedFilesActivity.this, DownloadActivity.class));
                 break;
         }
         return true;
     }
 
-    public void onEventMainThread(EventBusType.SharedFileInfo info){
-            BaseItem item0 = (BaseItem)info.getData();
-            if(mSelectedList == null){
-                mSelectedList = new ArrayList<>();
-            }
-            if(info.isAdd()) {
-                DownloadItem item = new DownloadItem();//info.getType(), item0.getPath(), item0.getSize(),mOwner,mIP);
-                item.setUUID(CommonUtil.getUUID());
-                item.setStatus(DownloadStatus.WAIT);
-                item.setFileType(info.getType().toString());
-                item.setFromPath(item0.getPath());
-                item.setTotalSize(item0.getSize());
-                item.setFromUserName(mOwner);
-                item.setIP(mIP);
-                mSelectedList.add(item);
-                HLog.d("CCYSC","add: "+item0.getPath());
-            }else{
-                for(DownloadItem item : mSelectedList){
-                    if(item.getFromIP().equals(mIP) && item.getFromPath().equals(item0.getPath())){
-                        mSelectedList.remove(item);
-                        break;
-                    }
+    public void onEventMainThread(EventBusType.GoToDownloadActivity info) {
+        startActivity(new Intent(this,DownloadActivity.class));
+    }
+
+    public void onEventMainThread(EventBusType.SharedFileInfo info) {
+        BaseItem item0 = (BaseItem) info.getData();
+        if (mSelectedList == null) {
+            mSelectedList = new ArrayList<>();
+        }
+        if (info.isAdd()) {
+            DownloadItem item = new DownloadItem();
+            item.setUUID(CommonUtil.getUUID());
+            item.setStatus(DownloadStatus.WAIT);
+            item.setFileType(info.getType().toString());
+            item.setFromPath(item0.getPath());
+            item.setTotalSize(item0.getSize());
+            item.setFromUserName(mOwner);
+            item.setIP(mIP);
+            mSelectedList.add(item);
+        } else {
+            for (DownloadItem item : mSelectedList) {
+                if (item.getFromIP().equals(mIP) && item.getFromPath().equals(item0.getPath())) {
+                    mSelectedList.remove(item);
+                    break;
                 }
-                HLog.d("CCYSC", "delete: " + item0.getPath());
             }
+        }
     }
 
     @Override
-    public void onBackPressed(){
-        if(mSelectedList != null) {
+    public void onBackPressed() {
+        if (mSelectedList != null) {
             mSelectedList.clear();
         }
         finish();

@@ -16,7 +16,6 @@ public abstract class TransferItem<T> {
     protected int mIndex;
 
     public TransferItem(){
-   //     Log.d("transfer-s","***************init index = -1*****************");
         mIndex = -1;
     }
 
@@ -44,13 +43,11 @@ public abstract class TransferItem<T> {
     }
 
     public T getFile() {
-    //    Log.d("transfer-s","getFile: mIndex = "+mIndex+", list size = "+mSourceFileList.size());
         if(mIndex < mSourceFileList.size()-1 && mSourceFileList.size() > 0){
             mIndex = mIndex+1;
             out();
             return mSourceFileList.get(mIndex);
         }else{
-         //   Log.d("transfer-s","getFile: no handled item");
             return null;
         }
     }

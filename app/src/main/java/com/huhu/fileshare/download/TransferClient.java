@@ -3,24 +3,20 @@ package com.huhu.fileshare.download;
 import android.os.Environment;
 import android.util.Log;
 
-
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.HLog;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by caichuangye on 2017-01-16.
@@ -30,20 +26,44 @@ public class TransferClient {
 
     public static String TAG = TransferClient.class.getSimpleName();
 
+    /**
+     * 线程池，用户循环处理下载队列和开始每一个下载任务
+     */
     private ExecutorService mWorkPool;
 
+    /**
+     *
+     */
     private static TransferClient sInstance = null;
 
-    private ConcurrentMap<String, ReceiveListItem> mFilesMap;
+    /**
+     * 下载队列
+     */
+    private BlockingQueue<ReceiveUnit> mReceiveList;
 
+    /**
+     * 是否停止循环处理下载队列
+     */
     private Boolean mQuit;
 
+    /**
+     * 是否初始化
+     */
     private boolean mInitial = false;
 
-    private int mPort = 10235;
+    /**
+     * 下载端口
+     */
+    private int mPort;
 
-    private OnTransferData mListener;
+    /**
+     * 下载进度回调
+     */
+    private OnTransferDataListener mListener;
 
+    /**
+     * 单例
+     */
     public static TransferClient getInstance() {
         if (sInstance == null) {
             sInstance = new TransferClient();
@@ -51,117 +71,126 @@ public class TransferClient {
         return sInstance;
     }
 
-    public void init(int port,OnTransferData listener){
+    /**
+     * 初始化端口和下载进度回调
+     */
+    public void init(int port, OnTransferDataListener listener) {
         mListener = listener;
         mPort = port;
     }
 
+    /**
+     * 需要注意，线程池中只有2个线程，而且其中一个是用来循环处理下载队列，这也就意味着还剩余一个线程用来处理下载。
+     * 也就是说，一个客户端同时只能进行一个下载任务，但可以同时请求多个，这些请求的任务会顺序执行
+     */
     private TransferClient() {
-        mWorkPool = Executors.newCachedThreadPool();
-        mFilesMap = new ConcurrentHashMap<>();
+        mWorkPool = Executors.newFixedThreadPool(GlobalParams.CLIENT_DOWNLOAD_THREAD_NUM+1);
+        mReceiveList = new LinkedBlockingQueue<>();
         mQuit = false;
     }
 
+
+    /**
+     * 循环处理下载队列
+     */
     private void startWorkThreadPool() {
         while (true) {
             synchronized (mQuit) {
                 if (mQuit) {
                     break;
                 }
-                for (final Map.Entry<String, ReceiveListItem> entry : mFilesMap.entrySet()) {
-                 //   Log.d(TAG,"--begin iter--");
-                    if (!entry.getValue().isHandleOver()) {
-                        Log.d(TAG,"begin recv from "+entry.getKey());
-                      //  entry.getValue().setHandle();
-                        mWorkPool.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                receiveFiles(entry.getValue());
-                            }
-                        });
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+            }
+            try {
+                    final ReceiveUnit unit = mReceiveList.take();
+                    mWorkPool.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean res = receiveFile(unit);
+                            String str = res ? "success" : "failed";
+                            HLog.d(TAG, "receive +" + unit.path + ": " + str);
                         }
-                    }else{
-                   //     Log.d(TAG,"recv over from "+entry.getKey());
-                    }
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                    });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                HLog.d(TAG,"run loop to receive: "+e.getMessage());
             }
         }
     }
 
-    private void receiveFiles(ReceiveListItem item) {
-        Log.d(TAG,"receiveFiles: "+item.getIP());
+    /**
+     * 下载核心过程
+     */
+    private boolean receiveFile(ReceiveUnit unit) {
         try {
-            InetAddress address = InetAddress.getByName(item.getIP());
+            InetAddress address = InetAddress.getByName(unit.ip);
             Socket socket = new Socket(address, mPort);
             socket.setSoTimeout(25000);
             InputStream inputStream = socket.getInputStream();
-            while (true) {
-                DownloadItem info = item.getFile();
-                if (info == null) {
-                    Log.d("transfer-c","recv: null ");
-                    break;
-                }else{
-                    Log.d("transfer-c","recv: "+info.getFromPath());
-                }
-                String remotePath = info.getFromPath();
-                long size = info.getTotalSize();
-                long offset = 0;
-                String name = remotePath.substring(remotePath.lastIndexOf(File.separator) + 1);
-                String localPath = Environment.getExternalStorageDirectory().getPath()+ File.separator+"fileshare";
-                if(info.getFileType() == GlobalParams.ShareType.APK.toString()){
-                    localPath += File.separator + info.getDestName()+".apk";
-                }else {
-                    localPath += File.separator + name;
-                }
-                File file = new File(localPath);
-                file.deleteOnExit();
-                FileOutputStream outputStream = new FileOutputStream(file);
-                while (offset < size) {
-                    byte[] data = new byte[1024 * 4];
-                    int tmp = inputStream.read(data, 0, 1024 * 4);
-                    if(tmp == -1){
-                        break;
-                    }
-                    outputStream.write(data, 0, tmp);
-                    offset += tmp;
-                    if(mListener != null){
-                     //   Log.d(TAG,info.getFromPath()+": "+info.getTotalSize()+", tmp = "+tmp+", offset = "+offset);
-                        mListener.onTransfer(info.getUUID(),info.getTotalSize(),offset);
-                    }else{
-                        Log.w(TAG,"mListener == null, can update");
-                    }
-                }
-                outputStream.flush();
-            //    outputStream.close();
-                Log.d(TAG,"end recv "+info.getFromPath());
-            }
-            socket.close();
-        } catch (UnknownHostException e) {
-            Log.e(TAG,"receiveFiles: UnknownHostException = "+e.getMessage());
-        } catch (IOException e) {
-            Log.e(TAG,"receiveFiles: IOException = "+e.toString());
-        }
+            String remotePath = unit.path;
 
+            OutputStream output = socket.getOutputStream();
+            String str = GlobalParams.REQUEST_TAG + remotePath;
+            output.write(str.getBytes());
+
+            long size = unit.totalSize;
+            long offset = 0;
+            String name = remotePath.substring(remotePath.lastIndexOf(File.separator) + 1);
+            String localPath = Environment.getExternalStorageDirectory().getPath() + File.separator + GlobalParams.FOLDER;
+            if (name.endsWith(".apk")) {
+                localPath += File.separator + unit.desc + ".apk";
+            } else {
+                localPath += File.separator + name;
+            }
+            File file = new File(localPath);
+            file.deleteOnExit();
+            FileOutputStream outputStream = new FileOutputStream(file);
+            while (offset < size) {
+                byte[] data = new byte[1024 * 4];
+                int tmp = inputStream.read(data, 0, 1024 * 4);
+                if (tmp == -1) {
+                    break;
+                }
+                //没有权限下载文件
+                if(tmp == GlobalParams.PERMISSION_DENIED.length()){
+                    String info = new String(data,0,tmp,"utf-8");
+                    if(info.equals(GlobalParams.PERMISSION_DENIED)){
+                        HLog.e(TAG,"no permission to download: "+remotePath);
+                        return false;
+                    }
+                }
+                outputStream.write(data, 0, tmp);
+                offset += tmp;
+                if (mListener != null) {
+                    mListener.onTransfer(unit.uuid, unit.totalSize, offset);
+                } else {
+                    Log.w(TAG, "mListener == null, can update");
+                }
+            }
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+            socket.close();
+            Log.d(TAG, "end receive " + unit.path);
+        } catch (Exception e) {
+            Log.e(TAG, "receive err, " +unit.path+": "+e.getMessage());
+        }
+        return true;
     }
 
-    public void requestFiles(List<DownloadItem> list, String ip) {
-        ReceiveListItem item = mFilesMap.get(ip);
-        if (item == null) {
-            item = new ReceiveListItem(ip, list);
-        } else {
-            item.appendFilesList(list);
+
+    /**
+     * 向服务器请求一个文件
+     */
+    public void requestFile(DownloadItem info, String ip) {
+        ReceiveUnit unit = new ReceiveUnit(ip,info.getFromPath(),info.getUUID(),info.getTotalSize());
+        if(info.getFromPath().endsWith(".apk")){
+            unit.desc = info.getDestName();
         }
-        mFilesMap.put(ip, item);
-        Log.d(TAG,"request files from "+ip+", count = "+list.size()+", map = "+mFilesMap.size());
+        try {
+            mReceiveList.put(unit);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (!mInitial) {
             mInitial = true;
             mWorkPool.execute(new Runnable() {
@@ -173,26 +202,40 @@ public class TransferClient {
         }
     }
 
-    public void requestFiles(DownloadItem info, String ip) {
-        List<DownloadItem> list = new ArrayList<>();
-        list.add(info);
-        requestFiles(list,ip);
-    }
-
+    /**
+     * 停止下载
+     */
     public void quit() {
         synchronized (mQuit) {
             mQuit = true;
         }
         mWorkPool.shutdown();
-        for (Map.Entry<String, ReceiveListItem> entry : mFilesMap.entrySet()) {
-            ReceiveListItem info = entry.getValue();
-            info.clear();
-        }
-        mFilesMap.clear();
+        mReceiveList.clear();
     }
 
-    public interface OnTransferData{
-        void onTransfer(String uuid, long total, long recv);
+    /**
+     * 下载进度回调
+     */
+    public interface OnTransferDataListener {
+        void onTransfer(String uuid, long totalSize, long receiveSize);
+    }
+
+    /**
+     * 用来描述一个下载信息
+     */
+    public class ReceiveUnit{
+
+        public ReceiveUnit(String ip,String path,String uuid,long totalSize){
+            this.ip = ip;
+            this.path = path;
+            this.uuid = uuid;
+            this.totalSize = totalSize;
+        }
+        String ip;
+        String path;
+        String uuid;
+        long totalSize;
+        String desc;
     }
 
 }

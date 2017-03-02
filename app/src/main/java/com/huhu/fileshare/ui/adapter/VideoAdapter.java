@@ -32,16 +32,16 @@ public class VideoAdapter extends FileBaseAdapter<VideoItem> {
         super(context, mode);
     }
 
-    public void updateCover(String path,String cover){
+    public void updateCover(String path, String cover) {
         boolean hit = false;
-        for(VideoItem item : mDataList){
-            if(path.equals(item.getPath())){
+        for (VideoItem item : mDataList) {
+            if (path.equals(item.getPath())) {
                 item.setCoverBitMap(cover);
                 hit = true;
                 break;
             }
         }
-        if(hit){
+        if (hit) {
             notifyDataSetChanged();
         }
     }
@@ -70,14 +70,14 @@ public class VideoAdapter extends FileBaseAdapter<VideoItem> {
 
         VideoItem item = mDataList.get(position);
 
-        if(TextUtils.isEmpty(item.getCoverBitMap())) {
+        if (TextUtils.isEmpty(item.getCoverBitMap())) {
             item.setCoverBitMap(ImageCacher.getInstance().getCoverPath(item.getPath(), ImageCacher.Type.VIDEO));
         }
-        DisplayImageOptions options =  new DisplayImageOptions.Builder().displayer(
+        DisplayImageOptions options = new DisplayImageOptions.Builder().displayer(
                 new RoundedBitmapDisplayer(15))
                 .showImageOnFail(R.mipmap.video)
                 .build();
-        ImageLoader.getInstance().displayImage("file://"+item.getCoverBitMap(),holder.coverImageView,options);
+        ImageLoader.getInstance().displayImage("file://" + item.getCoverBitMap(), holder.coverImageView, options);
 
 
         holder.selectedCheckbox.setOnClickListener(new View.OnClickListener() {
@@ -95,15 +95,13 @@ public class VideoAdapter extends FileBaseAdapter<VideoItem> {
             holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadTextView.setVisibility(View.VISIBLE);
             DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());
-            if(status != null) {
+            if (status != null) {
                 holder.downloadTextView.setStatus(CommonUtil.getStatus(status));
             }
-            if(holder.downloadTextView.getStatus() == DownloadIcon.Status.INIT) {
-                EventBusType.SharedFileInfo info = new EventBusType.SharedFileInfo(item, getSharedType(), true);
-                DownLoadListener listener = new DownLoadListener(info);
-                holder.downloadTextView.setOnClickListener(listener);
-            }
-        }else{
+            EventBusType.SharedFileInfo info = new EventBusType.SharedFileInfo(item, getSharedType(), true);
+            DownLoadListener listener = new DownLoadListener(info);
+            holder.downloadTextView.setOnClickListener(listener);
+        } else {
             holder.selectedCheckbox.setVisibility(View.VISIBLE);
             holder.downloadTextView.setVisibility(View.GONE);
             holder.selectedCheckbox.setChecked(item.isSelected());

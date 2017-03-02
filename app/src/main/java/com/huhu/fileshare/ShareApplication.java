@@ -144,7 +144,7 @@ public class ShareApplication extends Application {
      */
     public void initImageLoader(Context context) {
         File cacheDir = StorageUtils.getOwnCacheDirectory(context,
-                "fileshare/cache");// 获取到缓存的目录地址
+                GlobalParams.FOLDER+"/cache");// 获取到缓存的目录地址
         Log.e("cacheDir", cacheDir.getPath());
         // 创建配置ImageLoader(所有的选项都是可选的,只使用那些你真的想定制)，这个可以设定在APPLACATION里面，设置为全局的配置参数
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
@@ -169,11 +169,7 @@ public class ShareApplication extends Application {
      * 添加或者删除共享文件
      */
     public void onEventMainThread(EventBusType.SharedFileInfo info) {
-    //    if (info.getMode() == GlobalParams.SHOW_MODE) {
-            operateShardFile(info);
-        /*}else if(info.getMode() == GlobalParams.SCAN_MODE){
-            tellServerRequestFiles(info);
-        }*/
+        operateShardFile(info);
     }
 
 
@@ -186,19 +182,14 @@ public class ShareApplication extends Application {
         mScanningServerName = name;
     }
 
-    public void tellServerRequestFiles(EventBusType.SharedFileInfo info){
+    public void requestFile(EventBusType.SharedFileInfo info){
         boolean isAdd = info.isAdd();
         String path = info.getPath();
         String oper = isAdd?"add" : "delete";
-        Log.d("upf","c: "+mScanningServerIP+": "+oper+": "+path);
         UpdateCommand command = new UpdateCommand();
         command.ip = WiFiOperation.getInstance(this).getIP();
         command.oper = oper;
         command.path = path;
-        Gson gson = new Gson();
-        Type type = new TypeToken<UpdateCommand>() {
-        }.getType();
-        ComClient.getInstance(mScanningServerIP).sendMessage(gson.toJson(command, type));
 
         BaseItem item0 = (BaseItem)info.getData();
         if(info.isAdd()) {
@@ -215,7 +206,6 @@ public class ShareApplication extends Application {
             item.setIP(mScanningServerIP);
             if(info.getType().equals(GlobalParams.ShareType.APK)){
                 item.setDestName(item0.getShowName());
-                Log.d("cctype",item.toString());
             }
             addScanFile(item);
         }
@@ -289,6 +279,10 @@ public class ShareApplication extends Application {
         boolean res = mOperateTimeStamp != mLastOperateTimeStamp;
         mLastOperateTimeStamp = mOperateTimeStamp;
         return res;
+    }
+
+    public boolean isFileShared(String path){
+        return mSharedCollection.isFileShared(path);
     }
 
     /**

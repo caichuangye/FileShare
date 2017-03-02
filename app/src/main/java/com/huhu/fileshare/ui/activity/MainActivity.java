@@ -89,7 +89,6 @@ public class MainActivity extends BaseActivity {
     @Override
     public void initToolbar(String title, String subtitle){
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
-    //    mToolbar.setTitle(title);
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black_57));
         mToolbar.setLogo(R.mipmap.circle_logo);
         mToolbar.setLogoDescription(title);
@@ -148,5 +147,11 @@ public class MainActivity extends BaseActivity {
             mLastPressBackTimeStamp = System.currentTimeMillis();
             Toast.makeText(this,"再按一次退出",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        ServiceUtils.getInstance().disConnected(getApplicationContext());
     }
 }

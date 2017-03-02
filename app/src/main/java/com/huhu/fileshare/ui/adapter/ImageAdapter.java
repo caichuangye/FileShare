@@ -30,15 +30,15 @@ public class ImageAdapter extends FileBaseAdapter<ImageItem> {
 
     private DisplayImageOptions mOptions = new DisplayImageOptions.Builder()
             .showImageOnLoading(R.mipmap.ic_launcher) // 在ImageView加载过程中显示图片
-    .showImageForEmptyUri(R.mipmap.ic_launcher) // image连接地址为空时
-    .showImageOnFail(R.mipmap.ic_launcher) // image加载失败
-    .cacheInMemory(true) // 加载图片时会在内存中加载缓存
-    .cacheOnDisk(true) // 加载图片时会在磁盘中加载缓存
-    .build();
+            .showImageForEmptyUri(R.mipmap.ic_launcher) // image连接地址为空时
+            .showImageOnFail(R.mipmap.ic_launcher) // image加载失败
+            .cacheInMemory(true) // 加载图片时会在内存中加载缓存
+            .cacheOnDisk(true) // 加载图片时会在磁盘中加载缓存
+            .build();
 
 
-    public ImageAdapter(Context context,int mode) {
-        super(context,mode);
+    public ImageAdapter(Context context, int mode) {
+        super(context, mode);
     }
 
     @Override
@@ -49,22 +49,22 @@ public class ImageAdapter extends FileBaseAdapter<ImageItem> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        if(convertView == null){
+        if (convertView == null) {
             holder = new ViewHolder();
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.image_folder_item_layout,null);
-            holder.image = (ImageView)convertView.findViewById(R.id.image);
-            holder.folderInfoTextView = (TextView)convertView.findViewById(R.id.folder_info);
-            holder.dateTextView = (TextView)convertView.findViewById(R.id.image_date);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.image_folder_item_layout, null);
+            holder.image = (ImageView) convertView.findViewById(R.id.image);
+            holder.folderInfoTextView = (TextView) convertView.findViewById(R.id.folder_info);
+            holder.dateTextView = (TextView) convertView.findViewById(R.id.image_date);
             holder.coverView = convertView.findViewById(R.id.selected_cover);
-            holder.selectedCheckbox = (CheckBox)convertView.findViewById(R.id.selected_icon);
+            holder.selectedCheckbox = (CheckBox) convertView.findViewById(R.id.selected_icon);
             holder.downloadTextView = (DownloadIcon) convertView.findViewById(R.id.download_icon);
             convertView.setTag(holder);
-        }else{
-            holder = (ViewHolder)convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
         ImageItem item = mDataList.get(position);
-        ImageAware aware = new ImageViewAware(holder.image,false);
-        ImageLoader.getInstance().displayImage("file://" + item.getPath(), aware ,mOptions,new ImageSize(174*3,174*3),null,null);
+        ImageAware aware = new ImageViewAware(holder.image, false);
+        ImageLoader.getInstance().displayImage("file://" + item.getPath(), aware, mOptions, new ImageSize(174 * 3, 174 * 3), null, null);
         holder.folderInfoTextView.setText(Formatter.formatFileSize(mContext, item.getSize()));
         holder.dateTextView.setText(item.getDate());
         holder.dateTextView.setVisibility(View.VISIBLE);
@@ -81,15 +81,13 @@ public class ImageAdapter extends FileBaseAdapter<ImageItem> {
             holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadTextView.setVisibility(View.VISIBLE);
             DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());
-            if(status != null) {
+            if (status != null) {
                 holder.downloadTextView.setStatus(CommonUtil.getStatus(status));
             }
-            if(holder.downloadTextView.getStatus() == DownloadIcon.Status.INIT) {
-                EventBusType.SharedFileInfo info = new EventBusType.SharedFileInfo(item, getSharedType(), true);
-                DownLoadListener listener = new DownLoadListener(info);
-                holder.downloadTextView.setOnClickListener(listener);
-            }
-        }else{
+            EventBusType.SharedFileInfo info = new EventBusType.SharedFileInfo(item, getSharedType(), true);
+            DownLoadListener listener = new DownLoadListener(info);
+            holder.downloadTextView.setOnClickListener(listener);
+        } else {
             holder.selectedCheckbox.setVisibility(View.VISIBLE);
             holder.downloadTextView.setVisibility(View.GONE);
             holder.selectedCheckbox.setChecked(item.isSelected());
@@ -98,7 +96,7 @@ public class ImageAdapter extends FileBaseAdapter<ImageItem> {
         return convertView;
     }
 
-    private static class ViewHolder{
+    private static class ViewHolder {
         ImageView image;
         TextView folderInfoTextView;
         TextView dateTextView;

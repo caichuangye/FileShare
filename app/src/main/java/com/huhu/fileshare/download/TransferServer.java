@@ -1,25 +1,21 @@
 package com.huhu.fileshare.download;
 
 
-import android.content.Context;
 import android.util.Log;
 
 import com.huhu.fileshare.ShareApplication;
-import com.huhu.fileshare.model.DownloadItem;
+import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -31,69 +27,123 @@ public class TransferServer {
 
     public static String TAG = TransferServer.class.getSimpleName();
 
+    /**
+     * 线程池，用户向客户端发送文件
+     */
     private ExecutorService mWorkThreadPool;
 
-    private ConcurrentMap<String, SendListItem> mSendMap;
-
+    /**
+     * 标志是否循环监听客户端的连接
+     */
     private Boolean mQuit;
 
+    /**
+     * 服务器监听的端口
+     */
     private int mPort;
 
+    /**
+     * 服务端socket
+     */
     private ServerSocket mServerSocket;
 
-    private Context mContext;
-
+    /**
+     * 服务端对象，服务端为单例模式
+     */
     private static TransferServer sInstance;
 
-    public static TransferServer getInstance(Context context) {
+    public static TransferServer getInstance() {
         if (sInstance == null) {
-            sInstance = new TransferServer(context);
+            sInstance = new TransferServer();
         }
         return sInstance;
     }
 
-    private TransferServer(Context context) {
-        mContext = context;
+    private TransferServer() {
         mQuit = false;
-        mWorkThreadPool = Executors.newCachedThreadPool();
-        mSendMap = new ConcurrentHashMap<>();
+        mWorkThreadPool = Executors.newFixedThreadPool(5);
     }
 
     /**
-     * call this to start server
+     * 启动服务器监听
      */
     public void startServer(int port) {
         mPort = port;
         initServerSocket();
     }
 
-
-    private List<DownloadItem> getSendFilesByIP(String ip) {
-        return ShareApplication.getInstance().getSendList(ip);
+    /**
+     * 服务器接收到客户端发来的请求的文件路径时，需要检测该文件是否被共享了。
+     * 只有被共享的文件才向客户端发送
+     *
+     * @param path
+     * @return
+     */
+    private boolean checkSendPermission(String path) {
+        return ShareApplication.getInstance().isFileShared(path);
     }
 
-    private boolean sendFile(String path, Socket socket) {
+    /**
+     * 核心发送函数
+     * 客户端向服务器请求文件时，首先现将要请求的文件路径发送过来，消息的格式为：path:+文件路径
+     * @param socket
+     * @return true表示发送成功，false表示发送失败
+     */
+    private boolean sendFile(Socket socket) {
         if (socket.isClosed()) {
-            Log.e(TAG, "socket is closed, can not send file");
+            HLog.e(TAG, "socket is closed, can not send file");
             return false;
         }
-        long start = System.currentTimeMillis();
-        long size = 0;
+        Log.d(TAG, "socket = " + socket.toString());
+        String path = "";
+        //读取客户端请求的文件名
+        try {
+            InputStream readStream = socket.getInputStream();
+            byte[] name = new byte[261];
+            int count = readStream.read(name);
+            if (count > GlobalParams.REQUEST_TAG.length()) {
+                path = new String(name, 0, count, "utf-8");
+                if (path.startsWith(GlobalParams.REQUEST_TAG)) {
+                    path = path.substring(5);
+                }
+            } else {
+                HLog.e(TAG, "read path format wrong: " + path);
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            HLog.e(TAG, "read snd path: " + e.getMessage());
+            return false;
+        }
+
         boolean res = false;
         File file = new File(path);
         if (!file.exists()) {
             Log.e(TAG, "file is no existed, can not send file");
             return res;
         }
+        long start = System.currentTimeMillis();
+        long size = 0;
         FileInputStream inputStream = null;
         OutputStream outputStream = null;
         Log.d(TAG, "start send: " + path);
         try {
+            outputStream = socket.getOutputStream();
+            /**
+             * 检查客户端请求的文件是否在服务端允许的范围内,若客户端没有权限请求该文件，则向客户端发送"NOPERMISSION"
+             */
+            if (!checkSendPermission(path)) {
+                outputStream.write(GlobalParams.PERMISSION_DENIED.getBytes());
+                outputStream.flush();
+                HLog.e(TAG, socket.getInetAddress().getHostAddress()+" have no permission to request: " + path);
+                outputStream.close();
+                socket.close();
+                return false;
+            }
             inputStream = new FileInputStream(file);
             size = file.length();
             long offset = 0;
             int length = 1024 * 4;
-            outputStream = socket.getOutputStream();
             while (size > offset) {
                 byte[] bytes = new byte[length];
                 if (offset + length > size) {
@@ -120,9 +170,9 @@ public class TransferServer {
             }
         }
         long consume = System.currentTimeMillis() - start;
-        float rate = size/consume;
-        rate = rate*(1000/1024f);
-        HLog.d(TAG,"rate = "+rate+"KB/s"+", size = "+size+", time = "+consume);
+        float rate = size / consume;
+        rate = rate * (1000 / 1024f);
+        HLog.d(TAG, "rate = " + rate + "KB/s" + ", size = " + size + ", time = " + consume);
         return res;
     }
 
@@ -131,11 +181,6 @@ public class TransferServer {
             mQuit = true;
         }
         mWorkThreadPool.shutdown();
-        for (Map.Entry<String, SendListItem> entry : mSendMap.entrySet()) {
-            SendListItem info = entry.getValue();
-            info.clear();
-        }
-        mSendMap.clear();
         try {
             mServerSocket.close();
         } catch (IOException e) {
@@ -143,30 +188,11 @@ public class TransferServer {
         }
     }
 
-    public void pendingFiles(String ip, List<DownloadItem> list) {
-        SendListItem info = mSendMap.get(ip);
-        if (info != null) {
-            info.appendFilesList(list);
-            mSendMap.put(ip, info);
-        }
-    }
-
-    public void pendingFiles(String ip, DownloadItem str) {
-        List<DownloadItem> list = new ArrayList<>();
-        list.add(str);
-        pendingFiles(ip, list);
-    }
-
 
     public void deleteFiles(String ip, List<String> list) {
-        SendListItem info = mSendMap.get(ip);
-        if (info != null && list != null) {
-            info.deleteFileList(list);
-            mSendMap.put(ip, info);
-        }
+
     }
 
-    private int mCurrentIndex = 0;
 
     private void initServerSocket() {
         try {
@@ -181,41 +207,15 @@ public class TransferServer {
                         try {
                             Log.d(TAG, "server waiting...");
                             final Socket socket = mServerSocket.accept();
-                            Log.d(TAG, "socket = " + socket.toString());
-                            String destIP = socket.getInetAddress().getHostAddress();
-                            List<DownloadItem> list = getSendFilesByIP(destIP);
-
-                            if (list == null) {
-                                int times = 3;
-                                while (times > 0) {
-                                    list = getSendFilesByIP(destIP);
-                                    if (list != null) {
-                                        break;
-                                    } else {
-                                        times--;
-                                        try {
-                                            Thread.sleep(150);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
+                            mWorkThreadPool.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sendFile(socket);
                                 }
-                            }
-
-                            if(mCurrentIndex < list.size()) {
-                                final String path = list.get(mCurrentIndex++).getFromPath();
-
-                                mWorkThreadPool.execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        sendFile(path, socket);
-                                    }
-                                });
-                            }else{
-                                HLog.e(TAG,"------------------send sequence go wrong, index out of range!-------------------------");
-                            }
+                            });
 
                         } catch (IOException e) {
+                            HLog.e(TAG,e.getMessage());
                             e.printStackTrace();
                         }
                     }

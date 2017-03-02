@@ -45,6 +45,35 @@ public class SharedCollection {
 
     public List<ApkItem> getApkList(){return mApkList; }
 
+    public boolean isFileShared(String path){
+        for(ImageItem item : mImagesList){
+            if(item.getPath().equals(path)){
+                return true;
+            }
+        }
+        for(MusicItem item : mMusicList){
+            if(item.getPath().equals(path)){
+                return true;
+            }
+        }
+        for(VideoItem item : mVideoList){
+            if(item.getPath().equals(path)){
+                return true;
+            }
+        }
+        for(ApkItem item : mApkList){
+            if(item.getPath().equals(path)){
+                return true;
+            }
+        }
+        for(CommonFileItem item : mCommonFileList){
+            if(item.getPath().equals(path)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public byte getSharedType(){
         byte b = 0x00;
         if(mImagesList.size() > 0){

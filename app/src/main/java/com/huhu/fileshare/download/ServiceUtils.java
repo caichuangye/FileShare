@@ -95,7 +95,6 @@ public class ServiceUtils {
 
         @Override
         public void onProgress(String uuid,long total,long recv) throws RemoteException {
-          //  HLog.d(DownloadService.TAG,"onProgress, uuid = "+uuid+", total = "+total+", recv = "+recv);
             ShareApplication.getInstance().updateDownloadItem(uuid,total,recv);
         }
     }

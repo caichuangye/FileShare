@@ -28,20 +28,20 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
  */
 public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
 
-    public CommonFileAdapter(Context context, int mode){
-        super(context,mode);
+    public CommonFileAdapter(Context context, int mode) {
+        super(context, mode);
     }
 
-    public void updateCover(String path,String cover){
+    public void updateCover(String path, String cover) {
         boolean hit = false;
-        for(CommonFileItem item : mDataList){
-            if(path.equals(item.getType().toString())){
+        for (CommonFileItem item : mDataList) {
+            if (path.equals(item.getType().toString())) {
                 item.setCoverBitMap(cover);
                 hit = true;
-           //     break;
+                //     break;
             }
         }
-        if(hit){
+        if (hit) {
             notifyDataSetChanged();
         }
     }
@@ -52,31 +52,31 @@ public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent){
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        if(convertView == null){
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.file_item_layout,null);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.file_item_layout, null);
             holder = new ViewHolder();
-            holder.coverImageView = (ImageView)convertView.findViewById(R.id.file_cover);
-            holder.titleTextView = (TextView)convertView.findViewById(R.id.file_name);
-            holder.typeTextView = (TextView)convertView.findViewById(R.id.file_info1);
-            holder.sizeTextView = (TextView)convertView.findViewById(R.id.file_info2);
+            holder.coverImageView = (ImageView) convertView.findViewById(R.id.file_cover);
+            holder.titleTextView = (TextView) convertView.findViewById(R.id.file_name);
+            holder.typeTextView = (TextView) convertView.findViewById(R.id.file_info1);
+            holder.sizeTextView = (TextView) convertView.findViewById(R.id.file_info2);
             holder.selectedCheckbox = (CheckBox) convertView.findViewById(R.id.file_selected);
             holder.downloadTextView = (DownloadIcon) convertView.findViewById(R.id.file_download);
             convertView.setTag(holder);
-        }else{
-            holder = (ViewHolder)convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
         CommonFileItem item = mDataList.get(position);
 
-        if(TextUtils.isEmpty(item.getCoverBitMap())) {
+        if (TextUtils.isEmpty(item.getCoverBitMap())) {
             item.setCoverBitMap(ImageCacher.getInstance().getCoverPath(item.getType().toString(), ImageCacher.Type.COMMON_FILE));
         }
-        DisplayImageOptions options =  new DisplayImageOptions.Builder().displayer(
+        DisplayImageOptions options = new DisplayImageOptions.Builder().displayer(
                 new RoundedBitmapDisplayer(15))
                 .showImageOnFail(R.mipmap.file)
                 .build();
-        ImageLoader.getInstance().displayImage("file://"+item.getCoverBitMap(),holder.coverImageView,options);
+        ImageLoader.getInstance().displayImage("file://" + item.getCoverBitMap(), holder.coverImageView, options);
 
         holder.selectedCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,15 +93,13 @@ public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
             holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadTextView.setVisibility(View.VISIBLE);
             DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());
-            if(status != null) {
+            if (status != null) {
                 holder.downloadTextView.setStatus(CommonUtil.getStatus(status));
             }
-            if(holder.downloadTextView.getStatus() == DownloadIcon.Status.INIT) {
-                EventBusType.SharedFileInfo info = new EventBusType.SharedFileInfo(item, getSharedType(), true);
-                DownLoadListener listener = new DownLoadListener(info);
-                holder.downloadTextView.setOnClickListener(listener);
-            }
-        }else{
+            EventBusType.SharedFileInfo info = new EventBusType.SharedFileInfo(item, getSharedType(), true);
+            DownLoadListener listener = new DownLoadListener(info);
+            holder.downloadTextView.setOnClickListener(listener);
+        } else {
             holder.selectedCheckbox.setVisibility(View.VISIBLE);
             holder.downloadTextView.setVisibility(View.GONE);
             holder.selectedCheckbox.setChecked(item.isSelected());
@@ -110,7 +108,7 @@ public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
         return convertView;
     }
 
-    private class ViewHolder{
+    private class ViewHolder {
         ImageView coverImageView;
         TextView titleTextView;
         TextView typeTextView;

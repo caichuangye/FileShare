@@ -356,7 +356,17 @@ public class EventBusType {
 
     }
 
-    public static class CacheImageComplete {
+    /**
+     *
+     */
+    public static class GoToDownloadActivity {
+
+        public GoToDownloadActivity() {
+
+        }
+    }
+
+        public static class CacheImageComplete {
 
         public ImageCacher.CacheResult result;
 
