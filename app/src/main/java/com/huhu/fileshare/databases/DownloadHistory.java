@@ -112,8 +112,9 @@ public class DownloadHistory {
         HLog.d("ccyd","update item: "+item.toString());
         String where = " id = '"+item.getUUID()+"'";
         ContentValues values = new ContentValues();
-        values.put("download_states",item.getStatus().toString());
-        values.put("end_time",item.getEndTime());
+        values.put(DatabaseUtils.ColumnName.DOWNLOAD_STATES,item.getStatus().toString());
+        values.put(DatabaseUtils.ColumnName.RECV_SIZE,item.getRecvSize());
+        values.put(DatabaseUtils.ColumnName.END_TIME,item.getEndTime());
         mContentResolver.update(DatabaseUtils.DOWNLOAD_HISTORY_URI,values,where,null);
     }
 

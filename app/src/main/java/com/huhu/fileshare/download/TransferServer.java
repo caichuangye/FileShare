@@ -98,6 +98,8 @@ public class TransferServer {
         }
         Log.d(TAG, "socket = " + socket.toString());
         String path = "";
+        long startPos = 0;
+        long endPos = -1;
         //读取客户端请求的文件名
         try {
             InputStream readStream = socket.getInputStream();
@@ -106,10 +108,10 @@ public class TransferServer {
             String info = new String(name,0,count);
             Gson gson = new Gson();
             OperationInfo operInfo = gson.fromJson(info,OperationInfo.class);
-            if (operInfo.oper.equals(GlobalParams.OperationType.REQUEST) &&
-                    operInfo.fileList != null &&
-                    operInfo.fileList.size() == 1) {
-                path = operInfo.fileList.get(0).path;
+            if (operInfo.oper.equals(GlobalParams.OperationType.REQUEST)){
+                path = operInfo.path;
+                startPos = operInfo.start;
+                endPos = operInfo.end;
             } else {
                 HLog.e(TAG, "read path format wrong: " + path);
                 return false;
@@ -145,8 +147,9 @@ public class TransferServer {
                 return false;
             }
             inputStream = new FileInputStream(file);
+            inputStream.skip(startPos);
             size = file.length();
-            long offset = 0;
+            long offset = startPos;
             int length = 1024 * 4;
             while (size > offset) {
                 byte[] bytes = new byte[length];

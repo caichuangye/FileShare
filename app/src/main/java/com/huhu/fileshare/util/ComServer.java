@@ -5,25 +5,20 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.huhu.fileshare.ShareApplication;
-import com.huhu.fileshare.model.OperationInfo;
-import com.huhu.fileshare.model.SimpleFileInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/4/21.
  */
 public class ComServer implements Runnable {
 
-    public static final String TAG = "CCOM_SERVER";
+    public static final String TAG = ComServer.class.getSimpleName();
 
     private static ComServer sInstance;
 
@@ -33,7 +28,7 @@ public class ComServer implements Runnable {
 
     private boolean mIsQuit;
 
-    public static ComServer getInstance(Context context) {
+    public static ComServer getInstance() {
         if (sInstance == null) {
             synchronized (ComServer.class) {
                 if (sInstance == null) {

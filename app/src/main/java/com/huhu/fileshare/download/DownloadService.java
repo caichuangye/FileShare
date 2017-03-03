@@ -52,7 +52,17 @@ public class DownloadService extends Service{
             public void onTransfer(String uuid, long total, long recv) {
                 if(mListener != null){
                     try {
-                        Log.d(DD,uuid+"="+total+"->"+recv);
+                        Log.d(TAG,uuid+"="+total+"->"+recv);
+                        DownloadItem item = new DownloadItem();
+                        item.setUUID(uuid);
+                        if(total == recv){
+                            item.setStatus(DownloadStatus.SUCCESSED);
+                        }else{
+                            item.setStatus(DownloadStatus.DOWNLOADING);
+                        }
+                        item.setEndTime(String.valueOf(System.currentTimeMillis()));
+                        item.setRecvSize(recv);
+                    //    mDownloadHistory.operateDatabases(item,UPDATE_ITEM);
                         mListener.onProgress(uuid,total,recv);
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -85,10 +95,11 @@ public class DownloadService extends Service{
     private class DownloadBinder extends IDownloadServicelInterface.Stub{
 
         @Override
-        public void addDownloadItem(String uuid,String ip,String fromPath,long size,String fromUser,String type,String destName)
+        public void addDownloadItem(String uuid,String ip,String fromPath,long size,long recv,String fromUser,String type,String destName)
                 throws RemoteException {
             HLog.d(TAG,"Service:addDownloadItem, ip = "+ip+", from path = "+fromPath);
             DownloadItem item = new DownloadItem(ip,size,fromPath,fromUser,uuid,type);
+            item.setRecvSize(recv);
             item.setDestName(destName);
             mDownloadHistory.operateDatabases(item, ADD_ITEM);
             TransferClient.getInstance().requestFile(item,ip);
@@ -104,8 +115,6 @@ public class DownloadService extends Service{
     }
 
     public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
-        if(info.getData().getStatus() == DownloadStatus.SUCCESSED) {
-            mDownloadHistory.operateDatabases(info.getData(), UPDATE_ITEM);
-        }
+        mDownloadHistory.operateDatabases(info.getData(), UPDATE_ITEM);
     }
 }

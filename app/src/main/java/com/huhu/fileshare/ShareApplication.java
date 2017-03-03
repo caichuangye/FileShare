@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -17,11 +18,8 @@ import com.huhu.fileshare.download.ServiceUtils;
 import com.huhu.fileshare.model.BaseItem;
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
-import com.huhu.fileshare.model.OperationInfo;
 import com.huhu.fileshare.model.ScanCollection;
 import com.huhu.fileshare.model.SharedCollection;
-import com.huhu.fileshare.model.SimpleFileInfo;
-import com.huhu.fileshare.util.ComClient;
 import com.huhu.fileshare.util.ComServer;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
@@ -37,6 +35,9 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,8 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.huhu.fileshare.util.HLog.DD;
 
 /**
  * Created by Administrator on 2016/4/11.
@@ -118,7 +117,7 @@ public class ShareApplication extends Application {
     public void onCreate() {
         EventBus.getDefault().register(this);
         initImageLoader(getApplicationContext());
-        ComServer.getInstance(this).start();
+        ComServer.getInstance().start();
         mSharedCollection = new SharedCollection();
         mRequestCollection = new ScanCollection();
         mAllSharedCollection = new HashMap<>();
@@ -208,6 +207,26 @@ public class ShareApplication extends Application {
             if(info.getType().equals(GlobalParams.ShareType.APK)){
                 item.setDestName(item0.getShowName());
             }
+
+            String name = item0.getPath().substring(item0.getPath().lastIndexOf(File.separator) + 1);
+            String localPath = Environment.getExternalStorageDirectory().getPath() + File.separator + GlobalParams.FOLDER;
+            if (name.endsWith(".apk")) {
+                localPath += File.separator + item.getDestName() + ".apk";
+            } else {
+                localPath += File.separator + name;
+            }
+            File file = new File(localPath);
+            if(file.exists()){
+                try {
+                    FileInputStream inputStream = new FileInputStream(file);
+                    item.setRecvSize(inputStream.available());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }catch (IOException e){
+
+                }
+            }
+
             addScanFile(item);
         }
     }

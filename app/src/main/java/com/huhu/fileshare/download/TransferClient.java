@@ -108,7 +108,7 @@ public class TransferClient {
             }
             try {
                     final ReceiveUnit unit = mReceiveList.take();
-                    if(!ShareApplication.getInstance().isFileShared(unit.path)) {
+                    if(!ShareApplication.getInstance().isFileDeleted(unit.ip,unit.path)) {
                         mWorkPool.execute(new Runnable() {
                             @Override
                             public void run() {
@@ -139,16 +139,15 @@ public class TransferClient {
             String remotePath = unit.path;
 
             Gson gson = new Gson();
-            final SimpleFileInfo simpleFileInfo = new SimpleFileInfo(unit.path,unit.totalSize,null);
-            List<SimpleFileInfo> fileList = new ArrayList<SimpleFileInfo>(){{add(simpleFileInfo);}};
-            OperationInfo operInfo = new OperationInfo(GlobalParams.OperationType.REQUEST,fileList);
+            OperationInfo operInfo = new OperationInfo(GlobalParams.OperationType.REQUEST,unit.path,unit.totalSize);
+            operInfo.start = unit.recvSize;
             String str = gson.toJson(operInfo);
             OutputStream output = socket.getOutputStream();
             HLog.d(TAG,"request info: "+str);
             output.write(str.getBytes());
 
             long size = unit.totalSize;
-            long offset = 0;
+            long offset = unit.recvSize;
             String name = remotePath.substring(remotePath.lastIndexOf(File.separator) + 1);
             String localPath = Environment.getExternalStorageDirectory().getPath() + File.separator + GlobalParams.FOLDER;
             if (name.endsWith(".apk")) {
@@ -156,9 +155,7 @@ public class TransferClient {
             } else {
                 localPath += File.separator + name;
             }
-            File file = new File(localPath);
-            file.deleteOnExit();
-            FileOutputStream outputStream = new FileOutputStream(file);
+            FileOutputStream outputStream = new FileOutputStream(localPath,true);
             while (offset < size) {
 
                 if(ShareApplication.getInstance().isFileDeleted(unit.ip,unit.path)){
@@ -207,7 +204,7 @@ public class TransferClient {
      * 向服务器请求一个文件
      */
     public void requestFile(DownloadItem info, String ip) {
-        ReceiveUnit unit = new ReceiveUnit(ip,info.getFromPath(),info.getUUID(),info.getTotalSize());
+        ReceiveUnit unit = new ReceiveUnit(ip,info.getFromPath(),info.getUUID(),info.getTotalSize(),info.getRecvSize());
         if(info.getFromPath().endsWith(".apk")){
             unit.desc = info.getDestName();
         }
@@ -250,16 +247,18 @@ public class TransferClient {
      */
     public class ReceiveUnit{
 
-        public ReceiveUnit(String ip,String path,String uuid,long totalSize){
+        public ReceiveUnit(String ip,String path,String uuid,long totalSize,long recvSize){
             this.ip = ip;
             this.path = path;
             this.uuid = uuid;
             this.totalSize = totalSize;
+            this.recvSize = recvSize;
         }
         String ip;
         String path;
         String uuid;
         long totalSize;
+        long recvSize;
         String desc;
     }
 
