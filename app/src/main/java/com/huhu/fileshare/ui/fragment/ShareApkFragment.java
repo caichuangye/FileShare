@@ -95,7 +95,17 @@ public class ShareApkFragment extends MediaFragment {
         }
     }
 
+    public void onEventMainThread(EventBusType.ResetDownloadStatus info) {
+        if (mType == GlobalParams.SERVER_MODE) {
+            List<String> list = info.map.get(GlobalParams.ShareType.APK);
+            if(list != null && list.size() > 0){
+               mAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
     public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
+        HLog.d("ccrd","oper = "+info.getOper().toString());
         if (mType == GlobalParams.SERVER_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
                 || info.getOper() == GlobalParams.DownloadOper.ADD)) {

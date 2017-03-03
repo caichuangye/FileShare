@@ -138,6 +138,15 @@ public class ShareImagesFragment extends BaseFragment {
         }
     }
 
+    public void onEventMainThread(EventBusType.ResetDownloadStatus info) {
+        if (mType == GlobalParams.SERVER_MODE) {
+            List<String> list = info.map.get(GlobalParams.ShareType.IMAGE);
+            if(list != null && list.size() > 0){
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
     private void setData(){
         SharedCollection collection = ShareApplication.getInstance().getDestAllSharedFiles(mIP);
         if(collection != null && mAdapter != null){

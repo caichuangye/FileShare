@@ -9,19 +9,18 @@ import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.BaseAdapter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.download.ServiceUtils;
-import com.huhu.fileshare.download.TransferServer;
 import com.huhu.fileshare.model.BaseItem;
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
+import com.huhu.fileshare.model.OperationInfo;
 import com.huhu.fileshare.model.ScanCollection;
 import com.huhu.fileshare.model.SharedCollection;
-import com.huhu.fileshare.model.UpdateCommand;
+import com.huhu.fileshare.model.SimpleFileInfo;
 import com.huhu.fileshare.util.ComClient;
 import com.huhu.fileshare.util.ComServer;
 import com.huhu.fileshare.util.CommonUtil;
@@ -45,6 +44,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.huhu.fileshare.util.HLog.DD;
 
@@ -88,7 +88,7 @@ public class ShareApplication extends Application {
      */
     private Map<String, SharedCollection> mAllSharedCollection;
 
-    private Map<String,List<DownloadItem>> mServerToSendList;
+    private Map<String,Set<String>> mClientDeletedFiles;
 
     /**
      * 监听网络连接状态的广播接收者
@@ -122,7 +122,7 @@ public class ShareApplication extends Application {
         mSharedCollection = new SharedCollection();
         mRequestCollection = new ScanCollection();
         mAllSharedCollection = new HashMap<>();
-        mServerToSendList = new HashMap<>();
+        mClientDeletedFiles = new HashMap<>();
         sInstance = this;
         mReceiver = new NetReceiver();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -182,15 +182,16 @@ public class ShareApplication extends Application {
         mScanningServerName = name;
     }
 
-    public void requestFile(EventBusType.SharedFileInfo info){
-        boolean isAdd = info.isAdd();
-        String path = info.getPath();
-        String oper = isAdd?"add" : "delete";
-        UpdateCommand command = new UpdateCommand();
-        command.ip = WiFiOperation.getInstance(this).getIP();
-        command.oper = oper;
-        command.path = path;
 
+    public void requestFile(EventBusType.SharedFileInfo info){
+        Set<String> tmp = mClientDeletedFiles.get(mScanningServerIP);
+        if(tmp != null){
+            boolean res = tmp.remove(info.getPath());
+            if(res){
+                HLog.d(TAG,"remove from deleted list: "+info.getPath());
+            }
+        }
+        mClientDeletedFiles.put(mScanningServerIP,tmp);
         BaseItem item0 = (BaseItem)info.getData();
         if(info.isAdd()) {
             DownloadItem item = new DownloadItem();
@@ -211,36 +212,6 @@ public class ShareApplication extends Application {
         }
     }
 
-
-
-
-
-
-    public void updateSendList(UpdateCommand command){
-        synchronized (mServerToSendList) {
-            List<DownloadItem> list = mServerToSendList.get(command.ip);
-            if (list == null) {
-                list = new ArrayList<>();
-            }
-            if(command.oper.toUpperCase().equals("DELETE")){
-                for(DownloadItem item : list){
-                    if(item.getFromPath().toUpperCase().equals(command.path.toLowerCase())){
-                        list.remove(item);
-                        break;
-                    }
-                }
-            }else if(command.oper.toUpperCase().equals("ADD")){
-                DownloadItem item = new DownloadItem();
-                item.setFromPath(command.path);
-                list.add(item);
-            }
-            mServerToSendList.put(command.ip, list);
-            Log.d(TransferServer.TAG,"add to send, ip = "+command.ip+", path = "+command.path);
-            for(DownloadItem i : list){
-                Log.d("transferu","-----: "+i.getFromPath());
-            }
-        }
-    }
 
     /**
      * 添加或者删除共享文件
@@ -364,7 +335,7 @@ public class ShareApplication extends Application {
      * 添加一个要下载的文件
      */
     public void addScanFile(DownloadItem item) {
-        Log.d(DD,"mRequestCollection add: "+item.getFromPath());
+        Log.d(TAG,"mRequestCollection add: "+item.getFromPath());
         item.setStatus(DownloadStatus.WAIT);
         mRequestCollection.addFile(item);
         ServiceUtils.getInstance().addDownloadItem(item);
@@ -386,14 +357,6 @@ public class ShareApplication extends Application {
         ServiceUtils.getInstance().deleteDownloadItem(info.getData().getUUID());
     }
 
-    /**
-     * 获取本机将要想目标ip发送的文件的集合
-     */
-    public List<DownloadItem> getSendList(String ip) {
-        synchronized (mServerToSendList){
-            return mServerToSendList.get(ip);
-        }
-    }
 
     /**
      * 获取所有要下载的信息
@@ -415,6 +378,36 @@ public class ShareApplication extends Application {
             }
         });
 
+    }
+
+    /**
+     * 在下载列表中删除一个下载后，服务器的共享页面上对对应的文件状态应被重置为初始化状态，即可再次点击下载
+     * @param list
+     */
+    public void setDeletedFiles(List<DownloadItem> list){
+        mClientDeletedFiles = CommonUtil.groupByIP(list);
+        Map<GlobalParams.ShareType,List<String>> map = new HashMap<>();
+        for(DownloadItem item : list){
+            GlobalParams.ShareType type = GlobalParams.ShareType.valueOf(item.getFileType().toUpperCase());
+            List<String> tmp = map.get(type);
+            if(tmp == null){
+                tmp = new ArrayList<>();
+            }
+            mRequestCollection.resetDownloadStatus(item.getFromPath());
+            tmp.add(item.getFromPath());
+            map.put(type,tmp);
+        }
+        if(map.size() > 0){
+            EventBus.getDefault().post(new EventBusType.ResetDownloadStatus(map));
+        }
+    }
+
+    public boolean isFileDeleted(String ip,String path){
+        Set<String> list = mClientDeletedFiles.get(ip);
+        if(list != null){
+            return list.contains(path);
+        }
+        return false;
     }
 
 }

@@ -10,13 +10,18 @@ import android.os.Environment;
 import android.text.TextUtils;
 
 import com.huhu.fileshare.ShareApplication;
+import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.model.ImageItem;
 import com.huhu.fileshare.ui.view.DownloadIcon;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -247,5 +252,19 @@ public class CommonUtil {
     }
 
 
+    public static Map<String,Set<String>> groupByIP(List<DownloadItem> list){
+        Map<String,Set<String>> map  = new HashMap<>();
+        if(list != null){
+            for(DownloadItem item : list){
+                Set<String> tmp = map.get(item.getFromIP());
+                if(tmp == null){
+                    tmp = new HashSet<>();
+                }
+                tmp.add(item.getFromPath());
+                map.put(item.getFromIP(),tmp);
+            }
+        }
+        return map;
+    }
 
 }

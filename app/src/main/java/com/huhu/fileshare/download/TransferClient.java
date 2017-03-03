@@ -3,7 +3,11 @@ package com.huhu.fileshare.download;
 import android.os.Environment;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.DownloadItem;
+import com.huhu.fileshare.model.OperationInfo;
+import com.huhu.fileshare.model.SimpleFileInfo;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
 
@@ -13,6 +17,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -102,14 +108,18 @@ public class TransferClient {
             }
             try {
                     final ReceiveUnit unit = mReceiveList.take();
-                    mWorkPool.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            boolean res = receiveFile(unit);
-                            String str = res ? "success" : "failed";
-                            HLog.d(TAG, "receive +" + unit.path + ": " + str);
-                        }
-                    });
+                    if(!ShareApplication.getInstance().isFileShared(unit.path)) {
+                        mWorkPool.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                boolean res = receiveFile(unit);
+                                String str = res ? "success" : "failed";
+                                HLog.d(TAG, "receive +" + unit.path + ": " + str);
+                            }
+                        });
+                    }else{
+                        HLog.w(TAG, "delete: " + unit.path+", handle next");
+                    }
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 HLog.d(TAG,"run loop to receive: "+e.getMessage());
@@ -128,8 +138,13 @@ public class TransferClient {
             InputStream inputStream = socket.getInputStream();
             String remotePath = unit.path;
 
+            Gson gson = new Gson();
+            final SimpleFileInfo simpleFileInfo = new SimpleFileInfo(unit.path,unit.totalSize,null);
+            List<SimpleFileInfo> fileList = new ArrayList<SimpleFileInfo>(){{add(simpleFileInfo);}};
+            OperationInfo operInfo = new OperationInfo(GlobalParams.OperationType.REQUEST,fileList);
+            String str = gson.toJson(operInfo);
             OutputStream output = socket.getOutputStream();
-            String str = GlobalParams.REQUEST_TAG + remotePath;
+            HLog.d(TAG,"request info: "+str);
             output.write(str.getBytes());
 
             long size = unit.totalSize;
@@ -145,6 +160,16 @@ public class TransferClient {
             file.deleteOnExit();
             FileOutputStream outputStream = new FileOutputStream(file);
             while (offset < size) {
+
+                if(ShareApplication.getInstance().isFileDeleted(unit.ip,unit.path)){
+                    outputStream.flush();
+                    outputStream.close();
+                    inputStream.close();
+                    socket.close();
+                    HLog.w(TAG, "delete while downloading: " + unit.path+", handle next");
+                    return false;
+                }
+
                 byte[] data = new byte[1024 * 4];
                 int tmp = inputStream.read(data, 0, 1024 * 4);
                 if (tmp == -1) {

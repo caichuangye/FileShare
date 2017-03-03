@@ -42,7 +42,7 @@ public class GlobalParams {
     /**
      * 客户端向服务器请求数据时，在请求的文件路径前加上REQUEST_TAG发送给服务器
      */
-    public static final String REQUEST_TAG = "PATH:";
+    public static final String REQUEST_TAG = "REQUEST";
 
     /**
      * 服务器检测到客户端没有权限下载文件时，将通过下载端口将 "PERMISSION_DENIED"发送给客户端
@@ -55,6 +55,11 @@ public class GlobalParams {
     public static final String FOLDER = "fileshare";
 
     public static int CLIENT_DOWNLOAD_THREAD_NUM = 1;
+
+    public enum  OperationType{
+        REQUEST,
+        DELETE
+    }
 
     /**
      * 用来控制下载按钮的显示状态
@@ -102,5 +107,7 @@ public class GlobalParams {
      * 点击设备列表中的设备时，将向目标设备发送请求，请求目标设备的共享文件信息
      */
     public static final String REQUEST_SHARED_FILES = "request_shared_files";
+
+
 
 }

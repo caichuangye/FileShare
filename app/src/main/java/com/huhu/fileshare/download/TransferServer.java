@@ -3,7 +3,9 @@ package com.huhu.fileshare.download;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.huhu.fileshare.ShareApplication;
+import com.huhu.fileshare.model.OperationInfo;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
 
@@ -99,13 +101,15 @@ public class TransferServer {
         //读取客户端请求的文件名
         try {
             InputStream readStream = socket.getInputStream();
-            byte[] name = new byte[261];
+            byte[] name = new byte[2048];
             int count = readStream.read(name);
-            if (count > GlobalParams.REQUEST_TAG.length()) {
-                path = new String(name, 0, count, "utf-8");
-                if (path.startsWith(GlobalParams.REQUEST_TAG)) {
-                    path = path.substring(5);
-                }
+            String info = new String(name,0,count);
+            Gson gson = new Gson();
+            OperationInfo operInfo = gson.fromJson(info,OperationInfo.class);
+            if (operInfo.oper.equals(GlobalParams.OperationType.REQUEST) &&
+                    operInfo.fileList != null &&
+                    operInfo.fileList.size() == 1) {
+                path = operInfo.fileList.get(0).path;
             } else {
                 HLog.e(TAG, "read path format wrong: " + path);
                 return false;

@@ -6,19 +6,17 @@ import android.os.HandlerThread;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.huhu.fileshare.ShareApplication;
-import com.huhu.fileshare.model.SharedCollection;
-import com.huhu.fileshare.model.UpdateCommand;
+import com.huhu.fileshare.model.OperationInfo;
+import com.huhu.fileshare.model.SimpleFileInfo;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Type;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/4/21.
@@ -110,17 +108,6 @@ public class ComServer implements Runnable {
     }
 
     private void parseData(String request){
-        Log.d("upf","server: "+request);
-        try {
-            Gson gson = new Gson();
-            Type type = new TypeToken<UpdateCommand>() {
-            }.getType();
-            UpdateCommand command = gson.fromJson(request, type);
-            Log.d("upf","s: "+command.ip+": "+command.oper+": "+command.path);
-            ShareApplication.getInstance().updateSendList(command);
-        }catch (Exception e){
-            Log.e("upf",e.getMessage());
-        }
 
     }
 

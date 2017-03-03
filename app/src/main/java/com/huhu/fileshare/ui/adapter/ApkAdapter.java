@@ -73,7 +73,7 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
             holder.descTextView = (TextView) convertView.findViewById(R.id.file_info1);
             holder.selectedCheckbox = (CheckBox) convertView.findViewById(R.id.file_selected);
             holder.sizeTextView = (TextView) convertView.findViewById(R.id.file_info2);
-            holder.downloadTextView = (DownloadIcon) convertView.findViewById(R.id.file_download);
+            holder.downloadIcon = (DownloadIcon) convertView.findViewById(R.id.file_download);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -102,17 +102,17 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
 
         if (mMode == GlobalParams.SERVER_MODE) {
             holder.selectedCheckbox.setVisibility(View.GONE);
-            holder.downloadTextView.setVisibility(View.VISIBLE);
+            holder.downloadIcon.setVisibility(View.VISIBLE);
             DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());
             if (status != null) {
-                holder.downloadTextView.setStatus(CommonUtil.getStatus(status));
+                holder.downloadIcon.setStatus(CommonUtil.getStatus(status));
             }
             EventBusType.SharedFileInfo info = new EventBusType.SharedFileInfo(item, getSharedType(), true);
             DownLoadListener listener = new DownLoadListener(info);
-            holder.downloadTextView.setOnClickListener(listener);
+            holder.downloadIcon.setOnClickListener(listener);
         } else {
             holder.selectedCheckbox.setVisibility(View.VISIBLE);
-            holder.downloadTextView.setVisibility(View.GONE);
+            holder.downloadIcon.setVisibility(View.GONE);
             holder.selectedCheckbox.setChecked(item.isSelected());
         }
 
@@ -123,7 +123,7 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
         ImageView coverImageView;
         TextView titleTextView;
         TextView descTextView;
-        DownloadIcon downloadTextView;
+        DownloadIcon downloadIcon;
         CheckBox selectedCheckbox;
         TextView sizeTextView;
     }

@@ -109,6 +109,15 @@ public class ShareVideoFragment extends MediaFragment {
         }
     }
 
+    public void onEventMainThread(EventBusType.ResetDownloadStatus info) {
+        if (mType == GlobalParams.SERVER_MODE) {
+            List<String> list = info.map.get(GlobalParams.ShareType.VIDEO);
+            if(list != null && list.size() > 0){
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
     public void onEventMainThread(EventBusType.UpdateDownloadFile info){
         if(mType == GlobalParams.SERVER_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START

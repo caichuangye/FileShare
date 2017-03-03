@@ -209,7 +209,6 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                      //  showDeletingDialog();
                         deleteSelectedItems(checkBox.isChecked());
                         mAdapter.deleteSelected();
 
@@ -266,6 +265,7 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
 
     private void deleteSelectedItems(boolean isDeleteResources){
         List<DownloadItem> list = mAdapter.getSelectedItem();
+        ShareApplication.getInstance().setDeletedFiles(list);
         StringBuilder where = new StringBuilder(DatabaseUtils.ColumnName.ID+" in (");
         for(DownloadItem item : list){
             String path = item.getToPath();

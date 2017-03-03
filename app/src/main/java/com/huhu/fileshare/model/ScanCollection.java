@@ -10,16 +10,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Administrator on 2016/4/26.
  */
 public class ScanCollection {
 
-    private List<DownloadItem> mDataList;
+    private CopyOnWriteArrayList<DownloadItem> mDataList;
 
     public ScanCollection(){
-        mDataList = new ArrayList<>();
+        mDataList = new CopyOnWriteArrayList<>();
     }
 
     private void notifyDownloadListChanged(DownloadItem item,GlobalParams.DownloadOper oper){
@@ -53,6 +54,14 @@ public class ScanCollection {
             }
         }
         return null;
+    }
+
+    public void resetDownloadStatus(String path){
+        for (DownloadItem item : mDataList){
+            if(item.getFromPath().equals(path)){
+                mDataList.remove(item);
+            }
+        }
     }
 
     public void deleteFile(String uuid){

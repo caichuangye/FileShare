@@ -11,6 +11,7 @@ import com.huhu.fileshare.model.CommonFileItem;
 import com.huhu.fileshare.model.VideoItem;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/4/9.
@@ -392,6 +393,14 @@ public class EventBusType {
             this.result = result;
         }
 
+    }
+
+    public static class ResetDownloadStatus{
+        public Map<GlobalParams.ShareType,List<String>> map;
+
+        public ResetDownloadStatus(Map<GlobalParams.ShareType,List<String>> map){
+            this.map = map;
+        }
     }
 
 }
