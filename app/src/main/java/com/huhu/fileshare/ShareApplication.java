@@ -219,7 +219,15 @@ public class ShareApplication extends Application {
             if(file.exists()){
                 try {
                     FileInputStream inputStream = new FileInputStream(file);
-                    item.setRecvSize(inputStream.available());
+                    if(inputStream.available() < item0.getSize()) {
+                        item.setRecvSize(inputStream.available());
+                    }else{
+                        /**
+                         * 若本地已经存在了要下载的文件，并且文件大小也与服务器上文件大小相同，此时的策略是删除本地已存在的文件，从新从服务器上删除
+                         */
+                        item.setRecvSize(0);
+                        file.delete();
+                    }
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }catch (IOException e){
