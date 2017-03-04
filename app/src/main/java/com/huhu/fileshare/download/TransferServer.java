@@ -87,7 +87,7 @@ public class TransferServer {
 
     /**
      * 核心发送函数
-     * 客户端向服务器请求文件时，首先现将要请求的文件路径发送过来，消息的格式为：path:+文件路径
+     * 客户端向服务器请求文件时，首先现将要请求的文件路径发送过来，消息的格式为：serverPath:+文件路径
      * @param socket
      * @return true表示发送成功，false表示发送失败
      */
@@ -113,12 +113,12 @@ public class TransferServer {
                 startPos = operInfo.start;
                 endPos = operInfo.end;
             } else {
-                HLog.e(TAG, "read path format wrong: " + path);
+                HLog.e(TAG, "read serverPath format wrong: " + path);
                 return false;
             }
         } catch (IOException e) {
             e.printStackTrace();
-            HLog.e(TAG, "read snd path: " + e.getMessage());
+            HLog.e(TAG, "read snd serverPath: " + e.getMessage());
             return false;
         }
 

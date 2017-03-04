@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.OperationInfo;
-import com.huhu.fileshare.model.SimpleFileInfo;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
 
@@ -17,8 +16,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -108,17 +105,17 @@ public class TransferClient {
             }
             try {
                     final ReceiveUnit unit = mReceiveList.take();
-                    if(!ShareApplication.getInstance().isFileDeleted(unit.ip,unit.path)) {
+                    if(!ShareApplication.getInstance().isFileDeleted(unit.ip,unit.serverPath)) {
                         mWorkPool.execute(new Runnable() {
                             @Override
                             public void run() {
                                 boolean res = receiveFile(unit);
                                 String str = res ? "success" : "failed";
-                                HLog.d(TAG, "receive +" + unit.path + ": " + str);
+                                HLog.d(TAG, "receive +" + unit.serverPath + ": " + str);
                             }
                         });
                     }else{
-                        HLog.w(TAG, "delete: " + unit.path+", handle next");
+                        HLog.w(TAG, "delete: " + unit.serverPath +", handle next");
                     }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -136,10 +133,10 @@ public class TransferClient {
             Socket socket = new Socket(address, mPort);
             socket.setSoTimeout(25000);
             InputStream inputStream = socket.getInputStream();
-            String remotePath = unit.path;
+            String remotePath = unit.serverPath;
 
             Gson gson = new Gson();
-            OperationInfo operInfo = new OperationInfo(GlobalParams.OperationType.REQUEST,unit.path,unit.totalSize);
+            OperationInfo operInfo = new OperationInfo(GlobalParams.OperationType.REQUEST,unit.serverPath,unit.totalSize);
             operInfo.start = unit.recvSize;
             String str = gson.toJson(operInfo);
             OutputStream output = socket.getOutputStream();
@@ -158,12 +155,12 @@ public class TransferClient {
             FileOutputStream outputStream = new FileOutputStream(localPath,true);
             while (offset < size) {
 
-                if(ShareApplication.getInstance().isFileDeleted(unit.ip,unit.path)){
+                if(ShareApplication.getInstance().isFileDeleted(unit.ip,unit.serverPath)){
                     outputStream.flush();
                     outputStream.close();
                     inputStream.close();
                     socket.close();
-                    HLog.w(TAG, "delete while downloading: " + unit.path+", handle next");
+                    HLog.w(TAG, "delete while downloading: " + unit.serverPath +", handle next");
                     return false;
                 }
 
@@ -183,7 +180,7 @@ public class TransferClient {
                 outputStream.write(data, 0, tmp);
                 offset += tmp;
                 if (mListener != null) {
-                    mListener.onTransfer(unit.uuid, unit.totalSize, offset);
+                    mListener.onTransfer(unit.uuid, localPath,unit.totalSize, offset);
                 } else {
                     Log.w(TAG, "mListener == null, can update");
                 }
@@ -192,9 +189,9 @@ public class TransferClient {
             outputStream.close();
             inputStream.close();
             socket.close();
-            Log.d(TAG, "end receive " + unit.path);
+            Log.d(TAG, "end receive " + unit.serverPath);
         } catch (Exception e) {
-            Log.e(TAG, "receive err, " +unit.path+": "+e.getMessage());
+            Log.e(TAG, "receive err, " +unit.serverPath +": "+e.getMessage());
         }
         return true;
     }
@@ -239,7 +236,7 @@ public class TransferClient {
      * 下载进度回调
      */
     public interface OnTransferDataListener {
-        void onTransfer(String uuid, long totalSize, long receiveSize);
+        void onTransfer(String uuid,String path, long totalSize, long receiveSize);
     }
 
     /**
@@ -247,15 +244,15 @@ public class TransferClient {
      */
     public class ReceiveUnit{
 
-        public ReceiveUnit(String ip,String path,String uuid,long totalSize,long recvSize){
+        public ReceiveUnit(String ip, String serverPath, String uuid, long totalSize, long recvSize){
             this.ip = ip;
-            this.path = path;
+            this.serverPath = serverPath;
             this.uuid = uuid;
             this.totalSize = totalSize;
             this.recvSize = recvSize;
         }
         String ip;
-        String path;
+        String serverPath;
         String uuid;
         long totalSize;
         long recvSize;

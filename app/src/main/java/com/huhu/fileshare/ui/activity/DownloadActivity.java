@@ -82,35 +82,35 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            handleClickItem(position);
+                handleClickItem(position);
             }
         });
 
     }
 
-    private void handleClickItem(int position){
-        DownloadItem  item = (DownloadItem) mAdapter.getItem(position);
-        if(item.getStatus() != DownloadStatus.SUCCESSED){
-            String name = item.getToPath().substring(item.getToPath().lastIndexOf("/")+1);
-            Toast.makeText(this,name+": 未下载完成",Toast.LENGTH_SHORT).show();
+    private void handleClickItem(int position) {
+        DownloadItem item = (DownloadItem) mAdapter.getItem(position);
+        if (item.getStatus() != DownloadStatus.SUCCESSED) {
+            String name = item.getToPath().substring(item.getToPath().lastIndexOf("/") + 1);
+            Toast.makeText(this, name + ": 未下载完成", Toast.LENGTH_SHORT).show();
             return;
         }
         String path = item.getToPath();
-        if(!TextUtils.isEmpty(path)){
+        if (!TextUtils.isEmpty(path)) {
             File file = new File(path);
-            if(!file.exists()) {
+            if (!file.exists()) {
                 Toast.makeText(this, path + ": 不存在", Toast.LENGTH_SHORT).show();
                 return;
             }
-        }else{
+        } else {
             Toast.makeText(this, "文件路径格式错误", Toast.LENGTH_SHORT).show();
             return;
         }
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri uri = Uri.parse("file://"+path);
-        String ext = path.substring(path.lastIndexOf('.')+1);
+        Uri uri = Uri.parse("file://" + path);
+        String ext = path.substring(path.lastIndexOf('.') + 1);
         intent.setDataAndType(uri, MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext));
-        Log.d("view-c",path+": "+ext+": "+MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext));
+        Log.d("view-c", path + ": " + ext + ": " + MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext));
         startActivity(intent);
     }
 
@@ -131,12 +131,12 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
     public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
         DownloadItem item = info.getData();
         GlobalParams.DownloadOper oper = info.getOper();
-        if(oper == GlobalParams.DownloadOper.DELETE){
+        if (oper == GlobalParams.DownloadOper.DELETE) {
             mAdapter.deleteItem(item);
-        }else if(oper == GlobalParams.DownloadOper.ADD){
-            Log.d("cctype","add: "+item.toString());
+        } else if (oper == GlobalParams.DownloadOper.ADD) {
+            Log.d("cctype", "add: " + item.toString());
             mAdapter.addItem(item);
-        }else{
+        } else {
             mAdapter.updateItem(item);
         }
     }
@@ -204,7 +204,7 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
         Dialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
         View view = LayoutInflater.from(this).inflate(R.layout.confirm_delete_download_layout, null);
-        final CheckBox checkBox = (CheckBox)view.findViewById(R.id.delete_checkbox);
+        final CheckBox checkBox = (CheckBox) view.findViewById(R.id.delete_checkbox);
         builder.setView(view)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -223,21 +223,21 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
     }
 
 
-    private void showGroupDialog(){
+    private void showGroupDialog() {
         CommonUtil.Flag flag = mAdapter.getFlag();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = LayoutInflater.from(this).inflate(R.layout.group_show_layout,null);
-        final RadioButton allRB = (RadioButton)view.findViewById(R.id.rb_all);
-        final RadioButton dateRB = (RadioButton)view.findViewById(R.id.rb_date);
-        RadioButton typeRB = (RadioButton)view.findViewById(R.id.rb_type);
-        final RadioButton ownerRB = (RadioButton)view.findViewById(R.id.rb_owner);
-        if(flag == CommonUtil.Flag.NONE){
+        View view = LayoutInflater.from(this).inflate(R.layout.group_show_layout, null);
+        final RadioButton allRB = (RadioButton) view.findViewById(R.id.rb_all);
+        final RadioButton dateRB = (RadioButton) view.findViewById(R.id.rb_date);
+        RadioButton typeRB = (RadioButton) view.findViewById(R.id.rb_type);
+        final RadioButton ownerRB = (RadioButton) view.findViewById(R.id.rb_owner);
+        if (flag == CommonUtil.Flag.NONE) {
             allRB.toggle();
-        }else if(flag == CommonUtil.Flag.OWNER){
+        } else if (flag == CommonUtil.Flag.OWNER) {
             ownerRB.toggle();
-        }else if(flag == CommonUtil.Flag.DATE){
+        } else if (flag == CommonUtil.Flag.DATE) {
             dateRB.toggle();
-        }else{
+        } else {
             typeRB.toggle();
         }
         builder.setView(view)
@@ -245,13 +245,13 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         CommonUtil.Flag res;
-                        if(allRB.isChecked()){
+                        if (allRB.isChecked()) {
                             res = CommonUtil.Flag.NONE;
-                        }else if(ownerRB.isChecked()){
+                        } else if (ownerRB.isChecked()) {
                             res = CommonUtil.Flag.OWNER;
-                        }else if(dateRB.isChecked()){
+                        } else if (dateRB.isChecked()) {
                             res = CommonUtil.Flag.DATE;
-                        }else{
+                        } else {
                             res = CommonUtil.Flag.TYPE;
                         }
                         SystemSetting.getInstance(getApplicationContext()).setGroupFlag(CommonUtil.getFlagValue(res));
@@ -263,30 +263,30 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
     }
 
 
-    private void deleteSelectedItems(boolean isDeleteResources){
+    private void deleteSelectedItems(boolean isDeleteResources) {
         List<DownloadItem> list = mAdapter.getSelectedItem();
         ShareApplication.getInstance().setDeletedFiles(list);
-        StringBuilder where = new StringBuilder(DatabaseUtils.ColumnName.ID+" in (");
-        for(DownloadItem item : list){
+        StringBuilder where = new StringBuilder(DatabaseUtils.ColumnName.ID + " in (");
+        for (DownloadItem item : list) {
             String path = item.getToPath();
             String uuid = item.getUUID();
-            if(!TextUtils.isEmpty(path)) {
+            if (!TextUtils.isEmpty(path)) {
                 where.append("'" + uuid + "',");
-                if(isDeleteResources) {
-                    if(item.getFileType().equals(GlobalParams.ShareType.APK.toString())){
-                        String localPath = Environment.getExternalStorageDirectory().getPath()+ File.separator+"fileshare";
-                        path = localPath + File.separator + item.getDestName()+".apk";
+                if (isDeleteResources) {
+                    if (item.getFileType().equals(GlobalParams.ShareType.APK.toString())) {
+                        String localPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "fileshare";
+                        path = localPath + File.separator + item.getDestName() + ".apk";
                     }
                     File file = new File(path);
-                    if(file.exists()) {
+                    if (file.exists()) {
                         boolean res = file.delete();
-                        Log.d("ccdelete", path+": "+res);
+                        Log.d("ccdelete", path + ": " + res);
                     }
                 }
             }
 
         }
-        if(!where.toString().endsWith("(")) {
+        if (!where.toString().endsWith("(")) {
             where.deleteCharAt(where.length() - 1);
             where.append(")");
             int count = getContentResolver().delete(DatabaseUtils.DOWNLOAD_HISTORY_URI, where.toString(), null);

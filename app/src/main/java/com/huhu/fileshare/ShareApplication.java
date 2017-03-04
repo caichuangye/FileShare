@@ -215,6 +215,7 @@ public class ShareApplication extends Application {
             } else {
                 localPath += File.separator + name;
             }
+            item.setToPath(localPath);
             File file = new File(localPath);
             if(file.exists()){
                 try {

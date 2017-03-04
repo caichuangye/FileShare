@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.huhu.fileshare.IDownloadListenerInterface;
 import com.huhu.fileshare.IDownloadServicelInterface;
+import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.databases.DownloadHistory;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.DownloadItem;
@@ -16,6 +17,7 @@ import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
+import com.huhu.fileshare.util.MediaScanner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,20 +51,20 @@ public class DownloadService extends Service{
         mRemovedItemList = new ArrayList<>();
         TransferClient.getInstance().init(GlobalParams.DOWNLOAD_PORT, new TransferClient.OnTransferDataListener() {
             @Override
-            public void onTransfer(String uuid, long total, long recv) {
+            public void onTransfer(String uuid,String path, long total, long recv) {
                 if(mListener != null){
                     try {
                         Log.d(TAG,uuid+"="+total+"->"+recv);
                         DownloadItem item = new DownloadItem();
                         item.setUUID(uuid);
                         if(total == recv){
+                            MediaScanner.getInstance(getApplicationContext()).scanFile(path);
                             item.setStatus(DownloadStatus.SUCCESSED);
                         }else{
                             item.setStatus(DownloadStatus.DOWNLOADING);
                         }
                         item.setEndTime(String.valueOf(System.currentTimeMillis()));
                         item.setRecvSize(recv);
-                    //    mDownloadHistory.operateDatabases(item,UPDATE_ITEM);
                         mListener.onProgress(uuid,total,recv);
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -97,7 +99,7 @@ public class DownloadService extends Service{
         @Override
         public void addDownloadItem(String uuid,String ip,String fromPath,long size,long recv,String fromUser,String type,String destName)
                 throws RemoteException {
-            HLog.d(TAG,"Service:addDownloadItem, ip = "+ip+", from path = "+fromPath);
+            HLog.d(TAG,"Service:addDownloadItem, ip = "+ip+", from serverPath = "+fromPath);
             DownloadItem item = new DownloadItem(ip,size,fromPath,fromUser,uuid,type);
             item.setRecvSize(recv);
             item.setDestName(destName);

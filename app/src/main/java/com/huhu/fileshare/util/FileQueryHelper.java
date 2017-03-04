@@ -1,31 +1,19 @@
 package com.huhu.fileshare.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import com.huhu.fileshare.R;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.ApkItem;
 import com.huhu.fileshare.model.ImageFolderItem;
 import com.huhu.fileshare.model.ImageItem;
 import com.huhu.fileshare.model.MusicItem;
-import com.huhu.fileshare.model.CommonFileItem;
 import com.huhu.fileshare.model.VideoItem;
 
 import java.io.FileInputStream;
@@ -37,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static android.content.pm.PackageManager.GET_UNINSTALLED_PACKAGES;
@@ -46,6 +33,8 @@ import static android.content.pm.PackageManager.GET_UNINSTALLED_PACKAGES;
  * Created by Administrator on 2016/4/12.
  */
 public class FileQueryHelper {
+
+    public static final String TAG = FileQueryHelper.class.getSimpleName();
 
     private static FileQueryHelper sInstance;
 
@@ -244,5 +233,19 @@ public class FileQueryHelper {
         return album_art;
     }
 
+    public void  parseCoverImage(String path, Uri uri){
+        Cursor cursor = mContext.getContentResolver().query(uri,new String[]{MediaStore.Audio.Media.ALBUM_ID},null,null,null);
+        if(cursor != null && cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                int albumIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
+                int id = cursor.getInt(albumIndex);
+                String coverPath = getAlbumArt(id);
+                HLog.d(TAG,path+": "+coverPath);
+            }
+        }else{
+            HLog.d(TAG,"cursor == null or size == 0");
+        }
+
+    }
 
 }
