@@ -31,7 +31,9 @@ import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.ui.adapter.DownloadAdapter;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
+import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.HLog;
 import com.huhu.fileshare.util.SystemSetting;
 
 import java.io.File;
@@ -126,8 +128,16 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
     @Override
     public void onResume() {
         super.onResume();
+        List<String> list = mAdapter.getAllFilePath();
+        for(String path:list){
+            mAdapter.updateCoverImage(path, FileQueryHelper.getInstance(this).getCoverImage(path));
+        }
     }
 
+    /**
+     * 添加、更新或删除下载状态
+     * @param info
+     */
     public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
         DownloadItem item = info.getData();
         GlobalParams.DownloadOper oper = info.getOper();
@@ -140,6 +150,12 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
             mAdapter.updateItem(item);
         }
     }
+
+    public void onEventMainThread(EventBusType.ScanDownloadFileComplete complete){
+        HLog.d("filequeryhelper","download activity got uri");
+        mAdapter.updateCoverImage(complete.path,complete.uri);
+    }
+
 
     private void setShowMenu(boolean show) {
         mGroupItem.setVisible(!show);

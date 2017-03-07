@@ -24,6 +24,8 @@
     <string name="file_unit">项</string>
     <string name="edit">编辑</string>
     <string name="save">保存</string>
+    <string name="title_activity_edit_setting_item">编辑</string>
+    <string name="title_activity_scan_shared">浏览</string>
     <string name="title_activity_share_images">图片</string>
     <string name="title_activity_user_feedback">用户反馈</string>
     <string name="title_activity_about">关于</string>

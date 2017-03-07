@@ -41,7 +41,8 @@ public class DatabaseUtils {
             "recv_size text not null,"+
             "download_states text not null,"+
             "file_type text," +
-            "dest_name text)";
+            "dest_name text,"+
+            "cover_path text)";
 
     public interface ColumnName{
         String ID = "id";
@@ -56,6 +57,7 @@ public class DatabaseUtils {
         String FILE_TYPE = "file_type";
         String DOWNLOAD_STATES = "download_states";
         String DEST_NAME = "dest_name";
+        String COVER_PATH = "cover_path";
     }
 
 }

@@ -38,13 +38,13 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (WiFiOperation.getInstance(getApplicationContext()).isWiFiConnected()) {
+//                if (WiFiOperation.getInstance(getApplicationContext()).isWiFiConnected()) {
                     Intent intent = new Intent(MainActivity.this, SetSharedFilesActivity.class);
                     intent.putExtra("type", "mine");
                     startActivity(intent);
-                } else {
-                    showJoinWiFiNotice();
-                }
+//                } else {
+//                    showJoinWiFiNotice();
+//                }
             }
         });
 

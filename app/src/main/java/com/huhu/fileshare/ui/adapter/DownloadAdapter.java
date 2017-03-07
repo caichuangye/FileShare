@@ -1,6 +1,7 @@
 package com.huhu.fileshare.ui.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -103,10 +104,19 @@ public class DownloadAdapter extends BaseAdapter {
         setGroup(mFlag);
     }
 
-    public void updateItem(DownloadItem item){
-        for(int i = 0 ; i < mDataList.size(); i++){
+    public List<String> getAllFilePath() {
+        List<String> list = new ArrayList<>();
+        for (DownloadItem item : mDataList) {
+            list.add(item.getToPath());
+        }
+        return list;
+
+    }
+
+    public void updateItem(DownloadItem item) {
+        for (int i = 0; i < mDataList.size(); i++) {
             ItemImpl impl = mDataList.get(i);
-            if(impl.getUUID().equals(item.getUUID())){
+            if (impl.getUUID().equals(item.getUUID())) {
                 mDataList.get(i).setRecvSize(item.getRecvSize());
                 mDataList.get(i).setStatus(item.getStatus());
                 mDataList.get(i).setEndTime(item.getEndTime());
@@ -116,9 +126,23 @@ public class DownloadAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void deleteItem(DownloadItem item){
-        for(ItemImpl impl : mDataList){
-            if(impl.getUUID().equals(item.getUUID())){
+    public void updateCoverImage(String path, String uri) {
+        boolean found = false;
+        for (DownloadItem item : mDataList) {
+            if (item.getToPath().equals(path) && TextUtils.isEmpty(item.getCoverPath())) {
+                item.setCoverPath(uri);
+                found = true;
+                break;
+            }
+        }
+        if (found) {
+            notifyDataSetChanged();
+        }
+    }
+
+    public void deleteItem(DownloadItem item) {
+        for (ItemImpl impl : mDataList) {
+            if (impl.getUUID().equals(item.getUUID())) {
                 mDataList.remove(impl);
                 break;
             }
@@ -133,10 +157,10 @@ public class DownloadAdapter extends BaseAdapter {
         setGroup(mFlag);
     }
 
-    private void out(String tag){
-        Log.d("corder","---------------------"+tag+"-------------------");
-        for(int i = 0 ; i < mDataList.size(); i++){
-            Log.d("corder",i+": "+mDataList.get(i).getFromPath());
+    private void out(String tag) {
+        Log.d("corder", "---------------------" + tag + "-------------------");
+        for (int i = 0; i < mDataList.size(); i++) {
+            Log.d("corder", i + ": " + mDataList.get(i).getFromPath());
         }
     }
 
@@ -185,11 +209,16 @@ public class DownloadAdapter extends BaseAdapter {
         }
         if (!item.isTitle()) {
             DisplayImageOptions options = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(15)).build();
-            ImageLoader.getInstance().displayImage("drawable://" + getCoverId(GlobalParams.ShareType.getType(item.getFileType())),
-                    itemHolder.imageView, options);
-            if(item.getFileType().equals(GlobalParams.ShareType.APK.toString())){
-                itemHolder.nameTextView.setText(item.getDestName()+".apk");
-            }else {
+            if (TextUtils.isEmpty(item.getCoverPath())) {
+                ImageLoader.getInstance().displayImage("drawable://" + getCoverId(GlobalParams.ShareType.getType(item.getFileType())),
+                        itemHolder.imageView, options);
+            } else {
+                ImageLoader.getInstance().displayImage("file://" + item.getCoverPath(), itemHolder.imageView, options);
+            }
+
+            if (item.getFileType().equals(GlobalParams.ShareType.APK.toString())) {
+                itemHolder.nameTextView.setText(item.getDestName() + ".apk");
+            } else {
                 String name = item.getFromPath().substring(item.getFromPath().lastIndexOf("/") + 1);
                 itemHolder.nameTextView.setText(name);
             }
@@ -207,10 +236,10 @@ public class DownloadAdapter extends BaseAdapter {
                     if (mSelectedList.contains(item.getUUID())) {
                         mSelectedList.remove(item.getUUID());
                         checkBox.setChecked(false);
-                        HLog.d("ccdelete","contains, has = "+mSelectedList.size());
+                        HLog.d("ccdelete", "contains, has = " + mSelectedList.size());
                         mListener.onHasSelected(mSelectedList.size() > 0);
                     } else {
-                        HLog.d("ccdelete","not contains, add, has = true");
+                        HLog.d("ccdelete", "not contains, add, has = true");
                         mSelectedList.add(item.getUUID());
                         checkBox.setChecked(true);
                         mListener.onHasSelected(true);
@@ -228,11 +257,11 @@ public class DownloadAdapter extends BaseAdapter {
                 itemHolder.deleteCheckBox.setVisibility(View.GONE);
             }
             if (item.getStatus() != DownloadStatus.SUCCESSED) {
-                if(item.getRecvSize() > 0) {
+                if (item.getRecvSize() > 0) {
                     int progress = (int) (item.getRecvSize() * 100 / item.getTotalSize());
                     itemHolder.progressLabelTextView.setText(progress + "%");
                     itemHolder.progressLabelTextView.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
-                }else{
+                } else {
                     itemHolder.progressLabelTextView.setText("等待中");
                     itemHolder.progressLabelTextView.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
                 }
@@ -261,7 +290,7 @@ public class DownloadAdapter extends BaseAdapter {
             id = R.mipmap.mp3;
         } else if (shareType == GlobalParams.ShareType.VIDEO) {
             id = R.mipmap.video;
-        }else if(shareType == GlobalParams.ShareType.APK){
+        } else if (shareType == GlobalParams.ShareType.APK) {
             id = R.mipmap.apk;
         }
         return id;
@@ -275,7 +304,7 @@ public class DownloadAdapter extends BaseAdapter {
 
     public void setGroup(final CommonUtil.Flag flag) {
         mFlag = flag;
-        if(mDataList.size() == 0){
+        if (mDataList.size() == 0) {
             return;
         }
         Iterator<ItemImpl> iterator = mDataList.iterator();
@@ -326,7 +355,7 @@ public class DownloadAdapter extends BaseAdapter {
                             return o2.getStartTime().compareTo(o1.getStartTime());
                         }
                     });
-                    for(int k = 0 ;k <list.size(); k++){
+                    for (int k = 0; k < list.size(); k++) {
                         temp.add(list.get(k));
                     }
                     break;
@@ -344,13 +373,13 @@ public class DownloadAdapter extends BaseAdapter {
                             return o2.getStartTime().compareTo(o1.getStartTime());
                         }
                     });
-                    for(int k = 0 ;k <list.size(); k++){
+                    for (int k = 0; k < list.size(); k++) {
                         temp.add(list.get(k));
                     }
                     start = i + 1;
                 }
             }
-        }else if(flag == CommonUtil.Flag.OWNER){
+        } else if (flag == CommonUtil.Flag.OWNER) {
             for (int i = 0; i < mDataList.size(); i++) {
                 if (i == mDataList.size() - 1) {
                     List<ItemImpl> list = new ArrayList<>();
@@ -363,7 +392,7 @@ public class DownloadAdapter extends BaseAdapter {
                             return o2.getStartTime().compareTo(o1.getStartTime());
                         }
                     });
-                    for(int k = 0 ;k <list.size(); k++){
+                    for (int k = 0; k < list.size(); k++) {
                         temp.add(list.get(k));
                     }
                     break;
@@ -381,7 +410,7 @@ public class DownloadAdapter extends BaseAdapter {
                             return o2.getStartTime().compareTo(o1.getStartTime());
                         }
                     });
-                    for(int k = 0 ;k <list.size(); k++){
+                    for (int k = 0; k < list.size(); k++) {
                         temp.add(list.get(k));
                     }
                     start = i + 1;
@@ -389,11 +418,11 @@ public class DownloadAdapter extends BaseAdapter {
             }
         }
 
-        if(flag == CommonUtil.Flag.OWNER || flag == CommonUtil.Flag.TYPE){
-            if(temp.size() == mDataList.size()){
+        if (flag == CommonUtil.Flag.OWNER || flag == CommonUtil.Flag.TYPE) {
+            if (temp.size() == mDataList.size()) {
                 mDataList.clear();
                 mDataList.addAll(temp);
-            }else{
+            } else {
                 throw new RuntimeException("日期排序错误！");
             }
         }
@@ -435,7 +464,7 @@ public class DownloadAdapter extends BaseAdapter {
                 }
             }
         }
-        if(mDataList.size() > 0) {
+        if (mDataList.size() > 0) {
             ItemImpl firstTitle = ItemImpl.get(mDataList.get(0));
             firstTitle.setIsTitle(true);
             mDataList.add(0, firstTitle);
@@ -479,7 +508,7 @@ public class DownloadAdapter extends BaseAdapter {
             return "视频";
         } else if (type.toUpperCase().equals("APK")) {
             return "应用";
-        }else {
+        } else {
             return "其他";
         }
     }
@@ -506,11 +535,11 @@ public class DownloadAdapter extends BaseAdapter {
             impl.setFromPath(item.getFromPath());
             impl.setFromUserName(item.getFromUserName());
             impl.setIP(item.getFromIP());
+            impl.setCoverPath(item.getCoverPath());
             impl.setUUID(item.getUUID());
             impl.setToPath(item.getToPath());
             impl.setTotalSize(item.getTotalSize());
             impl.setDestName(item.getDestName());
-            Log.d("cctype","impl, topath = "+impl.getToPath());
             return impl;
         }
 

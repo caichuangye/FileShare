@@ -43,14 +43,14 @@ public class DownloadItem implements Parcelable {
     private DownloadStatus mStates;
     private long mRecvSize;
     private String mFromUser;
-
     private String mDestName;
+    private String mCoverPath;
 
     @Override
     public String toString(){
         String str = "uuid = "+mUUID+"; startTime = "+mStartTime+"; endTime = "+mEndTime+"; fileType = "+mFileType+
                 "; ip = "+mIP+"; totalSize = "+mTotalSize+"; recvSize = "+mRecvSize+"; fromPath = "+mFromPath+"; toPath = "+mToPath+"; status = "+
-                mStates.toString()+"; fromUser = "+mFromUser+", dest name = "+mDestName;
+                mStates.toString()+"; fromUser = "+mFromUser+", dest name = "+mDestName+", cover = "+mCoverPath;
         return str;
     }
 
@@ -185,6 +185,14 @@ public class DownloadItem implements Parcelable {
         if(mFileType.equals(GlobalParams.ShareType.APK.toString())) {
             mToPath = CommonUtil.getAppFolder() + File.separator + mDestName + ".apk";
         }
+    }
+
+    public String getCoverPath() {
+        return mCoverPath;
+    }
+
+    public void setCoverPath(String coverPath) {
+        this.mCoverPath = coverPath;
     }
 
     @Override

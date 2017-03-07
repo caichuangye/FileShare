@@ -73,6 +73,7 @@ public class DownloadHistory {
         String totalSize = cursor.getString(cursor.getColumnIndex(DatabaseUtils.ColumnName.TOTAL_SIZE));
         String recvSize = cursor.getString(cursor.getColumnIndex(DatabaseUtils.ColumnName.RECV_SIZE));
         String destName = cursor.getString(cursor.getColumnIndex(DatabaseUtils.ColumnName.DEST_NAME));
+        String cover = cursor.getString(cursor.getColumnIndex(DatabaseUtils.ColumnName.COVER_PATH));
         DownloadStatus status = DownloadStatus.getStatus(str);
         item.setUUID(uuid);
         item.setStartTime(startTime);
@@ -86,7 +87,7 @@ public class DownloadHistory {
         item.setTotalSize(Long.parseLong(totalSize));
         item.setRecvSize(Long.parseLong(recvSize));
         item.setDestName(destName);
-        HLog.d("ccyd","parse curor: "+item.toString());
+        item.setCoverPath(cover);
         return item;
     }
 
@@ -121,5 +122,13 @@ public class DownloadHistory {
     private void deleteItem(DownloadItem item){
         String where = " id = '"+item.getUUID()+"'";
         mContentResolver.delete(DatabaseUtils.DOWNLOAD_HISTORY_URI,where,null);
+    }
+
+    public void updateFileCoverImage(String path,String uri){
+        String where = DatabaseUtils.ColumnName.TO_PATH+" = '"+path+"'";
+        ContentValues values = new ContentValues();
+        values.put(DatabaseUtils.ColumnName.COVER_PATH,uri);
+        int count = mContentResolver.update(DatabaseUtils.DOWNLOAD_HISTORY_URI,values,where,null);
+        HLog.d("cccover","count = "+count);
     }
 }

@@ -1,5 +1,7 @@
 package com.huhu.fileshare.util;
 
+import android.net.Uri;
+
 import com.huhu.fileshare.model.ApkItem;
 import com.huhu.fileshare.model.BaseItem;
 import com.huhu.fileshare.model.DeviceItem;
@@ -400,6 +402,25 @@ public class EventBusType {
 
         public ResetDownloadStatus(Map<GlobalParams.ShareType,List<String>> map){
             this.map = map;
+        }
+    }
+
+    /**
+     * 文件下载到本地后需要通过MediaScannerService进行扫描，否则系统的媒体数据库无法识别到这些文件
+     */
+    public static class ScanDownloadFileComplete{
+        /**
+         * 文件的本地路径
+         */
+        public String path;
+
+        /**
+         * 文件封面地址
+         */
+        public String uri;
+        public ScanDownloadFileComplete(String path,String uri){
+            this.path = path;
+            this.uri = uri;
         }
     }
 

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
+import com.huhu.fileshare.databases.DownloadHistory;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.ApkItem;
 import com.huhu.fileshare.model.ImageFolderItem;
@@ -44,6 +45,8 @@ public class FileQueryHelper {
 
     private Executor mThreadPool;
 
+    private DownloadHistory mDownloadHistory;
+
     public static FileQueryHelper getInstance(Context context) {
         if (sInstance == null) {
             synchronized (FileQueryHelper.class) {
@@ -58,6 +61,7 @@ public class FileQueryHelper {
     private FileQueryHelper(Context context) {
         mContext = context;
         mThreadPool = Executors.newFixedThreadPool(5);
+        mDownloadHistory = new DownloadHistory(context);
     }
 
     public void scanFileByType(final GlobalParams.ShareType type) {
@@ -233,6 +237,12 @@ public class FileQueryHelper {
         return album_art;
     }
 
+    private Map<String,String> mCoverImageMap = new HashMap<>();
+
+    public String getCoverImage(String path){
+        return mCoverImageMap.get(path);
+    }
+
     public void  parseCoverImage(String path, Uri uri){
         Cursor cursor = mContext.getContentResolver().query(uri,new String[]{MediaStore.Audio.Media.ALBUM_ID},null,null,null);
         if(cursor != null && cursor.getCount() > 0){
@@ -241,6 +251,9 @@ public class FileQueryHelper {
                 int id = cursor.getInt(albumIndex);
                 String coverPath = getAlbumArt(id);
                 HLog.d(TAG,path+": "+coverPath);
+                mCoverImageMap.put(path,coverPath);
+                mDownloadHistory.updateFileCoverImage(path,coverPath);
+                EventBus.getDefault().post(new EventBusType.ScanDownloadFileComplete(path,coverPath));
             }
         }else{
             HLog.d(TAG,"cursor == null or size == 0");
