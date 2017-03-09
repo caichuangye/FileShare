@@ -130,7 +130,7 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
         super.onResume();
         List<String> list = mAdapter.getAllFilePath();
         for(String path:list){
-            mAdapter.updateCoverImage(path, FileQueryHelper.getInstance(this).getCoverImage(path));
+            mAdapter.updateCoverImage(path, FileQueryHelper.getInstance().getCoverImage(path));
         }
     }
 
@@ -155,6 +155,10 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
         HLog.d("filequeryhelper","download activity got uri");
         mAdapter.updateCoverImage(complete.path,complete.uri);
     }
+
+//    public void onEventMainThread(EventBusType.CacheImageComplete complete){
+//        mAdapter.updateCoverImage(complete.result.filePath,complete.result.coverPath);
+//    }
 
 
     private void setShowMenu(boolean show) {

@@ -45,7 +45,7 @@ public class MediaScanner {
             public void onScanCompleted(String path, Uri uri) {
                 mMediaScannerConnection.disconnect();
                 HLog.d(TAG,path+": "+uri);
-                FileQueryHelper.getInstance(mContext).parseCoverImage(path,uri);
+                FileQueryHelper.getInstance().parseCoverImage(path,uri);
             }
         });
 

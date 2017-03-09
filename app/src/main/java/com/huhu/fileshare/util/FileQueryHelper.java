@@ -5,7 +5,9 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
@@ -17,6 +19,7 @@ import com.huhu.fileshare.model.ImageItem;
 import com.huhu.fileshare.model.MusicItem;
 import com.huhu.fileshare.model.VideoItem;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,21 +50,27 @@ public class FileQueryHelper {
 
     private DownloadHistory mDownloadHistory;
 
-    public static FileQueryHelper getInstance(Context context) {
+    public static FileQueryHelper getInstance() {
         if (sInstance == null) {
             synchronized (FileQueryHelper.class) {
                 if (sInstance == null) {
-                    sInstance = new FileQueryHelper(context);
+                    sInstance = new FileQueryHelper();
                 }
             }
         }
         return sInstance;
     }
 
-    private FileQueryHelper(Context context) {
-        mContext = context;
+    public void init(Context context){
+        mContext = context.getApplicationContext();
         mThreadPool = Executors.newFixedThreadPool(5);
         mDownloadHistory = new DownloadHistory(context);
+    }
+
+    private FileQueryHelper() {
+//        mContext = context;
+//        mThreadPool = Executors.newFixedThreadPool(5);
+//        mDownloadHistory = new DownloadHistory(context);
     }
 
     public void scanFileByType(final GlobalParams.ShareType type) {
@@ -244,6 +253,14 @@ public class FileQueryHelper {
     }
 
     public void  parseCoverImage(String path, Uri uri){
+       if(path.endsWith(".apk")){
+           parseApkCoverImage(path);
+       }else{
+           parseMusicCoverImage(path,uri);
+       }
+    }
+
+    private void parseMusicCoverImage(String path,Uri uri){
         Cursor cursor = mContext.getContentResolver().query(uri,new String[]{MediaStore.Audio.Media.ALBUM_ID},null,null,null);
         if(cursor != null && cursor.getCount() > 0){
             while(cursor.moveToNext()){
@@ -251,14 +268,33 @@ public class FileQueryHelper {
                 int id = cursor.getInt(albumIndex);
                 String coverPath = getAlbumArt(id);
                 HLog.d(TAG,path+": "+coverPath);
-                mCoverImageMap.put(path,coverPath);
-                mDownloadHistory.updateFileCoverImage(path,coverPath);
-                EventBus.getDefault().post(new EventBusType.ScanDownloadFileComplete(path,coverPath));
+                saveCoverImage(path,coverPath);
+                break;
             }
         }else{
             HLog.d(TAG,"cursor == null or size == 0");
         }
-
     }
+
+    public void saveCoverImage(String path, String coverPath){
+        String pre = Environment.getExternalStorageDirectory().getAbsolutePath()+ File.separator+GlobalParams.FOLDER;
+        HLog.d(TAG,"pre = "+pre);
+        if(path.startsWith(pre)) {
+            mCoverImageMap.put(path, coverPath);
+            mDownloadHistory.updateFileCoverImage(path, coverPath);
+            EventBus.getDefault().post(new EventBusType.ScanDownloadFileComplete(path, coverPath));
+        }
+    }
+
+    private void parseApkCoverImage(String path){
+        HLog.d(TAG,"parseApkCoverImage: "+path);
+        PackageManager packageManager = mContext.getPackageManager();
+        PackageInfo pi = packageManager.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
+        pi.applicationInfo.sourceDir = path;
+        pi.applicationInfo.publicSourceDir = path;
+        Drawable drawable = pi.applicationInfo.loadIcon(packageManager);
+        ImageCacher.getInstance().cacheDrawable(path,drawable, ImageCacher.Type.APK);
+    }
+
 
 }

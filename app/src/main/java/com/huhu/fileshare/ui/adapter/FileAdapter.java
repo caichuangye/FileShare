@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -149,7 +150,7 @@ public class FileAdapter extends BaseAdapter {
             holder.iconImageView = (ImageView)convertView.findViewById(R.id.file_cover);
             holder.nameTextView = (TextView)convertView.findViewById(R.id.file_name);
             holder.sizeTextView = (TextView)convertView.findViewById(R.id.file_info1);
-            holder.selectedImageView = (ImageView) convertView.findViewById(R.id.file_selected);
+            holder.selectedImageView = (CheckBox) convertView.findViewById(R.id.file_selected);
             holder.downloadTextView = (DownloadIcon) convertView.findViewById(R.id.file_download);
             holder.file2TextView = (TextView)convertView.findViewById(R.id.file_info2);
             convertView.setTag(holder);
@@ -190,6 +191,6 @@ public class FileAdapter extends BaseAdapter {
         TextView sizeTextView;
         TextView file2TextView;
         DownloadIcon downloadTextView;
-        ImageView selectedImageView;
+        CheckBox selectedImageView;
     }
 }

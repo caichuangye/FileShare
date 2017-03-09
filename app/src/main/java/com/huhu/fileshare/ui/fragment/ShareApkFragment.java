@@ -60,7 +60,7 @@ public class ShareApkFragment extends MediaFragment {
         initEmptyView(view, "应用");
 
         if (mType == GlobalParams.LOCAL_MODE && mAdapter.getCount() == 0) {
-            FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.APK);
+            FileQueryHelper.getInstance().scanFileByType(GlobalParams.ShareType.APK);
         } else {
             setData();
         }
@@ -85,6 +85,7 @@ public class ShareApkFragment extends MediaFragment {
 
     public void onEventMainThread(EventBusType.CacheImageComplete info) {
         if (info.result.type == ImageCacher.Type.APK) {
+            HLog.d("filequeryhelper","da: "+info.result.coverPath);
             mAdapter.updateCover(info.result.filePath, info.result.coverPath);
         }
     }

@@ -176,7 +176,8 @@ public class ImageCacher implements Runnable {
                     outputStream.write(data);
                     outputStream.close();
                 }
-
+                HLog.d("filequeryhelper",item.path+": "+path);
+                FileQueryHelper.getInstance().saveCoverImage(item.path,path);
                 EventBus.getDefault().post(new EventBusType.CacheImageComplete(new CacheResult(item.path, path, item.type)));
             } catch (Exception e) {
                 e.printStackTrace();

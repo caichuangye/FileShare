@@ -72,7 +72,7 @@ public class ShareImageFolderFragment extends BaseFragment {
         });
 
         initEmptyView(view,"图片");
-            FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.IMAGE);
+            FileQueryHelper.getInstance().scanFileByType(GlobalParams.ShareType.IMAGE);
         return view;
     }
 

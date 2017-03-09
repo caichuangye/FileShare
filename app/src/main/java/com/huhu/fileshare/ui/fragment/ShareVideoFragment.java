@@ -58,7 +58,7 @@ public class ShareVideoFragment extends MediaFragment {
         initEmptyView(view, "视频");
 
         if (mType == GlobalParams.LOCAL_MODE && mAdapter.getCount() == 0) {
-            FileQueryHelper.getInstance(mContext).scanFileByType(GlobalParams.ShareType.VIDEO);
+            FileQueryHelper.getInstance().scanFileByType(GlobalParams.ShareType.VIDEO);
         } else {
             setData();
         }

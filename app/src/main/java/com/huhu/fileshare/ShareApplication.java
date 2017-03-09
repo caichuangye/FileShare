@@ -23,6 +23,7 @@ import com.huhu.fileshare.model.SharedCollection;
 import com.huhu.fileshare.util.ComServer;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
+import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
 import com.huhu.fileshare.util.WiFiOperation;
@@ -115,7 +116,9 @@ public class ShareApplication extends Application {
 
     @Override
     public void onCreate() {
+        super.onCreate();
         EventBus.getDefault().register(this);
+        FileQueryHelper.getInstance().init(getApplicationContext());
         initImageLoader(getApplicationContext());
         ComServer.getInstance().start();
         mSharedCollection = new SharedCollection();

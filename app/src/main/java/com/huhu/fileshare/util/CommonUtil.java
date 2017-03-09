@@ -90,7 +90,7 @@ public class CommonUtil {
 
     public static List<ImageItem> getImageItemsList(Context context,String folderPath){
         List<ImageItem> list = new ArrayList<>();
-        List<ImageItem> allList = FileQueryHelper.getInstance(context).getAllImages();
+        List<ImageItem> allList = FileQueryHelper.getInstance().getAllImages();
         if(allList != null){
             for(ImageItem item : allList){
              //   if(item.getPath().startsWith(folderPath)){
