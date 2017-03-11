@@ -8,9 +8,8 @@ interface IDownloadServicelInterface {
      * Demonstrates some basic types that you can use as parameters
      * and return values in AIDL.
      */
-    void addDownloadItem(String uuid,String ip,String fromPath,long size,long recvSize,String fromUser,String type,String destName);
+    void addDownloadItem(String uuid,String ip,String fromPath,long size,long recvSize,String fromUser,String type,String destName,String coverPath);
 
-  //   void addDownloadItem(DownloadItem item);
 
     void deleteDownloadItem(String uuid);
 }

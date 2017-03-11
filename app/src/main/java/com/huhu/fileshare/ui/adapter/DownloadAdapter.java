@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.huhu.fileshare.R;
@@ -25,11 +23,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -208,10 +204,14 @@ public class DownloadAdapter extends BaseAdapter {
             }
         }
         if (!item.isTitle()) {
+            HLog.d("imagecover", "getCoverPath = " + item.getCoverPath());
             DisplayImageOptions options = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(15)).build();
             if (TextUtils.isEmpty(item.getCoverPath())) {
                 ImageLoader.getInstance().displayImage("drawable://" + getCoverId(GlobalParams.ShareType.getType(item.getFileType())),
-                        itemHolder.imageView, options);
+                            itemHolder.imageView, options);
+            } else if(item.getFileType().equals(GlobalParams.ShareType.FILE.toString())){
+                int index = Integer.decode(item.getCoverPath());
+                ImageLoader.getInstance().displayImage("drawable://" + index, itemHolder.imageView, options);
             } else {
                 ImageLoader.getInstance().displayImage("file://" + item.getCoverPath(), itemHolder.imageView, options);
             }
