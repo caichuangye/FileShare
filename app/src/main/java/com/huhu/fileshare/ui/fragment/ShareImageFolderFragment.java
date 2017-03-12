@@ -56,14 +56,14 @@ public class ShareImageFolderFragment extends BaseFragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_share_image_folder, container, false);
-        mGridView = (GridView)view.findViewById(R.id.gridview);
+        mGridView = (GridView) view.findViewById(R.id.gridview);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String folder = mAdapter.getFolderPath(position);
-                if(!TextUtils.isEmpty(folder)) {
-                    HLog.d("SSSS", "pos = "+position+"; folder = " + folder);
+                if (!TextUtils.isEmpty(folder)) {
+                    HLog.d("SSSS", "pos = " + position + "; folder = " + folder);
                     Intent intent = new Intent(mContext, ShareImagesActivity.class);
                     intent.putExtra("FOLDER", folder);
                     mContext.startActivity(intent);
@@ -71,8 +71,8 @@ public class ShareImageFolderFragment extends BaseFragment {
             }
         });
 
-        initEmptyView(view,"图片");
-            FileQueryHelper.getInstance().scanFileByType(GlobalParams.ShareType.IMAGE);
+        initEmptyView(view, "图片");
+        FileQueryHelper.getInstance().scanFileByType(GlobalParams.ShareType.IMAGE);
         return view;
     }
 
@@ -86,33 +86,37 @@ public class ShareImageFolderFragment extends BaseFragment {
         super.onDetach();
     }
 
-    public void onEventMainThread(EventBusType.ShareImageFolderInfo info){
+    public void onEventMainThread(EventBusType.ShareImageFolderInfo info) {
+        HLog.d("ccfolder","get ShareImageFolderInfo");
         getData();
         mAdapter.setData(info.getData());
     }
 
-    public void initEmptyView(View root,String msg){
-        mLoadingLayout = (RelativeLayout)root.findViewById(R.id.loading_view);
+    public void initEmptyView(View root, String msg) {
+        mLoadingLayout = (RelativeLayout) root.findViewById(R.id.loading_view);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
         TextView textView = new TextView(mContext);
         textView.setTextColor(mContext.getResources().getColor(R.color.black_57));
-        if(mType == GlobalParams.SERVER_MODE) {
-            textView.setText("暂无"+msg);
-        }else {
-            textView.setText("暂无共享的"+msg);
-        }
-        ViewGroup parent = (ViewGroup)mGridView.getParent();
-        parent.addView(textView,params);
+        textView.setText("暂无共享的" + msg);
+        ViewGroup parent = (ViewGroup) mGridView.getParent();
+        parent.addView(textView, params);
         mGridView.setEmptyView(textView);
         mGridView.setVisibility(View.GONE);
         mGridView.getEmptyView().setVisibility(View.GONE);
     }
 
-    public void getData(){
+    public void getData() {
         mLoadingLayout.setVisibility(View.GONE);
-        mGridView.getEmptyView().setVisibility(View.VISIBLE  );
+        mGridView.getEmptyView().setVisibility(View.VISIBLE);
         mGridView.setVisibility(View.VISIBLE);
+    }
+
+    public void onEventMainThread(EventBusType.NoLocalFiles info) {
+        if(info.getType() == GlobalParams.ShareType.IMAGE) {
+            getData();
+            mAdapter.setData(null);
+        }
     }
 
 }

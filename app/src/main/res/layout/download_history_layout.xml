@@ -16,6 +16,7 @@
             android:layout_height="@dimen/huhu_50_dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="6dp"
+            android:scaleType="centerCrop"
             android:src="@mipmap/video" />
 
 
