@@ -9,7 +9,9 @@ import android.graphics.PorterDuffXfermode;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
+import com.huhu.fileshare.model.CommonFileItem;
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.model.ImageItem;
@@ -265,6 +267,29 @@ public class CommonUtil {
             }
         }
         return map;
+    }
+
+    public static int getCommonFileCoverId(String path){
+        String typeStr = path.substring(path.lastIndexOf('.')+1);
+        CommonFileItem.FileType type = CommonFileItem.FileType.valueOfString(typeStr);
+        switch (type){
+            case PDF:
+                return R.mipmap.pdf;
+            case TXT:
+                return R.mipmap.txt;
+            case DOC:
+                return R.mipmap.doc;
+            case ZIP:
+                return R.mipmap.zip;
+            case PPT:
+                return R.mipmap.ppt;
+            case APK:
+                return R.mipmap.apk1;
+            case XLS:
+                return R.mipmap.excel;
+            default: UNKNOWN:
+            return R.mipmap.file;
+        }
     }
 
 }

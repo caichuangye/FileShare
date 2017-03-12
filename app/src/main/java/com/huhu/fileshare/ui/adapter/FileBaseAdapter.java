@@ -34,7 +34,6 @@ public abstract class FileBaseAdapter<T extends BaseItem> extends BaseAdapter {
     }
 
     public  void setData(List<T> list){
-        HLog.d("ccfolder","size = "+list.size());
         List<String> selectedList = ((ShareApplication)mContext.getApplicationContext()).
                 getSharedFileByType(getSharedType());
         mDataList.clear();

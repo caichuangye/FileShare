@@ -2,10 +2,7 @@ package com.huhu.fileshare.util;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PixelFormat;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
@@ -13,11 +10,8 @@ import android.media.ThumbnailUtils;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 
-import com.huhu.fileshare.R;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
-import com.huhu.fileshare.model.CommonFileItem;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -128,25 +122,6 @@ public class ImageCacher implements Runnable {
 
     }
 
-    public void cacheCommonFileIcon(CommonFileItem.FileType type, int w, int h) {
-        if(checkExist(type.toString(),Type.COMMON_FILE)){
-            return;
-        }
-        String str = type.getTypeString().toUpperCase();
-        int color = Color.argb(255, 45, 53, 60);
-        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(color);
-
-        Paint paint = new Paint();
-        paint.setTextSize(60);
-        Rect rect = new Rect();
-        paint.getTextBounds(str, 0, str.length(), rect);
-
-        paint.setColor(Color.parseColor("#24b7a4"));
-        canvas.drawText(str, w / 2 - rect.width() / 2, h / 2 + rect.height() / 2, paint);
-        cacheBitmap(type.toString(), bitmap, Type.COMMON_FILE);
-    }
 
     public void exit() {
         mQuit = true;
@@ -157,6 +132,7 @@ public class ImageCacher implements Runnable {
         String filePath = getCoverPath(path, type);
         File file = new File(filePath);
         if(file.exists()) {
+            FileQueryHelper.getInstance().saveCoverImage(path,filePath);
             EventBus.getDefault().post(new EventBusType.CacheImageComplete(new CacheResult(path, filePath, type)));
             return true;
         }
@@ -176,7 +152,6 @@ public class ImageCacher implements Runnable {
                     outputStream.write(data);
                     outputStream.close();
                 }
-                HLog.d("filequeryhelper",item.path+": "+path);
                 FileQueryHelper.getInstance().saveCoverImage(item.path,path);
                 EventBus.getDefault().post(new EventBusType.CacheImageComplete(new CacheResult(item.path, path, item.type)));
             } catch (Exception e) {
@@ -185,7 +160,7 @@ public class ImageCacher implements Runnable {
         }
     }
 
-    public String getCoverPath(String path, Type type) {
+    public String  getCoverPath(String path, Type type) {
         String tmp = path.replace('/', '_');
         tmp = tmp.replace('.', '_');
         if (type == Type.APK) {

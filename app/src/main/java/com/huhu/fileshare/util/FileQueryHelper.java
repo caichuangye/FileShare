@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import com.huhu.fileshare.databases.DownloadHistory;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.ApkItem;
-import com.huhu.fileshare.model.CommonFileItem;
 import com.huhu.fileshare.model.ImageFolderItem;
 import com.huhu.fileshare.model.ImageItem;
 import com.huhu.fileshare.model.MusicItem;
@@ -69,9 +68,7 @@ public class FileQueryHelper {
     }
 
     private FileQueryHelper() {
-//        mContext = context;
-//        mThreadPool = Executors.newFixedThreadPool(5);
-//        mDownloadHistory = new DownloadHistory(context);
+
     }
 
     public void scanFileByType(final GlobalParams.ShareType type) {
@@ -257,13 +254,11 @@ public class FileQueryHelper {
     public void  parseCoverImage(String path, Uri uri){
        if(path.endsWith(".apk")){
            parseApkCoverImage(path);
-       }else if(path.endsWith(".mp4")){
+       }else if(path.endsWith(".mp4")){//// TODO: 2017/3/12 not only mp4
            parseVideoCoverImage(path);
-       }else if(path.endsWith(".mp3")){
+       }else if(path.endsWith(".mp3")){//// TODO: 2017/3/12 not only mp3
            parseMusicCoverImage(path,uri);
        }else{
-         /*  String format = path.substring(path.lastIndexOf('.')+1).toUpperCase();
-           ImageCacher.getInstance().cacheCommonFileIcon(CommonFileItem.FileType.valueOfString(format),150,150);*/
        }
     }
 
