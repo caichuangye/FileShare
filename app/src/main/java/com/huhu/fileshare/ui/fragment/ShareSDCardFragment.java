@@ -189,7 +189,7 @@ public class ShareSDCardFragment extends BaseFragment {
 //        List<String> list = ((ShareApplication)((Activity)(mContext)).getApplication()).getSharedFileByType(GlobalParams.ShareType.SD_FILE);
 //                mLayout.setVisibility(View.VISIBLE);
 //        mLoadingLayout.setVisibility(View.GONE);
-//        mAdapter.setData(info.getData(),list);
+//        mAdapter.setData(info.onQueryComplete(),list);
     }
 
     public void onEventMainThread(EventBusType.ClearShared info){

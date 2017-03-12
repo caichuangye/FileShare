@@ -152,13 +152,8 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
     }
 
     public void onEventMainThread(EventBusType.ScanDownloadFileComplete complete){
-        HLog.d("filequeryhelper","download activity got uri");
         mAdapter.updateCoverImage(complete.path,complete.uri);
     }
-
-//    public void onEventMainThread(EventBusType.CacheImageComplete complete){
-//        mAdapter.updateCoverImage(complete.result.filePath,complete.result.coverPath);
-//    }
 
 
     private void setShowMenu(boolean show) {

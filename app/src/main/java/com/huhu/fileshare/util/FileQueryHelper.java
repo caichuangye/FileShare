@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import com.huhu.fileshare.databases.DownloadHistory;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.ApkItem;
+import com.huhu.fileshare.model.CommonFileItem;
 import com.huhu.fileshare.model.ImageFolderItem;
 import com.huhu.fileshare.model.ImageItem;
 import com.huhu.fileshare.model.MusicItem;
@@ -178,6 +179,7 @@ public class FileQueryHelper {
                     mAllImagesList.add(item);
                 }
             }
+            HLog.d("ccfolder","begin to send result");
             EventBus.getDefault().post(new EventBusType.ShareImageFolderInfo(convert(mAllImagesList)));
         }
     }
@@ -255,8 +257,13 @@ public class FileQueryHelper {
     public void  parseCoverImage(String path, Uri uri){
        if(path.endsWith(".apk")){
            parseApkCoverImage(path);
-       }else{
+       }else if(path.endsWith(".mp4")){
+           parseVideoCoverImage(path);
+       }else if(path.endsWith(".mp3")){
            parseMusicCoverImage(path,uri);
+       }else{
+         /*  String format = path.substring(path.lastIndexOf('.')+1).toUpperCase();
+           ImageCacher.getInstance().cacheCommonFileIcon(CommonFileItem.FileType.valueOfString(format),150,150);*/
        }
     }
 
@@ -294,6 +301,11 @@ public class FileQueryHelper {
         pi.applicationInfo.publicSourceDir = path;
         Drawable drawable = pi.applicationInfo.loadIcon(packageManager);
         ImageCacher.getInstance().cacheDrawable(path,drawable, ImageCacher.Type.APK);
+    }
+
+    private void parseVideoCoverImage(String path){
+        HLog.d(TAG,"parseVideoCoverImage: "+path);
+        ImageCacher.getInstance().cacheVideo(path,150,150);
     }
 
 

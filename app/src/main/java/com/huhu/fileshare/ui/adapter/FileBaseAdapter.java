@@ -34,6 +34,7 @@ public abstract class FileBaseAdapter<T extends BaseItem> extends BaseAdapter {
     }
 
     public  void setData(List<T> list){
+        HLog.d("ccfolder","size = "+list.size());
         List<String> selectedList = ((ShareApplication)mContext.getApplicationContext()).
                 getSharedFileByType(getSharedType());
         mDataList.clear();
@@ -130,7 +131,10 @@ public abstract class FileBaseAdapter<T extends BaseItem> extends BaseAdapter {
             BaseItem item = (BaseItem)mInfo.getData();
             HLog.d("ccstatus",ShareApplication.getInstance().getFileDownloadStatus(item.getPath()).toString());
             if(ShareApplication.getInstance().getFileDownloadStatus(item.getPath()) == DownloadStatus.INIT) {
+                long st = System.currentTimeMillis();
                 ShareApplication.getInstance().requestFile(mInfo);
+                long c = System.currentTimeMillis() - st;
+                HLog.d("ccadd","time: "+c);
             }else{
                 EventBus.getDefault().post(new EventBusType.GoToDownloadActivity());
             }

@@ -1,28 +1,26 @@
 package com.huhu.fileshare.model;
 
-import android.graphics.Bitmap;
-
 /**
  * Created by Administrator on 2016/4/18.
  */
 public class CommonFileItem extends BaseItem {
 
-    public enum FileType{
-        APK("apk"),PDF("pdf"),ZIP("zip"),DOC("doc"),XLS("xls"),PPT("ppt"),TXT("txt"),UNKNOWN("?");
+    public enum FileType {
+        APK("apk"), PDF("pdf"), ZIP("zip"), DOC("doc"), XLS("xls"), PPT("ppt"), TXT("txt"), UNKNOWN("?");
 
         private String mType;
 
-        private FileType(String str){
+        private FileType(String str) {
             mType = str;
         }
 
-        public String getTypeString(){
+        public String getTypeString() {
             return mType;
         }
 
-        public static FileType valueOfString(String str){
-            for(FileType type : FileType.values()){
-                if(str.equals(type.getTypeString())){
+        public static FileType valueOfString(String str) {
+            for (FileType type : FileType.values()) {
+                if (str.equals(type.getTypeString())) {
                     return type;
                 }
             }
@@ -33,16 +31,16 @@ public class CommonFileItem extends BaseItem {
 
     private FileType mType;
 
-    public CommonFileItem(){
+    public CommonFileItem() {
         super();
     }
 
-    public CommonFileItem(String name, String path, long size, boolean selected, String cover, FileType type){
-        super(name,path,size,selected,cover);
+    public CommonFileItem(String name, String path, long size, boolean selected, String cover, FileType type) {
+        super(name, path, size, selected, cover);
         mType = type;
     }
 
-    public FileType getType(){
+    public FileType getType() {
         return mType;
     }
 }

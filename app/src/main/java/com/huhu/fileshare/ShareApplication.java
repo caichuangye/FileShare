@@ -138,6 +138,7 @@ public class ShareApplication extends Application {
 
     @Override
     public void onTerminate() {
+        super.onTerminate();
         unregisterReceiver(mReceiver);
     }
 
@@ -210,13 +211,17 @@ public class ShareApplication extends Application {
             if(info.getType().equals(GlobalParams.ShareType.APK)){
                 item.setDestName(item0.getShowName());
             }
-
             String name = item0.getPath().substring(item0.getPath().lastIndexOf(File.separator) + 1);
             String localPath = Environment.getExternalStorageDirectory().getPath() + File.separator + GlobalParams.FOLDER;
             if (name.endsWith(".apk")) {
                 localPath += File.separator + item.getDestName() + ".apk";
             } else {
                 localPath += File.separator + name;
+            }
+            if(item.getFileType().equals(GlobalParams.ShareType.IMAGE.toString())){
+                item.setCoverPath(localPath);
+            }else if(item.getFileType().equals(GlobalParams.ShareType.FILE.toString())){
+                item.setCoverPath(String.valueOf(CommonUtil.getCommonFileCoverId(item.getFromPath())));
             }
             item.setToPath(localPath);
             File file = new File(localPath);
@@ -238,7 +243,6 @@ public class ShareApplication extends Application {
 
                 }
             }
-
             addScanFile(item);
         }
     }
@@ -366,8 +370,8 @@ public class ShareApplication extends Application {
      * 添加一个要下载的文件
      */
     public void addScanFile(DownloadItem item) {
-        Log.d(TAG,"mRequestCollection add: "+item.getFromPath());
-        item.setStatus(DownloadStatus.WAIT);
+    //    Log.d(TAG,"mRequestCollection add: "+item.getFromPath());
+    //    item.setStatus(DownloadStatus.WAIT);
         mRequestCollection.addFile(item);
         ServiceUtils.getInstance().addDownloadItem(item);
     }

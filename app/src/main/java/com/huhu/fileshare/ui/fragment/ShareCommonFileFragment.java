@@ -18,7 +18,6 @@ import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.ImageCacher;
 import com.huhu.fileshare.util.ScanCommonFiles;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -89,15 +88,15 @@ public class ShareCommonFileFragment extends MediaFragment {
     }
 
     public void onEventMainThread(EventBusType.ShareCommonFileInfo info) {
-        getData();
-        List<CommonFileItem> list = info.getData();
+        onQueryComplete();
+       /* List<CommonFileItem> list = info.onQueryComplete();
         List<CommonFileItem.FileType> typeList = new ArrayList<>();
         for (CommonFileItem commonFileItem : list) {
             if (!typeList.contains(commonFileItem.getType())) {
                 typeList.add(commonFileItem.getType());
                 ImageCacher.getInstance().cacheCommonFileIcon(commonFileItem.getType(), 150, 150);
             }
-        }
+        }*/
         mAdapter.setData(info.getData());
     }
 
@@ -114,7 +113,7 @@ public class ShareCommonFileFragment extends MediaFragment {
     public void onEventMainThread(EventBusType.ResetDownloadStatus info) {
         if (mType == GlobalParams.SERVER_MODE) {
             List<String> list = info.map.get(GlobalParams.ShareType.FILE);
-            if(list != null && list.size() > 0){
+            if (list != null && list.size() > 0) {
                 mAdapter.notifyDataSetChanged();
             }
         }
@@ -130,7 +129,7 @@ public class ShareCommonFileFragment extends MediaFragment {
 
     private void setData() {
         SharedCollection collection = ShareApplication.getInstance().getDestAllSharedFiles(mIP);
-        getData();
+        onQueryComplete();
         if (collection != null && mAdapter != null) {
             List<CommonFileItem> list = collection.getCommonFileList();
             mAdapter.setData(list);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.huhu.fileshare.IDownloadListenerInterface;
@@ -97,12 +98,16 @@ public class DownloadService extends Service{
     private class DownloadBinder extends IDownloadServicelInterface.Stub{
 
         @Override
-        public void addDownloadItem(String uuid,String ip,String fromPath,long size,long recv,String fromUser,String type,String destName)
+        public void addDownloadItem(String uuid,String ip,String fromPath,long size,long recv,
+                                    String fromUser,String type,String destName,String coverPath)
                 throws RemoteException {
             HLog.d(TAG,"Service:addDownloadItem, ip = "+ip+", from serverPath = "+fromPath);
             DownloadItem item = new DownloadItem(ip,size,fromPath,fromUser,uuid,type);
             item.setRecvSize(recv);
             item.setDestName(destName);
+            if(!TextUtils.isEmpty(coverPath)){
+                item.setCoverPath(coverPath);
+            }
             mDownloadHistory.operateDatabases(item, ADD_ITEM);
             TransferClient.getInstance().requestFile(item,ip);
         }

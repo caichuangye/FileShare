@@ -1,7 +1,6 @@
 package com.huhu.fileshare.ui.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import com.huhu.fileshare.ui.view.DownloadIcon;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
-import com.huhu.fileshare.util.ImageCacher;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
@@ -69,14 +67,13 @@ public class CommonFileAdapter extends FileBaseAdapter<CommonFileItem> {
         }
         CommonFileItem item = mDataList.get(position);
 
-        if (TextUtils.isEmpty(item.getCoverBitMap())) {
-            item.setCoverBitMap(ImageCacher.getInstance().getCoverPath(item.getType().toString(), ImageCacher.Type.COMMON_FILE));
-        }
         DisplayImageOptions options = new DisplayImageOptions.Builder().displayer(
                 new RoundedBitmapDisplayer(15))
-                .showImageOnFail(R.mipmap.file)
+                .showImageOnFail(R.mipmap.about)
                 .build();
-        ImageLoader.getInstance().displayImage("file://" + item.getCoverBitMap(), holder.coverImageView, options);
+
+        int index = Integer.decode(item.getCoverBitMap());
+        ImageLoader.getInstance().displayImage("drawable://" + index, holder.coverImageView, options);
 
         holder.selectedCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override

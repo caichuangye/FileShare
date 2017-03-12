@@ -106,6 +106,7 @@ public class DownloadHistory {
         values.put(DatabaseUtils.ColumnName.FILE_TYPE,item.getFileType());
         values.put(DatabaseUtils.ColumnName.DOWNLOAD_STATES,item.getStatus().toString());
         values.put(DatabaseUtils.ColumnName.DEST_NAME,item.getDestName());
+        values.put(DatabaseUtils.ColumnName.COVER_PATH,item.getCoverPath());
         mContentResolver.insert(DatabaseUtils.DOWNLOAD_HISTORY_URI,values);
     }
 

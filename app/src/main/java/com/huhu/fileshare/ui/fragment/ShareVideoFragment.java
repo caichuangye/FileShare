@@ -81,7 +81,7 @@ public class ShareVideoFragment extends MediaFragment {
         HLog.d("ccload",info.getType().toString()+", fragment: "+mType);
         if(info.getType() == GlobalParams.ShareType.VIDEO && mType == GlobalParams.LOCAL_MODE) {
             HLog.d("ccload","no video");
-            getData();
+            onQueryComplete();
             mAdapter.setData(null);
         }
     }
@@ -93,7 +93,7 @@ public class ShareVideoFragment extends MediaFragment {
     }
 
     public void onEventMainThread(EventBusType.ShareVideoInfo info){
-        getData();
+        onQueryComplete();
         VideoItem item = info.getData();
         ImageCacher.getInstance().cacheVideo(item.getPath(),150,150);
         mAdapter.addItem(item);
@@ -129,7 +129,7 @@ public class ShareVideoFragment extends MediaFragment {
 
     private void setData(){
         SharedCollection collection = ShareApplication.getInstance().getDestAllSharedFiles(mIP);
-        getData();
+        onQueryComplete();
         if(collection != null && mAdapter != null){
             List<VideoItem> list = collection.getVideoList();
             mAdapter.setData(list);

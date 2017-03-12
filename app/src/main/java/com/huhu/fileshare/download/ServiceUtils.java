@@ -57,7 +57,7 @@ public class ServiceUtils {
         if(mIsConnected){
             try {
                 mService.addDownloadItem(item.getUUID(),item.getFromIP(),item.getFromPath(),item.getTotalSize(),item.getRecvSize(),
-                        item.getFromUserName(),item.getFileType(),item.getDestName());
+                        item.getFromUserName(),item.getFileType(),item.getDestName(),item.getCoverPath());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

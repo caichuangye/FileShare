@@ -1,7 +1,6 @@
 package com.huhu.fileshare.ui.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +73,7 @@ public class ShareApkFragment extends MediaFragment {
 
 
     public void onEventMainThread(EventBusType.ShareApkInfo info) {
-        getData();
+        onQueryComplete();
         mAdapter.addItem(info.getData());
     }
 
@@ -119,7 +118,7 @@ public class ShareApkFragment extends MediaFragment {
      */
     private void setData() {
         SharedCollection collection = ShareApplication.getInstance().getDestAllSharedFiles(mIP);
-        getData();
+        onQueryComplete();
         if (collection != null && mAdapter != null) {
             List<ApkItem> list = collection.getApkList();
             mAdapter.setData(list);

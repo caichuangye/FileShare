@@ -67,7 +67,7 @@ public class ShareMusicFragment extends MediaFragment {
 
 
     public void onEventMainThread(EventBusType.ShareMusicInfo info) {
-        getData();
+        onQueryComplete();
         mAdapter.addItem(info.getData());
     }
 
@@ -84,7 +84,7 @@ public class ShareMusicFragment extends MediaFragment {
     public void onEventMainThread(EventBusType.NoLocalFiles info) {
         if(info.getType() == GlobalParams.ShareType.AUDIO && mType == GlobalParams.LOCAL_MODE) {
             HLog.d("ccload","no music");
-            getData();
+            onQueryComplete();
             mAdapter.setData(null);
         }
     }
@@ -108,7 +108,7 @@ public class ShareMusicFragment extends MediaFragment {
 
     private void setData() {
         SharedCollection collection = ShareApplication.getInstance().getDestAllSharedFiles(mIP);
-        getData();
+        onQueryComplete();
         if (collection != null && mAdapter != null) {
             List<MusicItem> list = collection.getMusicList();
             mAdapter.setData(list);
