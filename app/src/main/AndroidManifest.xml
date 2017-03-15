@@ -54,12 +54,12 @@
 
         <service android:name=".download.DownloadService"  />
 
-        <activity android:name=".ui.activity.SetSharedFilesActivity" />
+        <activity android:name=".ui.activity.BrowserLocalFilesActivity" />
         <activity android:name=".ui.activity.UsersListActivity" />
         <activity android:name=".ui.activity.JoinWiFiActivity" />
         <activity android:name=".ui.activity.SettingActivity" />
         <activity android:name=".ui.activity.DownloadActivity" />
-        <activity android:name=".ui.activity.ScanSharedFilesActivity" />
+        <activity android:name=".ui.activity.BrowserServerFilesActivity" />
     </application>
 
 </manifest>

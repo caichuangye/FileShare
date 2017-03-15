@@ -63,7 +63,7 @@ public class ShareCommonFileFragment extends MediaFragment {
         initEmptyView(view, "文件");
 
         if (mType == GlobalParams.LOCAL_MODE) {
-            ScanCommonFiles.getInstance(mContext).start();
+            ScanCommonFiles.getInstance(mContext.getApplicationContext()).start();
         } else {
             setData();
         }

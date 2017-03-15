@@ -21,6 +21,7 @@ import com.huhu.fileshare.model.VideoItem;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -122,8 +123,9 @@ public class FileQueryHelper {
                 String path = info.sourceDir;
                 if (!TextUtils.isEmpty(path) && path.startsWith("/data/app")) {
                     String name = String.valueOf(info.loadLabel(packageManager));
+                    FileInputStream inputStream = null;
                     try {
-                        FileInputStream inputStream = new FileInputStream(path);
+                        inputStream = new FileInputStream(path);
                         long size = inputStream.available();
                         PackageInfo pi = packageManager.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
                         final ApkItem item = new ApkItem(name, path, size, false, null, pi.versionName);
@@ -131,6 +133,14 @@ public class FileQueryHelper {
                         EventBus.getDefault().post(new EventBusType.ShareApkInfo(item));
                     } catch (Exception e) {
 
+                    } finally {
+                        if(inputStream != null){
+                            try {
+                                inputStream.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
             }
@@ -140,6 +150,7 @@ public class FileQueryHelper {
 
     private void buildResultList(GlobalParams.ShareType type, Cursor cursor) {
         if (cursor == null || cursor.getCount() == 0) {
+            cursor.close();
             EventBus.getDefault().post(new EventBusType.NoLocalFiles(type));
             return;
         }
@@ -179,6 +190,7 @@ public class FileQueryHelper {
             HLog.d("ccfolder","begin to send result");
             EventBus.getDefault().post(new EventBusType.ShareImageFolderInfo(convert(mAllImagesList)));
         }
+        cursor.close();
     }
 
     private List<ImageFolderItem> convert(final List<ImageItem> imageList) {

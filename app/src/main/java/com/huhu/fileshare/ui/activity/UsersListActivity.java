@@ -6,7 +6,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -50,7 +49,7 @@ public class UsersListActivity extends BaseActivity {
                 if (mAdapter.hasShared(position)) {
                     mSelectedIP = mAdapter.getIP(position);
                     ShareApplication.getInstance().setServerInfo(mSelectedIP,mUserName);
-                    Intent intent = new Intent(UsersListActivity.this, ScanSharedFilesActivity.class);
+                    Intent intent = new Intent(UsersListActivity.this, BrowserServerFilesActivity.class);
                     intent.putExtra("USER_NAME", mUserName);
                     intent.putExtra("IP", mSelectedIP);
                     intent.putExtra("INDEX",mAdapter.getFirstSharedFileIndex(position));

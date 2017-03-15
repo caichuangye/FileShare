@@ -22,7 +22,7 @@ import com.huhu.fileshare.model.SharedCollection;
 import com.huhu.fileshare.ui.adapter.ShareViewPagerAdapter;
 import com.huhu.fileshare.ui.view.PagerSlidingTabStrip;
 
-public class SetSharedFilesActivity extends BaseActivity {
+public class BrowserLocalFilesActivity extends BaseActivity {
 
     private ShareViewPagerAdapter mAdapter;
 

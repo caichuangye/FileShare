@@ -112,7 +112,6 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
         Uri uri = Uri.parse("file://" + path);
         String ext = path.substring(path.lastIndexOf('.') + 1);
         intent.setDataAndType(uri, MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext));
-        Log.d("view-c", path + ": " + ext + ": " + MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext));
         startActivity(intent);
     }
 

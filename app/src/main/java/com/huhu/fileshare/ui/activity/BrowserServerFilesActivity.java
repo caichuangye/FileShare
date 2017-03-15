@@ -16,12 +16,11 @@ import com.huhu.fileshare.ui.adapter.ScanSharedViewPagerAdapter;
 import com.huhu.fileshare.ui.view.PagerSlidingTabStrip;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
-import com.huhu.fileshare.util.HLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScanSharedFilesActivity extends BaseActivity {
+public class BrowserServerFilesActivity extends BaseActivity {
 
     private String mIP;
     private String mOwner;
@@ -78,7 +77,7 @@ public class ScanSharedFilesActivity extends BaseActivity {
                 onBackPressed();
                 break;
             case R.id.download:
-                startActivity(new Intent(ScanSharedFilesActivity.this, DownloadActivity.class));
+                startActivity(new Intent(BrowserServerFilesActivity.this, DownloadActivity.class));
                 break;
         }
         return true;

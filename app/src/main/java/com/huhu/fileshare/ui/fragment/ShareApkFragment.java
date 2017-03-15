@@ -84,7 +84,6 @@ public class ShareApkFragment extends MediaFragment {
 
     public void onEventMainThread(EventBusType.CacheImageComplete info) {
         if (info.result.type == ImageCacher.Type.APK) {
-            HLog.d("filequeryhelper","da: "+info.result.coverPath);
             mAdapter.updateCover(info.result.filePath, info.result.coverPath);
         }
     }

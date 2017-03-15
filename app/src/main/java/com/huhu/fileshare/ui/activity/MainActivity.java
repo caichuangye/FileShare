@@ -31,20 +31,16 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initToolbar("文件分享",null);
+        initToolbar("文件分享", null);
 
-        mWiFiTextView = (TextView)findViewById(R.id.wifi);
+        mWiFiTextView = (TextView) findViewById(R.id.wifi);
 
         findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (WiFiOperation.getInstance(getApplicationContext()).isWiFiConnected()) {
-                    Intent intent = new Intent(MainActivity.this, SetSharedFilesActivity.class);
-                    intent.putExtra("type", "mine");
-                    startActivity(intent);
-//                } else {
-//                    showJoinWiFiNotice();
-//                }
+                Intent intent = new Intent(MainActivity.this, BrowserLocalFilesActivity.class);
+                intent.putExtra("type", "mine");
+                startActivity(intent);
             }
         });
 
@@ -63,32 +59,32 @@ public class MainActivity extends BaseActivity {
         DevicesDetection.getInstance(this).start();
     }
 
-    public void onEventMainThread(EventBusType.ConnectInfo info){
-        if(info.wifiAvailvle()){
-            if(!TextUtils.isEmpty(info.getSSID())){
-                mWiFiTextView.setText("WiFi: "+info.getSSID());
-            }else{
+    public void onEventMainThread(EventBusType.ConnectInfo info) {
+        if (info.wifiAvailvle()) {
+            if (!TextUtils.isEmpty(info.getSSID())) {
+                mWiFiTextView.setText("WiFi: " + info.getSSID());
+            } else {
                 mWiFiTextView.setText("WiFi未连接");
             }
-        }else{
+        } else {
             mWiFiTextView.setText("WiFi已关闭");
         }
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         boolean available = WiFiOperation.getInstance(getApplicationContext()).isWiFiAvailable();
-        int status = WiFiOperation.getInstance(getApplicationContext()).isWiFiConnected()?
+        int status = WiFiOperation.getInstance(getApplicationContext()).isWiFiConnected() ?
                 GlobalParams.NET_CONNECTED : GlobalParams.NET_NOT_CONNECTED;
         String bssid = WiFiOperation.getInstance(getApplicationContext()).getConnectedWiFiBSSID();
         String ssid = WiFiOperation.getInstance(getApplicationContext()).getConnectedWiFiSSID();
-        onEventMainThread(new EventBusType.ConnectInfo(available,status,bssid,ssid));
+        onEventMainThread(new EventBusType.ConnectInfo(available, status, bssid, ssid));
     }
 
     @Override
-    public void initToolbar(String title, String subtitle){
-        mToolbar = (Toolbar)findViewById(R.id.toolbar);
+    public void initToolbar(String title, String subtitle) {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black_57));
         mToolbar.setLogo(R.mipmap.circle_logo);
         mToolbar.setLogoDescription(title);
@@ -139,18 +135,18 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         long now = System.currentTimeMillis();
-        if(now - mLastPressBackTimeStamp < 3000){
+        if (now - mLastPressBackTimeStamp < 3000) {
             finish();
-        }else{
+        } else {
             mLastPressBackTimeStamp = System.currentTimeMillis();
-            Toast.makeText(this,"再按一次退出",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
         ServiceUtils.getInstance().disConnected(getApplicationContext());
     }
