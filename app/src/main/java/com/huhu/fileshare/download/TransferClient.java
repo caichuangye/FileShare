@@ -37,7 +37,7 @@ public class TransferClient {
     /**
      *
      */
-    private static TransferClient sInstance = null;
+    private static volatile TransferClient sInstance = null;
 
     /**
      * 下载队列
@@ -69,7 +69,11 @@ public class TransferClient {
      */
     public static TransferClient getInstance() {
         if (sInstance == null) {
-            sInstance = new TransferClient();
+            synchronized (TransferClient.class) {
+                if(sInstance == null) {
+                    sInstance = new TransferClient();
+                }
+            }
         }
         return sInstance;
     }

@@ -17,12 +17,12 @@ public class GlobalParams {
     /**
      * 网络已连接
      */
-    public static int NET_CONNECTED = 0;
+    public static int WIFI_CONNECTED = 0;
 
     /**
      * 网络未连接
      */
-    public static int NET_NOT_CONNECTED = 1;
+    public static int WIFI_NOT_CONNECTED = 1;
 
     /**
      * 每个设备都要定时向所处的局域网发送广播，告知自己的共享信息，该端口就是发送广播的端口

@@ -22,7 +22,7 @@ public class MediaScanner {
 
     private Context mContext;
 
-    private static MediaScanner sInstance;
+    private static volatile MediaScanner sInstance;
 
     private List<String> mPendingList;
 
@@ -53,7 +53,11 @@ public class MediaScanner {
 
     public static MediaScanner getInstance(Context context){
         if(sInstance == null){
-            sInstance = new MediaScanner(context);
+            synchronized (MediaScanner.class) {
+                if(sInstance == null) {
+                    sInstance = new MediaScanner(context);
+                }
+            }
         }
         return sInstance;
     }

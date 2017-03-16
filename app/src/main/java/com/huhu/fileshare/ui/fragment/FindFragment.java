@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huhu.fileshare.R;
-import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.huhu.fileshare.com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
@@ -185,7 +183,7 @@ public class FindFragment extends BaseFragment implements WiFiOperation.IOnWiFiL
 
     public void onEventMainThread(EventBusType.ConnectInfo info){
         mProgressBar.setVisibility(View.GONE);
-        if(info.getStatus() == GlobalParams.NET_CONNECTED){
+        if(info.getStatus() == GlobalParams.WIFI_CONNECTED){
             EventBus.getDefault().post(new EventBusType.ChangeMainFragment(EventBusType.DEVICES_FRAGMENT, info.getSSID()));
         }else{
             Toast.makeText(mContext,info.getSSID()+"连接失败",Toast.LENGTH_SHORT).show();

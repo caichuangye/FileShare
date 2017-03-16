@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Process;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
@@ -41,7 +42,7 @@ public class FileQueryHelper {
 
     public static final String TAG = FileQueryHelper.class.getSimpleName();
 
-    private static FileQueryHelper sInstance;
+    private static volatile FileQueryHelper sInstance;
 
     private Context mContext;
 
@@ -62,7 +63,7 @@ public class FileQueryHelper {
         return sInstance;
     }
 
-    public void init(Context context){
+    public void init(Context context) {
         mContext = context.getApplicationContext();
         mThreadPool = Executors.newFixedThreadPool(5);
         mDownloadHistory = new DownloadHistory(context);
@@ -77,6 +78,7 @@ public class FileQueryHelper {
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 Uri uri = buildUri(type);
                 if (uri != null) {
                     String order = null;
@@ -87,6 +89,7 @@ public class FileQueryHelper {
                     }
                     Cursor cursor = mContext.getContentResolver().query(uri, null, null, null, order);
                     buildResultList(type, cursor);
+                    cursor.close();
                 } else if (type == GlobalParams.ShareType.APK) {
                     parseInstalledApp();
                 }
@@ -134,7 +137,7 @@ public class FileQueryHelper {
                     } catch (Exception e) {
 
                     } finally {
-                        if(inputStream != null){
+                        if (inputStream != null) {
                             try {
                                 inputStream.close();
                             } catch (IOException e) {
@@ -187,7 +190,7 @@ public class FileQueryHelper {
                     mAllImagesList.add(item);
                 }
             }
-            HLog.d("ccfolder","begin to send result");
+            HLog.d(TAG, "begin to send result");
             EventBus.getDefault().post(new EventBusType.ShareImageFolderInfo(convert(mAllImagesList)));
         }
         cursor.close();
@@ -241,78 +244,84 @@ public class FileQueryHelper {
         return mAllImagesList;
     }
 
+    private Map<Long, String> mCoverMap = null;
 
     private String getAlbumArt(int album_id) {
-        String mUriAlbums = "content://media/external/audio/albums";
-        String[] projection = new String[]{"album_art"};
-        Cursor cur = mContext.getContentResolver().query(
-                Uri.parse(mUriAlbums + "/" + Integer.toString(album_id)),
-                projection, null, null, null);
-        String album_art = null;
-        if (cur.getCount() > 0 && cur.getColumnCount() > 0) {
-            cur.moveToNext();
-            album_art = cur.getString(0);
+        if (mCoverMap == null) {
+            mCoverMap = new HashMap<>();
+            String[] projection = new String[]{"album_art", "_id"};
+            String uri = "content://media/external/audio/albums";
+            Cursor cursor = mContext.getContentResolver().query(
+                    Uri.parse(uri),
+                    projection, null, null, null);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    long id = cursor.getLong(cursor.getColumnIndex("_id"));
+                    String path = cursor.getString(cursor.getColumnIndex("album_art"));
+                    mCoverMap.put(id, path);
+                }
+                cursor.close();
+            }
         }
-        cur.close();
-        return album_art;
+        return mCoverMap.get(Long.valueOf(album_id));
     }
 
-    private Map<String,String> mCoverImageMap = new HashMap<>();
+    private Map<String, String> mCoverImageMap = new HashMap<>();
 
-    public String getCoverImage(String path){
+    public String getCoverImage(String path) {
         return mCoverImageMap.get(path);
     }
 
-    public void  parseCoverImage(String path, Uri uri){
-       if(path.endsWith(".apk")){
-           parseApkCoverImage(path);
-       }else if(path.endsWith(".mp4")){//// TODO: 2017/3/12 not only mp4
-           parseVideoCoverImage(path);
-       }else if(path.endsWith(".mp3")){//// TODO: 2017/3/12 not only mp3
-           parseMusicCoverImage(path,uri);
-       }else{
-       }
-    }
-
-    private void parseMusicCoverImage(String path,Uri uri){
-        Cursor cursor = mContext.getContentResolver().query(uri,new String[]{MediaStore.Audio.Media.ALBUM_ID},null,null,null);
-        if(cursor != null && cursor.getCount() > 0){
-            while(cursor.moveToNext()){
-                int albumIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
-                int id = cursor.getInt(albumIndex);
-                String coverPath = getAlbumArt(id);
-                HLog.d(TAG,path+": "+coverPath);
-                saveCoverImage(path,coverPath);
-                break;
-            }
-        }else{
-            HLog.d(TAG,"cursor == null or size == 0");
+    public void parseCoverImage(String path, Uri uri) {
+        if (path.endsWith(".apk")) {
+            parseApkCoverImage(path);
+        } else if (path.endsWith(".mp4")) {//// TODO: 2017/3/12 not only mp4
+            parseVideoCoverImage(path);
+        } else if (path.endsWith(".mp3")) {//// TODO: 2017/3/12 not only mp3
+            parseMusicCoverImage(path, uri);
+        } else {
         }
     }
 
-    public void saveCoverImage(String path, String coverPath){
-        String pre = Environment.getExternalStorageDirectory().getAbsolutePath()+ File.separator+GlobalParams.FOLDER;
-        HLog.d(TAG,"pre = "+pre);
-        if(path.startsWith(pre)) {
+    private void parseMusicCoverImage(String path, Uri uri) {
+        Cursor cursor = mContext.getContentResolver().query(uri, new String[]{MediaStore.Audio.Media.ALBUM_ID}, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                int albumIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
+                int id = cursor.getInt(albumIndex);
+                String coverPath = getAlbumArt(id);
+                HLog.d(TAG, path + ": " + coverPath);
+                saveCoverImage(path, coverPath);
+                break;
+            }
+        } else {
+            HLog.d(TAG, "cursor == null or size == 0");
+        }
+    }
+
+    public void saveCoverImage(String path, String coverPath) {
+        String pre = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + GlobalParams.FOLDER;
+        HLog.d(TAG, "pre = " + pre);
+        if (path.startsWith(pre)) {
             mCoverImageMap.put(path, coverPath);
             mDownloadHistory.updateFileCoverImage(path, coverPath);
             EventBus.getDefault().post(new EventBusType.ScanDownloadFileComplete(path, coverPath));
         }
     }
 
-    private void parseApkCoverImage(String path){
-        HLog.d(TAG,"parseApkCoverImage: "+path);
+    private void parseApkCoverImage(String path) {
+        HLog.d(TAG, "parseApkCoverImage: " + path);
         PackageManager packageManager = mContext.getPackageManager();
         PackageInfo pi = packageManager.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
         pi.applicationInfo.sourceDir = path;
         pi.applicationInfo.publicSourceDir = path;
         Drawable drawable = pi.applicationInfo.loadIcon(packageManager);
-        ImageCacher.getInstance().cacheDrawable(path,drawable, ImageCacher.Type.APK);
+        ImageCacher.getInstance().cacheDrawable(path, drawable, ImageCacher.Type.APK);
     }
 
-    private void parseVideoCoverImage(String path){
-        HLog.d(TAG,"parseVideoCoverImage: "+path);
-        ImageCacher.getInstance().cacheVideo(path,150,150);
+    private void parseVideoCoverImage(String path) {
+        HLog.d(TAG, "parseVideoCoverImage: " + path);
+        ImageCacher.getInstance().cacheVideo(path, 150, 150);
     }
 
 

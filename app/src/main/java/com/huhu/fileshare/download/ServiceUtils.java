@@ -22,7 +22,7 @@ import com.huhu.fileshare.util.HLog;
 
 public class ServiceUtils {
 
-    private static ServiceUtils sUtils;
+    private static volatile ServiceUtils sUtils;
 
     private ServiceConnection mDownloadConnection;
 
@@ -32,7 +32,11 @@ public class ServiceUtils {
 
     public static ServiceUtils getInstance(){
         if(sUtils == null){
-            sUtils = new ServiceUtils();
+            synchronized (ServiceUtils.class) {
+                if(sUtils == null) {
+                    sUtils = new ServiceUtils();
+                }
+            }
         }
         return sUtils;
     }

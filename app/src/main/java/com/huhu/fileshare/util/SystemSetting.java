@@ -27,7 +27,7 @@ public class SystemSetting {
 
     private SharedPreferences mSharedPreferences;
 
-    private static SystemSetting sInstance;
+    private static volatile SystemSetting sInstance;
 
     private Context mContext;
 

@@ -20,7 +20,7 @@ public class ComServer implements Runnable {
 
     public static final String TAG = ComServer.class.getSimpleName();
 
-    private static ComServer sInstance;
+    private static volatile ComServer sInstance;
 
     private Handler mHandler;
 
@@ -45,7 +45,7 @@ public class ComServer implements Runnable {
         } catch (IOException e) {
             HLog.d(TAG, e.getMessage());
         }
-        HandlerThread thread = new HandlerThread("recv");
+        HandlerThread thread = new HandlerThread("common-server-recv");
         thread.start();
         mHandler = new Handler(thread.getLooper());
         mIsQuit = false;

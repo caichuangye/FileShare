@@ -156,7 +156,7 @@ public class JoinWiFiActivity extends BaseActivity implements WiFiOperation.IOnW
         Log.d(TAG, info.toString()+": "+mJoiningSSID);
         String str = null;
         if(info.wifiAvailvle()){
-            if(info.getStatus() == GlobalParams.NET_CONNECTED){
+            if(info.getStatus() == GlobalParams.WIFI_CONNECTED){
                 if(info.getSSID().equals(mJoiningSSID)){
                     str = "已加入：" + mJoiningSSID;
                     Log.d(TAG,mJoiningSSID+": connected, after 500ms finish");

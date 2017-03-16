@@ -22,7 +22,7 @@ public class ScanFiles {
 
     private Handler mWorkerHandler;
 
-    private static ScanFiles sInstance;
+    private static volatile ScanFiles sInstance;
 
     public static ScanFiles getInstance(){
         if(sInstance == null){

@@ -31,7 +31,7 @@ public class ImageCacher implements Runnable {
 
     private Handler mVideoCoverHandler;
 
-    private static ImageCacher sInstance;
+    private static volatile ImageCacher sInstance;
 
     private BlockingQueue<CacheItem> mList;
 
@@ -69,7 +69,11 @@ public class ImageCacher implements Runnable {
 
     public static ImageCacher getInstance() {
         if (sInstance == null) {
-            sInstance = new ImageCacher();
+            synchronized (ImageCacher.class) {
+                if(sInstance == null) {
+                    sInstance = new ImageCacher();
+                }
+            }
         }
         return sInstance;
     }
@@ -104,7 +108,7 @@ public class ImageCacher implements Runnable {
             return;
         }
         if (mVideoCoverHandler == null) {
-            HandlerThread thread = new HandlerThread("video_cover");
+            HandlerThread thread = new HandlerThread("cache-video_cover");
             thread.start();
             mVideoCoverHandler = new Handler(thread.getLooper());
         }

@@ -34,7 +34,7 @@ public class ShareView extends View implements Runnable {
 
     public ShareView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        HandlerThread thread = new HandlerThread("refresh");
+        HandlerThread thread = new HandlerThread("refresh-share-view");
         thread.start();
         mWorkHandler = new Handler(thread.getLooper());
         mPaint = new Paint(Color.CYAN);

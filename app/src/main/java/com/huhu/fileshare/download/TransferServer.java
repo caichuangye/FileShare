@@ -56,7 +56,11 @@ public class TransferServer {
 
     public static TransferServer getInstance() {
         if (sInstance == null) {
-            sInstance = new TransferServer();
+            synchronized (TransferServer.class) {
+                if(sInstance == null) {
+                    sInstance = new TransferServer();
+                }
+            }
         }
         return sInstance;
     }

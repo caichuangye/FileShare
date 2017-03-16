@@ -71,9 +71,9 @@ public class WiFiOperation {
         mIsAutoRefreshWiFi = false;
         mAutoRefreshRunnable = new AutoRefreshRunnable();
         mScanList = new ArrayList<>();
-        HandlerThread handlerThread = new HandlerThread("work_handler");
+        HandlerThread handlerThread = new HandlerThread("wifi-work-handler");
         handlerThread.start();
-        HandlerThread handlerThread1 = new HandlerThread("refresh_handler");
+        HandlerThread handlerThread1 = new HandlerThread("wifi-refresh-handler");
         handlerThread1.start();
         mRefreshHandler = new Handler(handlerThread1.getLooper());
         mWorkHandler = new Handler(handlerThread.getLooper());

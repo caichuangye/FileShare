@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class ScanCommonFiles implements Runnable {
 
-    private static ScanCommonFiles sInstance;
+    private static volatile ScanCommonFiles sInstance;
 
     private Handler mHandler;
 
@@ -29,7 +29,7 @@ public class ScanCommonFiles implements Runnable {
 
     private ScanCommonFiles(Context context) {
         mContext = context;
-        HandlerThread handlerThread = new HandlerThread("scanspecialfile");
+        HandlerThread handlerThread = new HandlerThread("scan-common-files");
         handlerThread.start();
         mHandler = new Handler(handlerThread.getLooper());
     }

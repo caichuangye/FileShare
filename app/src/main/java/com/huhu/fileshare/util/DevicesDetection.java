@@ -3,7 +3,10 @@ package com.huhu.fileshare.util;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Process;
+import android.text.TextUtils;
 
+import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.DeviceItem;
 
@@ -20,13 +23,13 @@ import java.util.List;
  */
 public class DevicesDetection {
 
-    private String TAG = this.getClass().getName();
+    private String TAG = this.getClass().getSimpleName();
 
     private Handler mSendHandler;
 
     private Handler mRecvHandler;
 
-    private static DevicesDetection sInstance;
+    private static volatile DevicesDetection sInstance;
 
     private Context mContext;
 
@@ -39,6 +42,8 @@ public class DevicesDetection {
     private DatagramSocket mSocket;
 
     private List<DeviceItem> mDevicesList;
+
+    private String mIP;
 
     public static DevicesDetection getInstance(Context context) {
         if (sInstance == null) {
@@ -53,11 +58,11 @@ public class DevicesDetection {
 
     private DevicesDetection(Context context) {
         mContext = context;
-        HandlerThread threadSend = new HandlerThread("send");
+        HandlerThread threadSend = new HandlerThread("send_online_msg",Process.THREAD_PRIORITY_BACKGROUND);
         threadSend.start();
         mSendHandler = new Handler(threadSend.getLooper());
 
-        HandlerThread threadRecv = new HandlerThread("recv");
+        HandlerThread threadRecv = new HandlerThread("device-detect-recv");
         threadRecv.start();
         mRecvHandler = new Handler(threadRecv.getLooper());
 
@@ -97,16 +102,21 @@ public class DevicesDetection {
             public void run() {
                 while (!isQuit() && mSocket != null) {
                     HLog.d(TAG, "broadcastOnlineMessage");
-                    byte[] data = buildOnlineMessage();
                     try {
-                        InetAddress address = InetAddress.getByName(getBroadcastIP());
-                        DatagramPacket dp = new DatagramPacket(data, data.length, address, GlobalParams.DETECT_PORT);
-                        mSocket.send(dp);
+                        if(WiFiOperation.getInstance(mContext).isWiFiConnected()) {
+                            byte[] data = buildOnlineMessage();
+                            InetAddress address = InetAddress.getByName(getBroadcastIP());
+                            DatagramPacket dp = new DatagramPacket(data, data.length, address, GlobalParams.DETECT_PORT);
+                            mSocket.send(dp);
+                            Thread.sleep(mSendInternal);
+                        }else{
+                            Thread.sleep(mSendInternal*2);
+                        }
                         Thread.sleep(mSendInternal);
                     } catch (IOException e) {
-                        HLog.d(TAG, e.getMessage());
+                        HLog.e(TAG, e.getMessage());
                     } catch (InterruptedException e) {
-                        HLog.d(TAG, e.getMessage());
+                        HLog.e(TAG, e.getMessage());
                     }
                 }
             }
@@ -114,9 +124,12 @@ public class DevicesDetection {
     }
 
     private String getBroadcastIP() {
-        String ip = WiFiOperation.getInstance(mContext).getIP();
-        String bip = ip.substring(0, ip.lastIndexOf(".")) + ".255";
-        return bip;
+        if(TextUtils.isEmpty(mIP) || ShareApplication.getInstance().isNeedRefreshIP()) {
+            String ip = WiFiOperation.getInstance(mContext).getIP();
+            HLog.d(TAG, "ip = " + ip);
+            mIP = ip.substring(0, ip.lastIndexOf(".")) + ".255";
+        }
+        return mIP;
     }
 
     private void receiveOnlineMessage() {
@@ -128,7 +141,6 @@ public class DevicesDetection {
                     DatagramPacket datagramPacket = new DatagramPacket(data, data.length);
                     try {
                         mSocket.receive(datagramPacket);
-                        HLog.d(TAG, "----------ip = " + datagramPacket.getAddress().getHostAddress());
                         int length = datagramPacket.getLength();
                         byte[] buf = new byte[length];
                         for (int i = 0; i < length; i++) {
@@ -145,13 +157,6 @@ public class DevicesDetection {
 
 
     private void parseMessage(byte[] data, String ip) {
-
-//        HLog.d(TAG, "===================================");
-//        HLog.d(TAG, "parse: name = " + CommonUtil.parseUserName(data));
-//        HLog.d(TAG, "parse: icon = " + CommonUtil.parseIconIndex(data));
-//        HLog.d(TAG, "parse: has = " + CommonUtil.parseHasSharedFiles(data));
-//        HLog.d(TAG, "parse: refresh = " + CommonUtil.parseNeedRefresh(data));
-
         long now = System.currentTimeMillis();
         boolean isSame = false;
         boolean has = CommonUtil.parseHasSharedFiles(data);
@@ -192,7 +197,7 @@ public class DevicesDetection {
         }
         EventBus.getDefault().post(new EventBusType.OnlineDevicesInfo(mDevicesList));
         if (refresh) {
-            HLog.d("RECCY", "---------------------recv refresh flag, to request again----------------------");
+            HLog.d(TAG, "---------------------recv refresh flag, to request again----------------------");
             ComClient.getInstance(ip).sendMessage(GlobalParams.REQUEST_SHARED_FILES);
         }
     }

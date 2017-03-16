@@ -50,7 +50,7 @@ public class GetView extends View implements Runnable {
     public GetView(Context context, AttributeSet set) {
         super(context, set);
 
-        HandlerThread thread = new HandlerThread("refresh");
+        HandlerThread thread = new HandlerThread("refresh-get-view");
         thread.start();
         mWorkHandler = new Handler(thread.getLooper());
 

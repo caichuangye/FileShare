@@ -32,7 +32,7 @@ public class ComClient implements Runnable{
 
     private ComClient(String ip){
         mIP = ip;
-        HandlerThread thread = new HandlerThread("client");
+        HandlerThread thread = new HandlerThread("common-client");
         thread.start();
         mHandler = new Handler(thread.getLooper());
     }
@@ -65,7 +65,7 @@ public class ComClient implements Runnable{
         try{
             socket = new Socket(mIP,GlobalParams.SEND_PORT);
             socket.setSoTimeout(3000*10);
-            HandlerThread thread = new HandlerThread("send");
+            HandlerThread thread = new HandlerThread("common-client-send");
             thread.start();
             mHandler = new Handler(thread.getLooper());
         }catch (UnknownHostException e){

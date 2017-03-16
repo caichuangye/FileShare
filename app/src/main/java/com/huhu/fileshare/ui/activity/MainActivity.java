@@ -76,7 +76,7 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         boolean available = WiFiOperation.getInstance(getApplicationContext()).isWiFiAvailable();
         int status = WiFiOperation.getInstance(getApplicationContext()).isWiFiConnected() ?
-                GlobalParams.NET_CONNECTED : GlobalParams.NET_NOT_CONNECTED;
+                GlobalParams.WIFI_CONNECTED : GlobalParams.WIFI_NOT_CONNECTED;
         String bssid = WiFiOperation.getInstance(getApplicationContext()).getConnectedWiFiBSSID();
         String ssid = WiFiOperation.getInstance(getApplicationContext()).getConnectedWiFiSSID();
         onEventMainThread(new EventBusType.ConnectInfo(available, status, bssid, ssid));
