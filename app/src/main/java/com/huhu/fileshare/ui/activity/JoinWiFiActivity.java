@@ -34,7 +34,7 @@ import java.util.List;
 
 public class JoinWiFiActivity extends BaseActivity implements WiFiOperation.IOnWiFiListScanListener {
 
-    private String TAG = "ws_conn";
+    private String TAG = JoinWiFiActivity.class.getSimpleName();
 
     private static final int ANIM_DURATION = 1500;
 
@@ -147,7 +147,6 @@ public class JoinWiFiActivity extends BaseActivity implements WiFiOperation.IOnW
 
     @Override
     public void onChanged(List<WiFiItem> list) {
-        Log.d("tt_ww",list == null ? "list == null": "size: "+list.size());
         mPullToRefreshListView.onRefreshComplete();
         mAdapter.setData(list);
     }

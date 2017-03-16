@@ -9,12 +9,9 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.huhu.fileshare.IDownloadListenerInterface;
-import com.huhu.fileshare.IDownloadServicelInterface;
+import com.huhu.fileshare.IDownloadServiceInterface;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.DownloadItem;
-import com.huhu.fileshare.model.ScanDeviceItem;
-import com.huhu.fileshare.util.CommonUtil;
-import com.huhu.fileshare.util.HLog;
 
 /**
  * Created by Administrator on 2016/10/20.
@@ -26,7 +23,7 @@ public class ServiceUtils {
 
     private ServiceConnection mDownloadConnection;
 
-    private IDownloadServicelInterface mService;
+    private IDownloadServiceInterface mService;
 
     private boolean mIsConnected = false;
 
@@ -45,7 +42,7 @@ public class ServiceUtils {
         mDownloadConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                mService = IDownloadServicelInterface.Stub.asInterface(service);
+                mService = IDownloadServiceInterface.Stub.asInterface(service);
                 mIsConnected = true;
             }
 

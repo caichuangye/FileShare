@@ -9,8 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.huhu.fileshare.IDownloadListenerInterface;
-import com.huhu.fileshare.IDownloadServicelInterface;
-import com.huhu.fileshare.ShareApplication;
+import com.huhu.fileshare.IDownloadServiceInterface;
 import com.huhu.fileshare.databases.DownloadHistory;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.DownloadItem;
@@ -26,7 +25,6 @@ import java.util.List;
 import static com.huhu.fileshare.databases.DownloadHistory.ADD_ITEM;
 import static com.huhu.fileshare.databases.DownloadHistory.DELETE_ITEM;
 import static com.huhu.fileshare.databases.DownloadHistory.UPDATE_ITEM;
-import static com.huhu.fileshare.util.HLog.DD;
 
 /**
  * Created by Administrator on 2016/5/10.
@@ -83,7 +81,6 @@ public class DownloadService extends Service{
     public void onDestroy(){
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        Log.d(TAG,"-----------destroy service-----------");
         TransferServer.getInstance().quit();
         TransferClient.getInstance().quit();
     }
@@ -95,7 +92,7 @@ public class DownloadService extends Service{
         return mBinder;
     }
 
-    private class DownloadBinder extends IDownloadServicelInterface.Stub{
+    private class DownloadBinder extends IDownloadServiceInterface.Stub{
 
         @Override
         public void addDownloadItem(String uuid,String ip,String fromPath,long size,long recv,

@@ -18,6 +18,8 @@ import java.util.List;
 
 public class DownloadHistory {
 
+    private final String TAG = DownloadHistory.class.getSimpleName();
+
     public final static int ADD_ITEM = 0;
 
     public final static int UPDATE_ITEM = 1;
@@ -92,7 +94,7 @@ public class DownloadHistory {
     }
 
     private void addItem(DownloadItem item){
-        HLog.d("ccyd","add item: "+item.getStartTime());
+        HLog.d(TAG,"add item: "+item.getStartTime());
         ContentValues values = new ContentValues();
         values.put(DatabaseUtils.ColumnName.ID,item.getUUID());
         values.put(DatabaseUtils.ColumnName.START_TIME,item.getStartTime());
@@ -111,7 +113,7 @@ public class DownloadHistory {
     }
 
     private void updateItem(DownloadItem item){
-        HLog.d("ccyd","update item: "+item.toString());
+        HLog.d(TAG,"update item: "+item.toString());
         String where = " id = '"+item.getUUID()+"'";
         ContentValues values = new ContentValues();
         values.put(DatabaseUtils.ColumnName.DOWNLOAD_STATES,item.getStatus().toString());
@@ -130,6 +132,6 @@ public class DownloadHistory {
         ContentValues values = new ContentValues();
         values.put(DatabaseUtils.ColumnName.COVER_PATH,uri);
         int count = mContentResolver.update(DatabaseUtils.DOWNLOAD_HISTORY_URI,values,where,null);
-        HLog.d("cccover","count = "+count);
+        HLog.d(TAG,"count = "+count);
     }
 }

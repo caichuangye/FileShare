@@ -20,7 +20,6 @@ public class ShareDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        HLog.d("huhudb","create table");
         db.execSQL(DatabaseUtils.CREATE_TABLE_SQL);
     }
 
