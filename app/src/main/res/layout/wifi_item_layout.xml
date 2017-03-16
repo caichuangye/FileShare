@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/huhu_50_dp">
+    android:layout_height="50dp">
     <TextView
-        android:layout_marginLeft="@dimen/huhu_16_dp"
-        android:textSize="@dimen/huhu_16_sp"
+        android:layout_marginLeft="16dp"
+        android:textSize="16sp"
         android:text="wifi_name"
         android:gravity="center|left"
         android:id="@+id/wifi_name"
         android:textColor="@color/black_57"
         android:layout_width="300dp"
-        android:layout_height="@dimen/huhu_50_dp" />
+        android:layout_height="50dp" />
     <ImageView
         android:layout_marginRight="15dp"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_width="@dimen/huhu_20_dp"
-        android:layout_height="@dimen/huhu_20_dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:scaleType="fitXY"
         android:src="@mipmap/connected"
         android:id="@+id/wifi_strength"/>
@@ -25,7 +25,7 @@
         android:id="@+id/joined_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/huhu_12_sp"
+        android:textSize="12sp"
         android:text="已连接"
         android:textColor="@color/title_color"
         android:layout_centerVertical="true"

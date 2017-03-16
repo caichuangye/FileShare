@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
@@ -21,23 +20,23 @@ public class ChangeUserIconAdapter extends BaseAdapter {
 
     private int mSelectedIndex = 0;
 
-    public ChangeUserIconAdapter(Context context){
+    public ChangeUserIconAdapter(Context context) {
         mContext = context;
     }
 
-    public void setSelectedIndex(int index){
+    public void setSelectedIndex(int index) {
         mSelectedIndex = index;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return ((ShareApplication)mContext.getApplicationContext()).getUserIconList().length;
+        return ((ShareApplication) mContext.getApplicationContext()).getUserIconList().length;
     }
 
     @Override
     public Object getItem(int position) {
-        return ((ShareApplication)mContext.getApplicationContext()).getUserIconList()[position];
+        return ((ShareApplication) mContext.getApplicationContext()).getUserIconList()[position];
     }
 
     @Override
@@ -47,16 +46,16 @@ public class ChangeUserIconAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null){
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.change_usericon_item_layout,null);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.change_usericon_item_layout, null);
         }
-        if(mSelectedIndex == position){
-            ((RelativeLayout)(convertView)).setBackgroundColor(mContext.getResources().getColor(R.color.black_57));
-        }else{
-            ((RelativeLayout)(convertView)).setBackgroundColor(mContext.getResources().getColor(R.color.white_0));
+        if (mSelectedIndex == position) {
+            convertView.setBackgroundColor(mContext.getResources().getColor(R.color.black_57));
+        } else {
+            convertView.setBackgroundColor(mContext.getResources().getColor(R.color.white_0));
         }
-        ImageView imageView = (ImageView)convertView.findViewById(R.id.icon_imageview);
-        imageView.setImageResource(((ShareApplication)mContext.getApplicationContext()).getUserIconList()[position]);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.icon_imageview);
+        imageView.setImageResource(((ShareApplication) mContext.getApplicationContext()).getUserIconList()[position]);
         return convertView;
     }
 }

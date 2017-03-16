@@ -13,9 +13,9 @@
 
     <TextView
         android:layout_below="@id/title_bar"
-        android:layout_marginTop="@dimen/huhu_20_dp"
-        android:layout_marginLeft="@dimen/huhu_10_dp"
-        android:layout_marginRight="@dimen/huhu_10_dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:text="请输入意见或建议"
         android:id="@+id/feedback_label"
         android:layout_width="wrap_content"
@@ -23,68 +23,68 @@
 
     <EditText
         android:gravity="top"
-        android:layout_marginLeft="@dimen/huhu_10_dp"
-        android:layout_marginRight="@dimen/huhu_10_dp"
-        android:layout_marginTop="@dimen/huhu_6_dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="6dp"
         android:layout_below="@id/feedback_label"
         android:id="@+id/feedback_content"
         android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
-        android:textSize="@dimen/huhu_14_sp"
+        android:textSize="14sp"
         android:layout_height="100dp"
         android:hint="意见或建议"
-        android:padding="@dimen/huhu_6_dp"
+        android:padding="6dp"
         android:background="@drawable/shape_rect"/>
 
     <TextView
-        android:layout_marginTop="@dimen/huhu_16_dp"
+        android:layout_marginTop="16dp"
         android:layout_below="@id/feedback_content"
-        android:layout_marginLeft="@dimen/huhu_10_dp"
-        android:layout_marginRight="@dimen/huhu_10_dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:text="请输入联系方式"
         android:id="@+id/contact_method_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <EditText
-        android:layout_marginTop="@dimen/huhu_6_dp"
-        android:paddingLeft="@dimen/huhu_6_dp"
+        android:layout_marginTop="6dp"
+        android:paddingLeft="6dp"
         android:layout_below="@id/contact_method_label"
         android:id="@+id/contact_method"
         android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/huhu_10_dp"
-        android:layout_marginRight="@dimen/huhu_10_dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_height="40dp"
         android:hint="QQ/手机号"
-        android:textSize="@dimen/huhu_14_sp"
+        android:textSize="14sp"
         android:inputType="numberDecimal"
         android:background="@drawable/shape_rect"/>
 
     <Button
         android:layout_alignParentLeft="true"
         android:layout_below="@id/contact_method"
-        android:layout_marginTop="@dimen/huhu_10_dp"
+        android:layout_marginTop="10dp"
         android:text="@string/cancel"
         android:id="@+id/cancel"
-        android:layout_marginLeft="@dimen/huhu_10_dp"
+        android:layout_marginLeft="10dp"
         android:textColor="@color/black_57"
-        android:textSize="@dimen/huhu_16_sp"
+        android:textSize="16sp"
         android:background="@drawable/button_background"
-        android:layout_width="@dimen/huhu_150_dp"
-        android:layout_height="@dimen/huhu_40_dp" />
+        android:layout_width="150dp"
+        android:layout_height="40dp" />
 
     <Button
         android:layout_alignParentRight="true"
         android:layout_below="@id/contact_method"
-        android:layout_marginTop="@dimen/huhu_10_dp"
+        android:layout_marginTop="10dp"
         android:text="@string/commit"
         android:id="@+id/commit"
-        android:layout_marginRight="@dimen/huhu_10_dp"
+        android:layout_marginRight="10dp"
         android:textColor="@color/title_color"
-        android:textSize="@dimen/huhu_16_sp"
+        android:textSize="16sp"
         android:background="@drawable/button_background"
-        android:layout_width="@dimen/huhu_150_dp"
-        android:layout_height="@dimen/huhu_40_dp" />
+        android:layout_width="150dp"
+        android:layout_height="40dp" />
 
 </RelativeLayout>

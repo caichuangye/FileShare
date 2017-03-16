@@ -2,7 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="huhu_1_px">1px</dimen>
+    <!--<dimen name="huhu_1_px">1px</dimen>
     <dimen name="huhu_2_px">2px</dimen>
     <dimen name="huhu_1_dp">1dp</dimen>
     <dimen name="huhu_2_dp">2dp</dimen>
@@ -30,6 +30,6 @@
     <dimen name="huhu_14_sp">14sp</dimen>
     <dimen name="huhu_15_sp">15sp</dimen>
     <dimen name="huhu_16_sp">16sp</dimen>
-    <dimen name="huhu_20_sp">20sp</dimen>
+    <dimen name="huhu_20_sp">20sp</dimen>-->
 
 </resources>

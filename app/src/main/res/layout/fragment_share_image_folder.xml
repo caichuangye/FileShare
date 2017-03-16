@@ -10,7 +10,7 @@
 
    <GridView
        android:id="@+id/gridview"
-      android:layout_margin="@dimen/huhu_4_dp"
+      android:layout_margin="4dp"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        android:numColumns="2"

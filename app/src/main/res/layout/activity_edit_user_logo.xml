@@ -17,10 +17,10 @@
         android:layout_below="@id/title"
         android:id="@+id/gridview"
         android:numColumns="3"
-        android:horizontalSpacing="@dimen/huhu_4_dp"
-        android:verticalSpacing="@dimen/huhu_4_dp"
+        android:horizontalSpacing="4dp"
+        android:verticalSpacing="4dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
 
 </RelativeLayout>

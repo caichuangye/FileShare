@@ -2,31 +2,31 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/huhu_60_dp">
+    android:layout_height="60dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/huhu_60_dp">
+        android:layout_height="60dp">
 
         <ImageView
             android:id="@+id/type_icon"
-            android:layout_width="@dimen/huhu_50_dp"
-            android:layout_height="@dimen/huhu_50_dp"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/huhu_5_dp"
+            android:layout_marginLeft="5dp"
             android:src="@mipmap/video" />
 
         <TextView
             android:id="@+id/file_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/huhu_60_dp"
+            android:layout_marginEnd="60dp"
             android:textColor="@color/black_87"
-            android:layout_marginLeft="@dimen/huhu_10_dp"
-            android:layout_marginTop="@dimen/huhu_8_dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="8dp"
             android:layout_toRightOf="@id/type_icon"
             android:singleLine="true"
-            android:textSize="@dimen/huhu_12_sp"
+            android:textSize="12sp"
             tools:text="tonight i feel close to you" />
 
 
@@ -37,8 +37,8 @@
             android:layout_height="8dp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="23dp"
-            android:layout_marginLeft="@dimen/huhu_10_dp"
-            android:layout_marginRight="@dimen/huhu_60_dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="60dp"
             android:layout_toRightOf="@id/type_icon"
             style="?android:attr/progressBarStyleHorizontal"
             android:max="100"
@@ -49,12 +49,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:layout_marginLeft="@dimen/huhu_10_dp"
+            android:layout_marginLeft="10dp"
             android:textColor="@color/black_57"
             android:textSize="10sp"
             android:text="来自于："
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/huhu_5_dp"
+            android:layout_marginBottom="5dp"
             android:layout_toRightOf="@id/type_icon"/>
 
         <TextView
@@ -67,7 +67,7 @@
             android:textSize="10sp"
             tools:text="huhu"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/huhu_5_dp"
+            android:layout_marginBottom="5dp"
             android:layout_toRightOf="@id/file_from_label"/>
 
         <TextView
@@ -80,27 +80,26 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/file_owner"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/huhu_5_dp"/>
+            android:layout_marginBottom="5dp"/>
 
         <RelativeLayout
             android:id="@+id/delete"
             android:layout_alignParentRight="true"
-            android:layout_width="@dimen/huhu_60_dp"
-            android:layout_height="@dimen/huhu_60_dp">
+            android:layout_width="60dp"
+            android:layout_height="60dp">
             <ImageView
-                android:src="@mipmap/delete"
                 android:scaleType="fitXY"
-                android:layout_width="@dimen/huhu_20_dp"
-                android:layout_height="@dimen/huhu_20_dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true" />
         </RelativeLayout>
 
         <TextView
             android:id="@+id/download_info"
-            android:layout_marginLeft="@dimen/huhu_10_dp"
+            android:layout_marginLeft="10dp"
             android:gravity="right"
-            android:layout_width="@dimen/huhu_50_dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:textColor="@color/black_57"

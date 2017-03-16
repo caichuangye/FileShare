@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="确定要删除吗？"
-        android:textSize="@dimen/huhu_16_sp"
+        android:textSize="16sp"
         android:textColor="@color/title_color"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="75dp"

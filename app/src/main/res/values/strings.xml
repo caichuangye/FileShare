@@ -39,4 +39,5 @@
     <string name="set_wifi"><u>Set WiFi</u></string>
     <string name="commit">Commit</string>
     <string name="cancel">Cancel</string>
+    <string name="join_wifi_title">未加入无线网络，现在加入？</string>
 </resources>

@@ -99,20 +99,29 @@ public class ShareApplication extends Application {
 
     private Handler mMainHandler;
 
+    private boolean mNeedRefreshIP = true;
+
     private class NetReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (WiFiOperation.getInstance(getApplicationContext()).isWiFiAvailable()) {
-                if (WiFiOperation.getInstance(getApplicationContext()).isWiFiConnected()) {
-                    EventBus.getDefault().post(new EventBusType.ConnectInfo(true, GlobalParams.NET_CONNECTED,
+            if (WiFiOperation.getInstance(getApplicationContext()).isWiFiConnected()) {
+                    EventBus.getDefault().post(new EventBusType.ConnectInfo(true, GlobalParams.WIFI_CONNECTED,
                             WiFiOperation.getInstance(getApplicationContext()).getConnectedWiFiBSSID(),
                             WiFiOperation.getInstance(getApplicationContext()).getConnectedWiFiSSID()));
-                } else {
-                    EventBus.getDefault().post(new EventBusType.ConnectInfo(true, GlobalParams.NET_NOT_CONNECTED, null, null));
-                }
+                mNeedRefreshIP = true;
             } else {
-                EventBus.getDefault().post(new EventBusType.ConnectInfo(false, GlobalParams.NET_NOT_CONNECTED, null, null));
+                EventBus.getDefault().post(new EventBusType.ConnectInfo(false, GlobalParams.WIFI_NOT_CONNECTED, null, null));
+                mNeedRefreshIP = false;
             }
+        }
+    }
+
+    public boolean isNeedRefreshIP(){
+        if(mNeedRefreshIP){
+            mNeedRefreshIP = false;
+            return true;
+        }else{
+            return false;
         }
     }
 
@@ -138,7 +147,7 @@ public class ShareApplication extends Application {
     private void initStrictMode(){
         ApplicationInfo info = getApplicationInfo();
         int flag = info.flags & ApplicationInfo.FLAG_DEBUGGABLE;
-     //   if(flag == 2) {
+        if(flag == 2) {
             HLog.d(TAG,"init strict mode");
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectAll()
@@ -150,7 +159,7 @@ public class ShareApplication extends Application {
                     .detectAll()
                     .penaltyLog()
                     .build());
-    //    }
+        }
     }
 
     public static ShareApplication getInstance() {

@@ -48,8 +48,7 @@ public class ImageFolderAdapter extends FileBaseAdapter<ImageFolderItem> {
         ImageFolderItem item = mDataList.get(position);
         holder.folderInfoTextView.setText(item.getShowName()+"("+item.getImageCount()+")");
         ImageLoader.getInstance().displayImage("file://" + item.getCoverImagePath(), holder.image,
-                new ImageSize((int) mContext.getResources().getDimension(R.dimen.huhu_174_dp),
-                        (int) mContext.getResources().getDimension(R.dimen.huhu_174_dp)));
+                new ImageSize(174*3,174*3));
         holder.selectedCheckbox.setVisibility(View.GONE);
         holder.downloadTextView.setVisibility(View.GONE);
         return convertView;

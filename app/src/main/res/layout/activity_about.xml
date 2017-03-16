@@ -12,11 +12,11 @@
         style="@style/toolbar_layout_style"/>
 
     <ImageView
-        android:layout_marginTop="@dimen/huhu_60_dp"
+        android:layout_marginTop="60dp"
         android:layout_gravity="center_horizontal"
         android:src="@mipmap/ic_launcher"
-        android:layout_width="@dimen/huhu_80_dp"
-        android:layout_height="@dimen/huhu_80_dp" />
+        android:layout_width="80dp"
+        android:layout_height="80dp" />
     <TextView
         android:id="@+id/version"
         android:gravity="center_horizontal"

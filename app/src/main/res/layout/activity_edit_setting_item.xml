@@ -12,17 +12,17 @@
         style="@style/toolbar_layout_style"/>
 
     <EditText
-        android:layout_marginLeft="@dimen/huhu_10_dp"
-        android:layout_marginRight="@dimen/huhu_10_dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/setting_item"
-        android:layout_marginTop="@dimen/huhu_80_dp"
+        android:layout_marginTop="80dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/huhu_50_dp" />
+        android:layout_height="50dp" />
     <TextView
         android:layout_marginLeft="11dp"
-        android:layout_marginRight="@dimen/huhu_10_dp"
+        android:layout_marginRight="10dp"
         android:layout_below="@id/setting_item"
-        android:textSize="@dimen/huhu_14_sp"
+        android:textSize="14sp"
         android:text="name"
         android:textColor="@color/black_57"
         android:id="@+id/setting_hint"

@@ -9,15 +9,15 @@
         android:layout_height="150dp">
         <ImageView
             android:id="@+id/user_icon"
-            android:layout_marginTop="@dimen/huhu_20_dp"
+            android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
             android:src="@mipmap/user_icon_0"
-            android:layout_width="@dimen/huhu_100_dp"
-            android:layout_height="@dimen/huhu_100_dp" />
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
         <TextView
            android:layout_below="@id/user_icon"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/huhu_4_dp"
+            android:layout_marginTop="4dp"
             android:id="@+id/title"
             android:text="请选择头像"
             android:layout_width="wrap_content"
@@ -32,12 +32,12 @@
         android:layout_height="1dp"/>
 
     <GridView
-        android:padding="@dimen/huhu_10_dp"
+        android:padding="10dp"
         android:layout_below="@id/divider"
         android:id="@+id/gridview"
         android:numColumns="3"
-        android:horizontalSpacing="@dimen/huhu_4_dp"
-        android:verticalSpacing="@dimen/huhu_4_dp"
+        android:horizontalSpacing="4dp"
+        android:verticalSpacing="4dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

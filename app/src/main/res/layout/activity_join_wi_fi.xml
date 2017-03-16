@@ -17,11 +17,11 @@
         android:id="@+id/joining_label"
         android:background="@android:color/holo_orange_light"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/huhu_50_dp">
+        android:layout_height="50dp">
         <TextView
             android:textColor="@color/black_57"
             android:id="@+id/joining_textview"
-            android:textSize="@dimen/huhu_14_sp"
+            android:textSize="14sp"
             android:text="正在加入：cmcc-24"
             android:gravity="center_vertical"
             android:paddingStart="16dp"
@@ -42,8 +42,8 @@
         android:id="@+id/find_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/huhu_2_dp"
-        android:layout_marginRight="@dimen/huhu_2_dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
         android:background="@android:color/white" />
 
     <RelativeLayout
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
             android:layout_centerInParent="true"
-            android:layout_marginTop="@dimen/huhu_6_dp"
+            android:layout_marginTop="6dp"
             android:text="@string/set_wifi"
             android:textColor="@color/title_color" />
     </RelativeLayout>

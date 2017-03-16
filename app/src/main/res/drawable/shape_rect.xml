@@ -3,5 +3,5 @@
     android:shape="rectangle" android:padding="10dp">
     <solid android:color="#FFFFFF" />
     <corners
-        android:radius="@dimen/huhu_10_dp" />
+        android:radius="10dp" />
 </shape>

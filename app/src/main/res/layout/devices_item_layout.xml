@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/huhu_60_dp">
+    android:layout_height="60dp">
     <ImageView
         android:id="@+id/user_icon"
         android:scaleType="fitXY"
         android:src="@mipmap/user_icon"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/huhu_10_dp"
-        android:layout_width="@dimen/huhu_45_dp"
-        android:layout_height="@dimen/huhu_45_dp" />
+        android:layout_marginLeft="10dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp" />
 
     <RelativeLayout
         android:layout_toRightOf="@id/user_icon"
         android:layout_width="200dp"
-        android:layout_height="@dimen/huhu_60_dp">
+        android:layout_height="60dp">
         <TextView
             android:id="@+id/user_name"
-            android:layout_marginTop="@dimen/huhu_10_dp"
-            android:layout_marginLeft="@dimen/huhu_10_dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
             android:textSize="16sp"
             android:textColor="@color/black_87"
             android:layout_width="wrap_content"
@@ -27,8 +27,8 @@
 
         <TextView
             android:id="@+id/user_ip"
-            android:layout_marginBottom="@dimen/huhu_8_dp"
-            android:layout_marginLeft="@dimen/huhu_10_dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="10dp"
             android:textColor="@color/title_color"
             android:textSize="12sp"
             android:layout_width="wrap_content"
@@ -45,9 +45,9 @@
         android:src="@mipmap/connected"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/huhu_20_dp"
-        android:layout_marginLeft="@dimen/huhu_10_dp"
-        android:layout_width="@dimen/huhu_20_dp"
-        android:layout_height="@dimen/huhu_20_dp" />
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
 
 </RelativeLayout>

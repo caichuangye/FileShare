@@ -86,7 +86,7 @@ public class MainActivity extends BaseActivity {
     public void initToolbar(String title, String subtitle) {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black_57));
-        mToolbar.setLogo(R.mipmap.circle_logo);
+        mToolbar.setLogo(R.mipmap.ic_launcher);
         mToolbar.setLogoDescription(title);
         setSupportActionBar(mToolbar);
     }
@@ -95,7 +95,7 @@ public class MainActivity extends BaseActivity {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         Dialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
-        builder.setTitle("未加入无线网络，现在加入？");
+        builder.setTitle(R.string.join_wifi_title);
         builder.setPositiveButton("确    定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
