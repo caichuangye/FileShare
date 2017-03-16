@@ -29,15 +29,13 @@ import java.util.List;
 
 public class WiFiOperation {
 
-    private  final String TAG = this.getClass().toString();
+    private  final String TAG = this.getClass().getSimpleName();
 
     private static final int SCAN_DONE = 0;
 
     private List<ScanResult> mScanList;
 
     private WifiManager mWiFiManager;
-
-    private Handler mWorkHandler;
 
     private int mScanInterval = 1000;
 
@@ -76,7 +74,6 @@ public class WiFiOperation {
         HandlerThread handlerThread1 = new HandlerThread("wifi-refresh-handler");
         handlerThread1.start();
         mRefreshHandler = new Handler(handlerThread1.getLooper());
-        mWorkHandler = new Handler(handlerThread.getLooper());
         mMainHandler = new Handler(Looper.getMainLooper()){
             @Override
             public void handleMessage(Message message){
