@@ -3,7 +3,6 @@ package com.huhu.fileshare.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -35,10 +34,10 @@ public class UsersListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_list);
 
-        initToolbar(WiFiOperation.getInstance(getApplicationContext()).getConnectedWiFiSSID(),null);
-        mLoadingView = (RelativeLayout)findViewById(R.id.loading_view);
+        initToolbar(WiFiOperation.getInstance(getApplicationContext()).getConnectedWiFiSSID(), null);
+        mLoadingView = (RelativeLayout) findViewById(R.id.loading_view);
         View empty = findViewById(R.id.emptyview);
-        mListView = (ListView)findViewById(R.id.devices_listview);
+        mListView = (ListView) findViewById(R.id.devices_listview);
         mListView.setEmptyView(empty);
         mAdapter = new DevicesAdapter(getApplicationContext());
         mListView.setAdapter(mAdapter);
@@ -48,14 +47,13 @@ public class UsersListActivity extends BaseActivity {
                 mUserName = mAdapter.getName(position);
                 if (mAdapter.hasShared(position)) {
                     mSelectedIP = mAdapter.getIP(position);
-                    ShareApplication.getInstance().setServerInfo(mSelectedIP,mUserName);
+                    ShareApplication.getInstance().setServerInfo(mSelectedIP, mUserName);
                     Intent intent = new Intent(UsersListActivity.this, BrowserServerFilesActivity.class);
                     intent.putExtra("USER_NAME", mUserName);
                     intent.putExtra("IP", mSelectedIP);
-                    intent.putExtra("INDEX",mAdapter.getFirstSharedFileIndex(position));
+                    intent.putExtra("INDEX", mAdapter.getFirstSharedFileIndex(position));
                     startActivity(intent);
                     ComClient.getInstance(mSelectedIP).sendMessage(GlobalParams.REQUEST_SHARED_FILES);
-                    Log.d("shareinfo","client send REQUEST_SHARED_FILES");
                 } else {
                     mSelectedIP = null;
                     Toast.makeText(UsersListActivity.this, mUserName + "无共享文件", Toast.LENGTH_SHORT).show();
@@ -68,8 +66,8 @@ public class UsersListActivity extends BaseActivity {
     }
 
     @Override
-    public void initToolbar(String title, String subtitle){
-        mToolbar = (Toolbar)findViewById(R.id.toolbar);
+    public void initToolbar(String title, String subtitle) {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle(title);
         mToolbar.setSubtitle(subtitle);
         mToolbar.setTitleTextColor(getResources().getColor(R.color.black_57));
@@ -77,7 +75,7 @@ public class UsersListActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    public void onEventMainThread(EventBusType.OnlineDevicesInfo info){
+    public void onEventMainThread(EventBusType.OnlineDevicesInfo info) {
         mLoadingView.setVisibility(View.GONE);
         mListView.setVisibility(View.VISIBLE);
         mListView.getEmptyView().setVisibility(View.VISIBLE);

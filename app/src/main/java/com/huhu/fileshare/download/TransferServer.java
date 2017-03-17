@@ -1,6 +1,7 @@
 package com.huhu.fileshare.download;
 
 
+import android.os.Process;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -154,7 +155,7 @@ public class TransferServer {
             inputStream.skip(startPos);
             size = file.length();
             long offset = startPos;
-            int length = 1024 * 4;
+            int length = 1024 * 8;
             while (size > offset) {
                 byte[] bytes = new byte[length];
                 if (offset + length > size) {
@@ -211,6 +212,7 @@ public class TransferServer {
             mWorkThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
+                    Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                     while (true) {
                         if (mQuit == true) {
                             break;
@@ -221,6 +223,7 @@ public class TransferServer {
                             mWorkThreadPool.execute(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                                     sendFile(socket);
                                 }
                             });

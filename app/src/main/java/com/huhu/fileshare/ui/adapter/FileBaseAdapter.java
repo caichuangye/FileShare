@@ -130,10 +130,10 @@ public abstract class FileBaseAdapter<T extends BaseItem> extends BaseAdapter {
             BaseItem item = (BaseItem)mInfo.getData();
             HLog.d("ccstatus",ShareApplication.getInstance().getFileDownloadStatus(item.getPath()).toString());
             if(ShareApplication.getInstance().getFileDownloadStatus(item.getPath()) == DownloadStatus.INIT) {
-                long st = System.currentTimeMillis();
                 ShareApplication.getInstance().requestFile(mInfo);
-                long c = System.currentTimeMillis() - st;
-                HLog.d("ccadd","time: "+c);
+            }else if(ShareApplication.getInstance().getFileDownloadStatus(item.getPath()) == DownloadStatus.SUCCESSED){
+                HLog.d("ccstatus","path = "+item.getPath());
+                EventBus.getDefault().post(new EventBusType.StartViewAction(item.getPath()));
             }else{
                 EventBus.getDefault().post(new EventBusType.GoToDownloadActivity());
             }

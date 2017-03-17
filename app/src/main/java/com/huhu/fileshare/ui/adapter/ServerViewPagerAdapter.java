@@ -14,13 +14,13 @@ import com.huhu.fileshare.util.GlobalParams;
 /**
  * Created by Administrator on 2016/4/24.
  */
-public class ScanSharedViewPagerAdapter extends FragmentPagerAdapter {
+public class ServerViewPagerAdapter extends FragmentPagerAdapter {
 
     private Fragment[] mFragmentList = new Fragment[5];
 
     private String[] mTitles = {"图片","音乐","视频","应用","文件"};
 
-    public ScanSharedViewPagerAdapter(FragmentManager fm,String ip) {
+    public ServerViewPagerAdapter(FragmentManager fm, String ip) {
         super(fm);
         for(int i = 0; i < 5; i++) {
             if(i == 0){

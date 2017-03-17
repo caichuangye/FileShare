@@ -1,21 +1,24 @@
 package com.huhu.fileshare.ui.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.webkit.MimeTypeMap;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.model.BaseItem;
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
-import com.huhu.fileshare.ui.adapter.ScanSharedViewPagerAdapter;
+import com.huhu.fileshare.ui.adapter.ServerViewPagerAdapter;
 import com.huhu.fileshare.ui.view.PagerSlidingTabStrip;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
+import com.huhu.fileshare.util.HLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +28,7 @@ public class BrowserServerFilesActivity extends BaseActivity {
     private String mIP;
     private String mOwner;
 
-    private ScanSharedViewPagerAdapter mAdapter;
+    private ServerViewPagerAdapter mAdapter;
     private ViewPager mViewPager;
     private PagerSlidingTabStrip mTabs;
 
@@ -34,7 +37,7 @@ public class BrowserServerFilesActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_sdcard);
+        setContentView(R.layout.activity_scan_shared);
         int index = 0;
         if (getIntent() != null) {
             mIP = getIntent().getStringExtra("IP");
@@ -47,7 +50,7 @@ public class BrowserServerFilesActivity extends BaseActivity {
 
         mTabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.share_viewpager);
-        mAdapter = new ScanSharedViewPagerAdapter(getSupportFragmentManager(), mIP);
+        mAdapter = new ServerViewPagerAdapter(getSupportFragmentManager(), mIP);
         mViewPager.setAdapter(mAdapter);
         mTabs.setViewPager(mViewPager);
         mViewPager.setCurrentItem(index);
@@ -81,6 +84,15 @@ public class BrowserServerFilesActivity extends BaseActivity {
                 break;
         }
         return true;
+    }
+
+    public void onEventMainThread(EventBusType.StartViewAction info){
+        HLog.d("ccstatus","start view: "+info.path);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri uri = Uri.parse("file://" + info.path);
+        String ext = info.path.substring(info.path.lastIndexOf('.') + 1);
+        intent.setDataAndType(uri, MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext));
+        startActivity(intent);
     }
 
     public void onEventMainThread(EventBusType.GoToDownloadActivity info) {

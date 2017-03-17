@@ -20,7 +20,7 @@ public class BaseActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
     }
 
-    public void initToolbar(String tilte, String subtitle){
+    public void initToolbar(String title, String subtitle){
 
     }
 

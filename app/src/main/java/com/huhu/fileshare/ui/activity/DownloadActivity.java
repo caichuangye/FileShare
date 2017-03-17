@@ -41,6 +41,8 @@ import java.util.List;
 
 public class DownloadActivity extends BaseActivity implements DownloadAdapter.OnSelectListener {
 
+    private final String TAG = DownloadActivity.class.getSimpleName();
+
     private DownloadAdapter mAdapter;
 
     private DownloadHistory mDownloadHistory;
@@ -69,7 +71,6 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
 
         mAdapter = new DownloadAdapter(this, this);
         mDownloadHistory = new DownloadHistory(this);
-        mAdapter.setData(mDownloadHistory.getAllItems());
         mListView.setAdapter(mAdapter);
 
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -87,6 +88,7 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
                 handleClickItem(position);
             }
         });
+        FileQueryHelper.getInstance().requestDownloadHistory();
 
     }
 
@@ -110,10 +112,11 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
         }
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri uri = Uri.parse("file://" + path);
-        String ext = path.substring(path.lastIndexOf('.') + 1);
+        String ext =  path.substring(path.lastIndexOf('.') + 1);
         intent.setDataAndType(uri, MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext));
         startActivity(intent);
     }
+
 
     @Override
     public void initToolbar(String title, String subtitle) {
@@ -132,6 +135,7 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
             mAdapter.updateCoverImage(path, FileQueryHelper.getInstance().getCoverImage(path));
         }
     }
+
 
     /**
      * 添加、更新或删除下载状态
@@ -152,6 +156,10 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
 
     public void onEventMainThread(EventBusType.ScanDownloadFileComplete complete){
         mAdapter.updateCoverImage(complete.path,complete.uri);
+    }
+
+    public void onEventMainThread(EventBusType.DownloadList list){
+        mAdapter.setData(list.list);
     }
 
 

@@ -1,6 +1,7 @@
 package com.huhu.fileshare.download;
 
 import android.os.Environment;
+import android.os.Process;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -113,6 +114,7 @@ public class TransferClient {
                         mWorkPool.execute(new Runnable() {
                             @Override
                             public void run() {
+                                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                                 boolean res = receiveFile(unit);
                                 String str = res ? "success" : "failed";
                                 HLog.d(TAG, "receive +" + unit.serverPath + ": " + str);
@@ -121,6 +123,7 @@ public class TransferClient {
                     }else{
                         HLog.w(TAG, "delete: " + unit.serverPath +", handle next");
                     }
+                    Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 HLog.d(TAG,"run loop to receive: "+e.getMessage());
@@ -168,8 +171,8 @@ public class TransferClient {
                     return false;
                 }
 
-                byte[] data = new byte[1024 * 4];
-                int tmp = inputStream.read(data, 0, 1024 * 4);
+                byte[] data = new byte[1024 * 8];
+                int tmp = inputStream.read(data, 0, 1024 * 8);
                 if (tmp == -1) {
                     break;
                 }
@@ -219,6 +222,7 @@ public class TransferClient {
             mWorkPool.execute(new Runnable() {
                 @Override
                 public void run() {
+                    Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                     startWorkThreadPool();
                 }
             });
