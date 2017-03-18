@@ -20,48 +20,6 @@ import java.util.Map;
  */
 public class EventBusType {
 
-    public static final int FIND_FRAGMENT = 0;
-
-    public static final int DEVICES_FRAGMENT = 1;
-
-    public static final int SHARE_FRAGMENT = 2;
-
-    public static final int DOWNLOAD_FRAGMENT = 3;
-
-    public static final int SETTING_FRAGMENT = 4;
-
-    public static final int SHARE_IMAGE_FRAGMENT = 5;
-
-    public static final int SHARE_MUSIC_FRAGMENT = 6;
-
-    public static final int SHARE_VIDEO_FRAGMENT = 7;
-
-    public static final int SHARE_FILE_FRAGMENT = 8;
-
-    public static final int SHARE_STORAGE_FRAGMENT = 9;
-
-    /**
-     *
-     */
-    public static class ChangeMainFragment {
-
-        private String mTitle;
-
-        private int mId;
-
-        public ChangeMainFragment(int id, String title) {
-            this.mId = id;
-            mTitle = title;
-        }
-
-        public int getId() {
-            return mId;
-        }
-
-        public String getTitle() {
-            return mTitle;
-        }
-    }
 
 
     /**
@@ -245,20 +203,6 @@ public class EventBusType {
         }
     }
 
-    /**
-     *
-     */
-    public static class WiFiStatus {
-        private boolean mIsConnected;
-
-        public WiFiStatus(boolean connect) {
-            mIsConnected = connect;
-        }
-
-        public boolean isConnected() {
-            return mIsConnected;
-        }
-    }
 
     /**
      *
@@ -421,6 +365,21 @@ public class EventBusType {
         public ScanDownloadFileComplete(String path,String uri){
             this.path = path;
             this.uri = uri;
+        }
+    }
+
+    public static class DownloadList{
+        public List<DownloadItem> list;
+
+        public DownloadList(List<DownloadItem> list){
+            this.list = list;
+        }
+    }
+
+    public static class StartViewAction {
+        public String path;
+        public StartViewAction(String path){
+            this.path = path;
         }
     }
 

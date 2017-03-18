@@ -9,6 +9,7 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.media.ThumbnailUtils;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Process;
 import android.provider.MediaStore;
 
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
@@ -61,7 +62,7 @@ public class ImageCacher implements Runnable {
         }
 
         mQuit = false;
-        HandlerThread thread = new HandlerThread("cache_drawable");
+        HandlerThread thread = new HandlerThread("cache_drawable", Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
         mWorkHandler = new Handler(thread.getLooper());
         mWorkHandler.post(this);
@@ -108,7 +109,7 @@ public class ImageCacher implements Runnable {
             return;
         }
         if (mVideoCoverHandler == null) {
-            HandlerThread thread = new HandlerThread("cache-video_cover");
+            HandlerThread thread = new HandlerThread("cache-video_cover",Process.THREAD_PRIORITY_BACKGROUND);
             thread.start();
             mVideoCoverHandler = new Handler(thread.getLooper());
         }

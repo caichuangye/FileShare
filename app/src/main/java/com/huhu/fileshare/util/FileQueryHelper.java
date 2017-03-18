@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import com.huhu.fileshare.databases.DownloadHistory;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.ApkItem;
+import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.ImageFolderItem;
 import com.huhu.fileshare.model.ImageItem;
 import com.huhu.fileshare.model.MusicItem;
@@ -66,7 +67,7 @@ public class FileQueryHelper {
     public void init(Context context) {
         mContext = context.getApplicationContext();
         mThreadPool = Executors.newFixedThreadPool(5);
-        mDownloadHistory = new DownloadHistory(context);
+        mDownloadHistory = new DownloadHistory(mContext);
     }
 
     private FileQueryHelper() {
@@ -79,6 +80,9 @@ public class FileQueryHelper {
             @Override
             public void run() {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                String name = Thread.currentThread().getName();
+                name += ": "+type.toString();
+                Thread.currentThread().setName(name);
                 Uri uri = buildUri(type);
                 if (uri != null) {
                     String order = null;
@@ -96,6 +100,17 @@ public class FileQueryHelper {
             }
         });
 
+    }
+
+    public void requestDownloadHistory(){
+        mThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                List<DownloadItem> list = mDownloadHistory.getAllItems();
+                EventBus.getDefault().post(new EventBusType.DownloadList(list));
+            }
+        });
     }
 
     private Uri buildUri(GlobalParams.ShareType type) {
@@ -119,6 +134,38 @@ public class FileQueryHelper {
 
 
     private void parseInstalledApp() {
+        PackageManager packageManager = mContext.getPackageManager();
+        List<PackageInfo> list = packageManager.getInstalledPackages(0);
+        if (list != null) {
+            for (PackageInfo info : list) {
+                String path = info.applicationInfo.sourceDir;
+                if (!TextUtils.isEmpty(path) && path.startsWith("/data/app")) {
+                    String name = String.valueOf(info.applicationInfo.loadLabel(packageManager));
+                    FileInputStream inputStream = null;
+                    try {
+                        inputStream = new FileInputStream(path);
+                        long size = inputStream.available();
+                        final ApkItem item = new ApkItem(name, path, size, false, null, info.versionName);
+                        ImageCacher.getInstance().cacheDrawable(path, info.applicationInfo.loadIcon(packageManager), ImageCacher.Type.APK);
+                        EventBus.getDefault().post(new EventBusType.ShareApkInfo(item));
+                    } catch (Exception e) {
+
+                    } finally {
+                        if (inputStream != null) {
+                            try {
+                                inputStream.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+            ImageCacher.getInstance().exit();
+        }
+    }
+
+  /*  private void parseInstalledApp() {
         PackageManager packageManager = mContext.getPackageManager();
         List<ApplicationInfo> list = packageManager.getInstalledApplications(GET_UNINSTALLED_PACKAGES);
         if (list != null) {
@@ -149,7 +196,7 @@ public class FileQueryHelper {
             }
             ImageCacher.getInstance().exit();
         }
-    }
+    }*/
 
     private void buildResultList(GlobalParams.ShareType type, Cursor cursor) {
         if (cursor == null || cursor.getCount() == 0) {
@@ -299,14 +346,20 @@ public class FileQueryHelper {
         }
     }
 
-    public void saveCoverImage(String path, String coverPath) {
-        String pre = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + GlobalParams.FOLDER;
-        HLog.d(TAG, "pre = " + pre);
-        if (path.startsWith(pre)) {
-            mCoverImageMap.put(path, coverPath);
-            mDownloadHistory.updateFileCoverImage(path, coverPath);
-            EventBus.getDefault().post(new EventBusType.ScanDownloadFileComplete(path, coverPath));
-        }
+    public void saveCoverImage(final String path, final String coverPath) {
+        mThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                String pre = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + GlobalParams.FOLDER;
+                if (path.startsWith(pre)) {
+                    mCoverImageMap.put(path, coverPath);
+                    mDownloadHistory.updateFileCoverImage(path, coverPath);
+                    EventBus.getDefault().post(new EventBusType.ScanDownloadFileComplete(path, coverPath));
+                }
+            }
+        });
+
     }
 
     private void parseApkCoverImage(String path) {

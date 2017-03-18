@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:orientation="horizontal"
     android:layout_height="60dp">
 
     <ImageView
         android:id="@+id/file_cover"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
         android:src="@mipmap/mp3"/>
 
     <RelativeLayout
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
-        android:layout_toEndOf="@id/file_cover"
-        android:layout_width="match_parent"
+        android:layout_width="210dp"
         android:layout_height="60dp">
         <TextView
             android:id="@+id/file_name"
@@ -54,29 +55,24 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_centerInParent="true"
+    <FrameLayout
         android:layout_width="80dp"
-        android:layout_height="60dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true">
+        android:layout_height="60dp">
 
         <CheckBox
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
+            android:layout_gravity="center_vertical|end"
             android:id="@+id/file_selected"
             android:layout_width="60dp"
             android:layout_height="60dp" />
 
-
         <com.huhu.fileshare.ui.view.DownloadIcon
+            android:layout_gravity="center"
             android:id="@+id/file_download"
             android:layout_width="60dp"
             android:layout_height="30dp"
-            android:visibility="gone"
-            android:layout_centerInParent="true" />
+            android:visibility="visible" />
 
-    </RelativeLayout>
+    </FrameLayout>
 
 
-</RelativeLayout>
+</LinearLayout>
