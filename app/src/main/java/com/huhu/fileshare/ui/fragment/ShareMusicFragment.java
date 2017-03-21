@@ -52,7 +52,7 @@ public class ShareMusicFragment extends MediaFragment {
         mListView = (ListView) view.findViewById(R.id.listview);
         mListView.setAdapter(mAdapter);
         initEmptyView(view, "音乐");
-        if (mType == GlobalParams.LOCAL_MODE && mAdapter.getCount() == 0) {
+        if (mType == GlobalParams.LOCAL_MODE) {
             FileQueryHelper.getInstance().scanFileByType(GlobalParams.ShareType.AUDIO);
         } else {
             setData();
@@ -68,7 +68,7 @@ public class ShareMusicFragment extends MediaFragment {
 
     public void onEventMainThread(EventBusType.ShareMusicInfo info) {
         onQueryComplete();
-        mAdapter.addItem(info.getData());
+        mAdapter.setData(info.getData());
     }
 
     public void onEventMainThread(EventBusType.ClearShared info) {

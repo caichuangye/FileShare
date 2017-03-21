@@ -141,26 +141,9 @@ public class ShareApplication extends Application {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mReceiver, filter);
         mMainHandler = new Handler(Looper.getMainLooper());
-        initStrictMode();
     }
 
-    private void initStrictMode(){
-        ApplicationInfo info = getApplicationInfo();
-        int flag = info.flags & ApplicationInfo.FLAG_DEBUGGABLE;
-        if(flag == 2) {
-            HLog.d(TAG,"init strict mode");
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectAll()
-                    .penaltyLog()
-                    .penaltyFlashScreen()
-                    .build());
 
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectAll()
-                    .penaltyLog()
-                    .build());
-        }
-    }
 
     public static ShareApplication getInstance() {
         return sInstance;

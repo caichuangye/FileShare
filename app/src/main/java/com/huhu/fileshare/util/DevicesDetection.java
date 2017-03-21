@@ -58,11 +58,11 @@ public class DevicesDetection {
 
     private DevicesDetection(Context context) {
         mContext = context;
-        HandlerThread threadSend = new HandlerThread("send_online_msg",Process.THREAD_PRIORITY_BACKGROUND);
+        HandlerThread threadSend = new HandlerThread("DevicesDetection_send",Process.THREAD_PRIORITY_BACKGROUND);
         threadSend.start();
         mSendHandler = new Handler(threadSend.getLooper());
 
-        HandlerThread threadRecv = new HandlerThread("device-detect-recv");
+        HandlerThread threadRecv = new HandlerThread("DevicesDetection_recv");
         threadRecv.start();
         mRecvHandler = new Handler(threadRecv.getLooper());
 

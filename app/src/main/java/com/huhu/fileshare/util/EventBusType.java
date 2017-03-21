@@ -78,14 +78,14 @@ public class EventBusType {
      */
     public static class ShareMusicInfo {
 
-        private MusicItem mSingleData;
+        private List<MusicItem> mData;
 
-        public ShareMusicInfo(MusicItem item) {
-            mSingleData = item;
+        public ShareMusicInfo(List<MusicItem> item) {
+            mData = item;
         }
 
-        public MusicItem getData() {
-            return mSingleData;
+        public List<MusicItem> getData() {
+            return mData;
         }
     }
 
@@ -93,13 +93,13 @@ public class EventBusType {
      *
      */
     public static class ShareApkInfo {
-        private ApkItem mData;
+        private List<ApkItem> mData;
 
-        public ShareApkInfo(ApkItem item) {
+        public ShareApkInfo(List<ApkItem> item) {
             mData = item;
         }
 
-        public ApkItem getData() {
+        public List<ApkItem> getData() {
             return mData;
         }
     }
@@ -108,13 +108,13 @@ public class EventBusType {
      *
      */
     public static class ShareVideoInfo {
-        private VideoItem mData;
+        private List<VideoItem> mData;
 
-        public ShareVideoInfo(VideoItem item) {
+        public ShareVideoInfo(List<VideoItem> item) {
             mData = item;
         }
 
-        public VideoItem getData() {
+        public List<VideoItem> getData() {
             return mData;
         }
     }

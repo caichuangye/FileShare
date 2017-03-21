@@ -46,7 +46,7 @@ public class MediaFragment extends BaseFragment {
 
     public void onQueryComplete(){
         mProgressBar.setVisibility(View.GONE);
-        mListView.getEmptyView().setVisibility(View.VISIBLE);
+        mListView.getEmptyView().setVisibility(View.GONE);
         mListView.setVisibility(View.VISIBLE);
 
     }

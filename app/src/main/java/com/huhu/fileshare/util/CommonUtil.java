@@ -195,13 +195,17 @@ public class CommonUtil {
         return bitmap;
     }
 
+    private static String sFolderName;
+
     public static String getAppFolder(){
-        String str = Environment.getExternalStorageDirectory().getAbsolutePath()+"/fileshare";
-        File file = new File(str);
-        if(!file.exists()){
-            file.mkdir();
+        if(TextUtils.isEmpty(sFolderName)) {
+            sFolderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/fileshare";
+            File file = new File(sFolderName);
+            if (!file.exists()) {
+                file.mkdir();
+            }
         }
-        return str;
+        return sFolderName;
     }
 
     public static String getUUID(){

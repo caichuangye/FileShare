@@ -53,6 +53,10 @@ public class FileQueryHelper {
 
     private DownloadHistory mDownloadHistory;
 
+    private List<ApkItem> mApkList;
+    private List<MusicItem> mMusicList;
+    private List<VideoItem> mVideoList;
+
     public static FileQueryHelper getInstance() {
         if (sInstance == null) {
             synchronized (FileQueryHelper.class) {
@@ -81,28 +85,61 @@ public class FileQueryHelper {
             public void run() {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 String name = Thread.currentThread().getName();
-                name += ": "+type.toString();
+                name += ": " + type.toString();
                 Thread.currentThread().setName(name);
-                Uri uri = buildUri(type);
-                if (uri != null) {
-                    String order = null;
-                    if (type == GlobalParams.ShareType.AUDIO) {
-                        order = MediaStore.Audio.Media.DEFAULT_SORT_ORDER + " asc";
-                    } else if (type == GlobalParams.ShareType.VIDEO) {
-                        order = MediaStore.Video.Media.DEFAULT_SORT_ORDER + " desc";
+
+                if (type == GlobalParams.ShareType.AUDIO) {
+                    if (mMusicList != null) {
+                        EventBus.getDefault().post(new EventBusType.ShareMusicInfo(mMusicList));
+                        return;
+                    } else {
+                        mMusicList = new ArrayList<>();
                     }
-                    Cursor cursor = mContext.getContentResolver().query(uri, null, null, null, order);
-                    buildResultList(type, cursor);
-                    cursor.close();
+                } else if (type == GlobalParams.ShareType.VIDEO) {
+                    if (mVideoList != null) {
+                        EventBus.getDefault().post(new EventBusType.ShareVideoInfo(mVideoList));
+                        return;
+                    } else {
+                        mVideoList = new ArrayList<>();
+                    }
                 } else if (type == GlobalParams.ShareType.APK) {
+                    if (mApkList != null) {
+                        EventBus.getDefault().post(new EventBusType.ShareApkInfo(mApkList));
+                        return;
+                    } else {
+                        mApkList = new ArrayList<>();
+                    }
+                } else if (type == GlobalParams.ShareType.IMAGE) {
+                    if (mAllImagesList != null) {
+                        EventBus.getDefault().post(new EventBusType.ShareImageFolderInfo(convert(mAllImagesList)));
+                        return;
+                    } else {
+                        mAllImagesList = new ArrayList<>();
+                    }
+                }
+
+                if (type == GlobalParams.ShareType.APK) {
                     parseInstalledApp();
+                }else {
+                    Uri uri = buildUri(type);
+                    if (uri != null) {
+                        String order = null;
+                        if (type == GlobalParams.ShareType.AUDIO) {
+                            order = MediaStore.Audio.Media.DEFAULT_SORT_ORDER + " asc";
+                        } else if (type == GlobalParams.ShareType.VIDEO) {
+                            order = MediaStore.Video.Media.DEFAULT_SORT_ORDER + " desc";
+                        }
+                        Cursor cursor = mContext.getContentResolver().query(uri, null, null, null, order);
+                        buildResultList(type, cursor);
+                        cursor.close();
+                    }
                 }
             }
         });
 
     }
 
-    public void requestDownloadHistory(){
+    public void requestDownloadHistory() {
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -147,7 +184,7 @@ public class FileQueryHelper {
                         long size = inputStream.available();
                         final ApkItem item = new ApkItem(name, path, size, false, null, info.versionName);
                         ImageCacher.getInstance().cacheDrawable(path, info.applicationInfo.loadIcon(packageManager), ImageCacher.Type.APK);
-                        EventBus.getDefault().post(new EventBusType.ShareApkInfo(item));
+                        mApkList.add(item);
                     } catch (Exception e) {
 
                     } finally {
@@ -161,42 +198,10 @@ public class FileQueryHelper {
                     }
                 }
             }
+            EventBus.getDefault().post(new EventBusType.ShareApkInfo(mApkList));
             ImageCacher.getInstance().exit();
         }
     }
-
-  /*  private void parseInstalledApp() {
-        PackageManager packageManager = mContext.getPackageManager();
-        List<ApplicationInfo> list = packageManager.getInstalledApplications(GET_UNINSTALLED_PACKAGES);
-        if (list != null) {
-            for (ApplicationInfo info : list) {
-                String path = info.sourceDir;
-                if (!TextUtils.isEmpty(path) && path.startsWith("/data/app")) {
-                    String name = String.valueOf(info.loadLabel(packageManager));
-                    FileInputStream inputStream = null;
-                    try {
-                        inputStream = new FileInputStream(path);
-                        long size = inputStream.available();
-                        PackageInfo pi = packageManager.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
-                        final ApkItem item = new ApkItem(name, path, size, false, null, pi.versionName);
-                        ImageCacher.getInstance().cacheDrawable(path, info.loadIcon(packageManager), ImageCacher.Type.APK);
-                        EventBus.getDefault().post(new EventBusType.ShareApkInfo(item));
-                    } catch (Exception e) {
-
-                    } finally {
-                        if (inputStream != null) {
-                            try {
-                                inputStream.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            }
-            ImageCacher.getInstance().exit();
-        }
-    }*/
 
     private void buildResultList(GlobalParams.ShareType type, Cursor cursor) {
         if (cursor == null || cursor.getCount() == 0) {
@@ -214,30 +219,28 @@ public class FileQueryHelper {
                 int artistIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
                 MusicItem item = new MusicItem(cursor.getString(titleIndex), cursor.getString(pathIndex),
                         cursor.getLong(sizeIndex), false, url, cursor.getString(artistIndex));
-                EventBus.getDefault().post(new EventBusType.ShareMusicInfo(item));
+                mMusicList.add(item);
             }
+            EventBus.getDefault().post(new EventBusType.ShareMusicInfo(mMusicList));
         } else if (type == GlobalParams.ShareType.VIDEO) {
             while (cursor.moveToNext()) {
                 int durationIndex = cursor.getColumnIndex(MediaStore.Video.Media.DURATION);
                 VideoItem item = new VideoItem(cursor.getString(titleIndex), cursor.getString(pathIndex),
                         cursor.getLong(sizeIndex), false, null, cursor.getLong(durationIndex));
-                EventBus.getDefault().post(new EventBusType.ShareVideoInfo(item));
+                mVideoList.add(item);
             }
+            EventBus.getDefault().post(new EventBusType.ShareVideoInfo(mVideoList));
 
         } else if (type == GlobalParams.ShareType.IMAGE) {
-            if (mAllImagesList == null) {
-                mAllImagesList = new ArrayList<>();
-                while (cursor.moveToNext()) {
-                    int dateIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
-                    SimpleDateFormat sDateFormat = new SimpleDateFormat("yy-MM-dd");
-                    String d = sDateFormat.format(new Date(cursor.getLong(dateIndex) * 1000));
-                    String path = cursor.getString(pathIndex);
-                    ImageItem item = new ImageItem(cursor.getString(titleIndex), path,
-                            cursor.getLong(sizeIndex), false, null, d);
-                    mAllImagesList.add(item);
-                }
+            while (cursor.moveToNext()) {
+                int dateIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
+                SimpleDateFormat sDateFormat = new SimpleDateFormat("yy-MM-dd");
+                String d = sDateFormat.format(new Date(cursor.getLong(dateIndex) * 1000));
+                String path = cursor.getString(pathIndex);
+                ImageItem item = new ImageItem(cursor.getString(titleIndex), path,
+                        cursor.getLong(sizeIndex), false, null, d);
+                mAllImagesList.add(item);
             }
-            HLog.d(TAG, "begin to send result");
             EventBus.getDefault().post(new EventBusType.ShareImageFolderInfo(convert(mAllImagesList)));
         }
         cursor.close();

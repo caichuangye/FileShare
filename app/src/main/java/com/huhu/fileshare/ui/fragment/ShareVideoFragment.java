@@ -57,7 +57,7 @@ public class ShareVideoFragment extends MediaFragment {
 
         initEmptyView(view, "视频");
 
-        if (mType == GlobalParams.LOCAL_MODE && mAdapter.getCount() == 0) {
+        if (mType == GlobalParams.LOCAL_MODE) {
             FileQueryHelper.getInstance().scanFileByType(GlobalParams.ShareType.VIDEO);
         } else {
             setData();
@@ -78,9 +78,7 @@ public class ShareVideoFragment extends MediaFragment {
 
 
     public void onEventMainThread(EventBusType.NoLocalFiles info) {
-        HLog.d("ccload",info.getType().toString()+", fragment: "+mType);
         if(info.getType() == GlobalParams.ShareType.VIDEO && mType == GlobalParams.LOCAL_MODE) {
-            HLog.d("ccload","no video");
             onQueryComplete();
             mAdapter.setData(null);
         }
@@ -94,9 +92,11 @@ public class ShareVideoFragment extends MediaFragment {
 
     public void onEventMainThread(EventBusType.ShareVideoInfo info){
         onQueryComplete();
-        VideoItem item = info.getData();
-        ImageCacher.getInstance().cacheVideo(item.getPath(),150,150);
-        mAdapter.addItem(item);
+        List<VideoItem> list = info.getData();
+        mAdapter.setData(list);
+        for(VideoItem item : list) {
+            ImageCacher.getInstance().cacheVideo(item.getPath(), 150, 150);
+        }
     }
 
     public void onEventMainThread(EventBusType.ClearShared info){
@@ -122,7 +122,6 @@ public class ShareVideoFragment extends MediaFragment {
         if(mType == GlobalParams.SERVER_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
                 || info.getOper() == GlobalParams.DownloadOper.ADD)) {
-            Log.d("ooo","just change tag");
             mAdapter.notifyDataSetChanged();
         }
     }

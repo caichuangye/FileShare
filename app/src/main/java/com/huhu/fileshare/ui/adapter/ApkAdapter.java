@@ -15,6 +15,7 @@ import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.ApkItem;
 import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.ui.view.DownloadIcon;
+import com.huhu.fileshare.util.HLog;
 import com.huhu.fileshare.util.ImageCacher;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
@@ -61,9 +62,11 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
     public GlobalParams.ShareType getSharedType() {
         return GlobalParams.ShareType.APK;
     }
-
+    private int mTimes = 0;
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        mTimes++;
+        HLog.d("CCAPK","times = "+mTimes+"; total = "+mDataList.size());
         ViewHolder holder;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.file_item_layout, null);

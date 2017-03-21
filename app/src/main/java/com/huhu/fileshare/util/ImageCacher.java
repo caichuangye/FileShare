@@ -45,22 +45,6 @@ public class ImageCacher implements Runnable {
     private volatile boolean mQuit = false;
 
     private ImageCacher() {
-        mList = new LinkedBlockingDeque<>();
-        File fileApk = new File(APK_Folder);
-        if (!fileApk.exists()) {
-            fileApk.mkdir();
-        }
-
-        File fileVideo = new File(VIDEO_Folder);
-        if (!fileVideo.exists()) {
-            fileVideo.mkdir();
-        }
-
-        File fileCommon = new File(COMMON_Folder);
-        if (!fileCommon.exists()) {
-            fileCommon.mkdir();
-        }
-
         mQuit = false;
         HandlerThread thread = new HandlerThread("cache_drawable", Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
@@ -105,11 +89,9 @@ public class ImageCacher implements Runnable {
     }
 
     public void cacheVideo(final String path, final int w, final int h) {
-        if(checkExist(path,Type.VIDEO)){
-            return;
-        }
+
         if (mVideoCoverHandler == null) {
-            HandlerThread thread = new HandlerThread("cache-video_cover",Process.THREAD_PRIORITY_BACKGROUND);
+            HandlerThread thread = new HandlerThread("cache-video-cover",Process.THREAD_PRIORITY_BACKGROUND);
             thread.start();
             mVideoCoverHandler = new Handler(thread.getLooper());
         }
@@ -117,6 +99,9 @@ public class ImageCacher implements Runnable {
         mVideoCoverHandler.post(new Runnable() {
             @Override
             public void run() {
+                if(checkExist(path,Type.VIDEO)){
+                    return;
+                }
                 Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Video.Thumbnails.MINI_KIND);
                 bitmap = ThumbnailUtils.extractThumbnail(bitmap, w, h, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
                 if (bitmap != null) {
@@ -146,6 +131,24 @@ public class ImageCacher implements Runnable {
 
     @Override
     public void run() {
+        if(mList == null) {
+            mList = new LinkedBlockingDeque<>();
+        }
+        File fileApk = new File(APK_Folder);
+        if (!fileApk.exists()) {
+            fileApk.mkdir();
+        }
+
+        File fileVideo = new File(VIDEO_Folder);
+        if (!fileVideo.exists()) {
+            fileVideo.mkdir();
+        }
+
+        File fileCommon = new File(COMMON_Folder);
+        if (!fileCommon.exists()) {
+            fileCommon.mkdir();
+        }
+
         while (!mQuit) {
             try {
                 CacheItem item = mList.take();
