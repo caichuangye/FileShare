@@ -50,6 +50,7 @@ public class BrowserServerFilesActivity extends BaseActivity {
 
         mTabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.share_viewpager);
+        mViewPager.setOffscreenPageLimit(4);
         mAdapter = new ServerViewPagerAdapter(getSupportFragmentManager(), mIP);
         mViewPager.setAdapter(mAdapter);
         mTabs.setViewPager(mViewPager);

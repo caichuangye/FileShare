@@ -40,6 +40,7 @@ public class BrowserLocalFilesActivity extends BaseActivity {
 
         mTabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.share_viewpager);
+        mViewPager.setOffscreenPageLimit(4);
         mAdapter = new ShareViewPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mViewPager.setCurrentItem(0);
