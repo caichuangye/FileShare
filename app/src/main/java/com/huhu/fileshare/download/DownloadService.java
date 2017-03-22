@@ -37,8 +37,6 @@ public class DownloadService extends Service{
 
     private IDownloadListenerInterface mListener;
 
-    private DownloadHistory mDownloadHistory;
-
     private List<String> mRemovedItemList;
 
     @Override
@@ -46,7 +44,6 @@ public class DownloadService extends Service{
         super.onCreate();
         EventBus.getDefault().register(this);
         mBinder = new DownloadBinder();
-        mDownloadHistory = new DownloadHistory(getApplicationContext());
         mRemovedItemList = new ArrayList<>();
         TransferClient.getInstance().init(GlobalParams.DOWNLOAD_PORT, new TransferClient.OnTransferDataListener() {
             @Override
@@ -105,7 +102,7 @@ public class DownloadService extends Service{
             if(!TextUtils.isEmpty(coverPath)){
                 item.setCoverPath(coverPath);
             }
-            mDownloadHistory.operateDatabases(item, ADD_ITEM);
+            DownloadHistory.getInstance(getApplicationContext()).operateDatabases(item, ADD_ITEM);
             TransferClient.getInstance().requestFile(item,ip);
         }
 
@@ -113,12 +110,12 @@ public class DownloadService extends Service{
         public void deleteDownloadItem(String uuid) throws RemoteException {
             DownloadItem item = new DownloadItem();
             item.setUUID(uuid);
-            mDownloadHistory.operateDatabases(item,DELETE_ITEM);
+            DownloadHistory.getInstance(getApplicationContext()).operateDatabases(item,DELETE_ITEM);
             mRemovedItemList.add(uuid);
         }
     }
 
     public void onEventMainThread(EventBusType.UpdateDownloadFile info) {
-        mDownloadHistory.operateDatabases(info.getData(), UPDATE_ITEM);
+        DownloadHistory.getInstance(getApplicationContext()).operateDatabases(info.getData(), UPDATE_ITEM);
     }
 }

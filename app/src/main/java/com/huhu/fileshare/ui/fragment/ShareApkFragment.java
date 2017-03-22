@@ -58,12 +58,23 @@ public class ShareApkFragment extends MediaFragment {
 
         initEmptyView(view, "应用");
 
-        if (mType == GlobalParams.LOCAL_MODE) {
-            FileQueryHelper.getInstance().scanFileByType(GlobalParams.ShareType.APK);
-        } else {
-            setData();
-        }
+
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
+
+    public void onEventMainThread(EventBusType.QueryFiles info) {
+        if(info.index == 3) {
+            if (mType == GlobalParams.LOCAL_MODE) {
+                FileQueryHelper.getInstance().scanFileByType(GlobalParams.ShareType.APK);
+            } else {
+                setData();
+            }
+        }
     }
 
     @Override

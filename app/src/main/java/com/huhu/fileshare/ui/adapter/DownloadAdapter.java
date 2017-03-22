@@ -147,9 +147,7 @@ public class DownloadAdapter extends BaseAdapter {
     }
 
     public void addItem(DownloadItem item) {
-        out("1");
         mDataList.add(0, ItemImpl.get(item));
-        out("2");
         setGroup(mFlag);
     }
 
@@ -204,7 +202,6 @@ public class DownloadAdapter extends BaseAdapter {
             }
         }
         if (!item.isTitle()) {
-            HLog.d("imagecover", "getCoverPath = " + item.getCoverPath());
             DisplayImageOptions options = new DisplayImageOptions.Builder().displayer(new RoundedBitmapDisplayer(15)).build();
             if (TextUtils.isEmpty(item.getCoverPath())) {
                 ImageLoader.getInstance().displayImage("drawable://" + getCoverId(GlobalParams.ShareType.getType(item.getFileType())),
@@ -321,11 +318,9 @@ public class DownloadAdapter extends BaseAdapter {
                     return o2.getStartTime().compareTo(o1.getStartTime());
                 }
             });
-            out("3");
             notifyDataSetChanged();
             return;
         }
-        out("4");
         //重新排序，排序的目的是为了分组
         Collections.sort(mDataList, new Comparator<ItemImpl>() {
             @Override

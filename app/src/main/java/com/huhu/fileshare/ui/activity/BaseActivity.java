@@ -25,9 +25,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void initStrictMode(){
-        ApplicationInfo info = getApplicationInfo();
-        int flag = info.flags & ApplicationInfo.FLAG_DEBUGGABLE;
-        if(flag == 2) {
+     //   ApplicationInfo info = getApplicationInfo();
+      //  int flag = info.flags & ApplicationInfo.FLAG_DEBUGGABLE;
+      //  if(flag == 2) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectAll()
                     .penaltyLog()
@@ -38,7 +38,7 @@ public class BaseActivity extends AppCompatActivity {
                     .detectAll()
                     .penaltyLog()
                     .build());
-        }
+   //     }
     }
 
     public void initToolbar(String title, String subtitle){

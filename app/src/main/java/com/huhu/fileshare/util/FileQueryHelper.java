@@ -51,8 +51,6 @@ public class FileQueryHelper {
 
     private Executor mThreadPool;
 
-    private DownloadHistory mDownloadHistory;
-
     private List<ApkItem> mApkList;
     private List<MusicItem> mMusicList;
     private List<VideoItem> mVideoList;
@@ -71,7 +69,6 @@ public class FileQueryHelper {
     public void init(Context context) {
         mContext = context.getApplicationContext();
         mThreadPool = Executors.newFixedThreadPool(5);
-        mDownloadHistory = new DownloadHistory(mContext);
     }
 
     private FileQueryHelper() {
@@ -79,7 +76,7 @@ public class FileQueryHelper {
     }
 
     public void scanFileByType(final GlobalParams.ShareType type) {
-
+        HLog.d(TAG,"scanFileByType: "+type.toString());
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -137,17 +134,6 @@ public class FileQueryHelper {
             }
         });
 
-    }
-
-    public void requestDownloadHistory() {
-        mThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                List<DownloadItem> list = mDownloadHistory.getAllItems();
-                EventBus.getDefault().post(new EventBusType.DownloadList(list));
-            }
-        });
     }
 
     private Uri buildUri(GlobalParams.ShareType type) {
@@ -357,7 +343,7 @@ public class FileQueryHelper {
                 String pre = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + GlobalParams.FOLDER;
                 if (path.startsWith(pre)) {
                     mCoverImageMap.put(path, coverPath);
-                    mDownloadHistory.updateFileCoverImage(path, coverPath);
+                    DownloadHistory.getInstance(mContext).updateFileCoverImage(path, coverPath);
                     EventBus.getDefault().post(new EventBusType.ScanDownloadFileComplete(path, coverPath));
                 }
             }

@@ -4,9 +4,14 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Process;
 
+import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
+import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.HLog;
 
 import java.util.ArrayList;
@@ -28,37 +33,65 @@ public class DownloadHistory {
 
     private ContentResolver mContentResolver;
 
-    public DownloadHistory(Context context){
-        mContentResolver = context.getContentResolver();
-    }
+    private static volatile DownloadHistory sInstance;
 
+    private Handler mWorkHandler;
 
-    public void operateDatabases(DownloadItem item, int oper){
-        switch (oper){
-            case ADD_ITEM:
-                addItem(item);
-                break;
-            case UPDATE_ITEM:
-                updateItem(item);
-                break;
-            case DELETE_ITEM:
-                deleteItem(item);
-                break;
-        }
-
-    }
-
-    public List<DownloadItem> getAllItems(){
-        List<DownloadItem> list = new ArrayList<>();
-        String order = " end_time desc";
-        Cursor cursor = mContentResolver.query(DatabaseUtils.DOWNLOAD_HISTORY_URI,null,null,null,order);
-        if(cursor != null){
-            while (cursor.moveToNext()){
-                list.add(parseCursor(cursor));
+    public static DownloadHistory getInstance(Context context){
+        if(sInstance == null){
+            synchronized (DownloadHistory.class){
+                if(sInstance == null){
+                    sInstance = new DownloadHistory(context);
+                }
             }
         }
-        cursor.close();
-        return list;
+        return sInstance;
+    }
+
+
+    private DownloadHistory(Context context){
+        mContentResolver = context.getApplicationContext().getContentResolver();
+        HandlerThread thread = new HandlerThread("download-history-operate", Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
+        mWorkHandler = new Handler(thread.getLooper());
+    }
+
+
+    public void operateDatabases(final DownloadItem item, final int oper){
+        mWorkHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                switch (oper){
+                    case ADD_ITEM:
+                        addItem(item);
+                        break;
+                    case UPDATE_ITEM:
+                        updateItem(item);
+                        break;
+                    case DELETE_ITEM:
+                        deleteItem(item);
+                        break;
+                }
+            }
+        });
+    }
+
+    public void getAllItems(){
+        mWorkHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                List<DownloadItem> list = new ArrayList<>();
+                String order = " end_time desc";
+                Cursor cursor = mContentResolver.query(DatabaseUtils.DOWNLOAD_HISTORY_URI,null,null,null,order);
+                if(cursor != null){
+                    while (cursor.moveToNext()){
+                        list.add(parseCursor(cursor));
+                    }
+                }
+                cursor.close();
+                EventBus.getDefault().post(new EventBusType.DownloadList(list));
+            }
+        });
     }
 
     private DownloadItem parseCursor(Cursor cursor){
@@ -127,11 +160,17 @@ public class DownloadHistory {
         mContentResolver.delete(DatabaseUtils.DOWNLOAD_HISTORY_URI,where,null);
     }
 
-    public void updateFileCoverImage(String path,String uri){
-        String where = DatabaseUtils.ColumnName.TO_PATH+" = '"+path+"'";
-        ContentValues values = new ContentValues();
-        values.put(DatabaseUtils.ColumnName.COVER_PATH,uri);
-        int count = mContentResolver.update(DatabaseUtils.DOWNLOAD_HISTORY_URI,values,where,null);
-        HLog.d(TAG,"count = "+count);
+    public void updateFileCoverImage(final String path,final String uri){
+        mWorkHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                String where = DatabaseUtils.ColumnName.TO_PATH+" = '"+path+"'";
+                ContentValues values = new ContentValues();
+                values.put(DatabaseUtils.ColumnName.COVER_PATH,uri);
+                int count = mContentResolver.update(DatabaseUtils.DOWNLOAD_HISTORY_URI,values,where,null);
+                HLog.d(TAG,"count = "+count);
+            }
+        });
+
     }
 }

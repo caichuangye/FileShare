@@ -18,9 +18,12 @@ import android.widget.Toast;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
+import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.SharedCollection;
 import com.huhu.fileshare.ui.adapter.ShareViewPagerAdapter;
 import com.huhu.fileshare.ui.view.PagerSlidingTabStrip;
+import com.huhu.fileshare.util.EventBusType;
+import com.huhu.fileshare.util.HLog;
 
 public class BrowserLocalFilesActivity extends BaseActivity {
 
@@ -44,7 +47,7 @@ public class BrowserLocalFilesActivity extends BaseActivity {
         mAdapter = new ShareViewPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mViewPager.setCurrentItem(0);
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
 
@@ -52,7 +55,8 @@ public class BrowserLocalFilesActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int i) {
-                //     EventBus.getDefault().post(new EventBusType.ChangeShareTab(i));
+                HLog.d("BrowserLocalFilesActivity","onPageSelected: "+i);
+                EventBus.getDefault().post(new EventBusType.QueryFiles(i));
             }
 
             @Override

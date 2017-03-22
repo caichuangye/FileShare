@@ -258,6 +258,19 @@ public class EventBusType {
     /**
      *
      */
+    public static class QueryFiles {
+
+        public int index;
+
+        public QueryFiles(int index) {
+            this.index = index;
+        }
+
+    }
+
+    /**
+     *
+     */
     public static class DeleteDownloadFile {
         private DownloadItem mData;
 
@@ -382,5 +395,6 @@ public class EventBusType {
             this.path = path;
         }
     }
+
 
 }

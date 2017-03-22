@@ -45,8 +45,6 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
 
     private DownloadAdapter mAdapter;
 
-    private DownloadHistory mDownloadHistory;
-
     private ListView mListView;
 
     private MenuItem mDeleteItem;
@@ -70,7 +68,6 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
         mListView.setEmptyView(empty);
 
         mAdapter = new DownloadAdapter(this, this);
-        mDownloadHistory = new DownloadHistory(this);
         mListView.setAdapter(mAdapter);
 
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -88,7 +85,7 @@ public class DownloadActivity extends BaseActivity implements DownloadAdapter.On
                 handleClickItem(position);
             }
         });
-        FileQueryHelper.getInstance().requestDownloadHistory();
+        DownloadHistory.getInstance(this).getAllItems();
 
     }
 

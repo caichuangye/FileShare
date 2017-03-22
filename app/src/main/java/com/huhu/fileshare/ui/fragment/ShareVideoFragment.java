@@ -57,14 +57,25 @@ public class ShareVideoFragment extends MediaFragment {
 
         initEmptyView(view, "视频");
 
-        if (mType == GlobalParams.LOCAL_MODE) {
-            FileQueryHelper.getInstance().scanFileByType(GlobalParams.ShareType.VIDEO);
-        } else {
-            setData();
-        }
+
         return view;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+    }
+
+    public void onEventMainThread(EventBusType.QueryFiles info) {
+        if(info.index == 2) {
+            if (mType == GlobalParams.LOCAL_MODE) {
+                FileQueryHelper.getInstance().scanFileByType(GlobalParams.ShareType.VIDEO);
+            } else {
+                setData();
+            }
+        }
+    }
 
     @Override
     public void onAttach(Activity activity) {

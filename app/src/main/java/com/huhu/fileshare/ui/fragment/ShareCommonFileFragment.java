@@ -14,6 +14,7 @@ import com.huhu.fileshare.model.CommonFileItem;
 import com.huhu.fileshare.model.SharedCollection;
 import com.huhu.fileshare.ui.adapter.CommonFileAdapter;
 import com.huhu.fileshare.util.EventBusType;
+import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.ImageCacher;
 import com.huhu.fileshare.util.ScanCommonFiles;
@@ -62,14 +63,18 @@ public class ShareCommonFileFragment extends MediaFragment {
 
         initEmptyView(view, "文件");
 
-        if (mType == GlobalParams.LOCAL_MODE) {
-            ScanCommonFiles.getInstance(mContext.getApplicationContext()).start();
-        } else {
-            setData();
-        }
         return view;
     }
 
+    public void onEventMainThread(EventBusType.QueryFiles info) {
+        if(info.index == 4) {
+            if (mType == GlobalParams.LOCAL_MODE) {
+                ScanCommonFiles.getInstance(mContext.getApplicationContext()).start();
+            } else {
+                setData();
+            }
+        }
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -89,14 +94,6 @@ public class ShareCommonFileFragment extends MediaFragment {
 
     public void onEventMainThread(EventBusType.ShareCommonFileInfo info) {
         onQueryComplete();
-       /* List<CommonFileItem> list = info.onQueryComplete();
-        List<CommonFileItem.FileType> typeList = new ArrayList<>();
-        for (CommonFileItem commonFileItem : list) {
-            if (!typeList.contains(commonFileItem.getType())) {
-                typeList.add(commonFileItem.getType());
-                ImageCacher.getInstance().cacheCommonFileIcon(commonFileItem.getType(), 150, 150);
-            }
-        }*/
         mAdapter.setData(info.getData());
     }
 
