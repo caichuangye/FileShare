@@ -49,7 +49,7 @@ public class DevicesDetection {
         if (sInstance == null) {
             synchronized (DevicesDetection.class) {
                 if (sInstance == null) {
-                    sInstance = new DevicesDetection(context);
+                    sInstance = new DevicesDetection(context.getApplicationContext());
                 }
             }
         }

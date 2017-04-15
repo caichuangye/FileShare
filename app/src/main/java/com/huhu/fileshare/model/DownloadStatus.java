@@ -13,7 +13,7 @@ public enum  DownloadStatus {
 
     private String mStatus;
 
-    private DownloadStatus(String str){
+    DownloadStatus(String str){
         mStatus = str;
     }
 

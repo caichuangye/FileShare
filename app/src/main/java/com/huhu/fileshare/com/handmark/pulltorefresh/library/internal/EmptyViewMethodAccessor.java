@@ -16,7 +16,7 @@ public interface EmptyViewMethodAccessor {
 	 * @param View
 	 *            to set as Empty View
 	 */
-	public void setEmptyViewInternal(View emptyView);
+    void setEmptyViewInternal(View emptyView);
 
 	/**
 	 * Should call PullToRefreshBase.setEmptyView() which will then
@@ -25,6 +25,6 @@ public interface EmptyViewMethodAccessor {
 	 * @param View
 	 *            to set as Empty View
 	 */
-	public void setEmptyView(View emptyView);
+    void setEmptyView(View emptyView);
 
 }

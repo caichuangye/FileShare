@@ -84,7 +84,7 @@ public class GlobalParams {
 
         private String mString;
 
-        private ShareType(String str){
+        ShareType(String str){
             mString = str;
         }
 

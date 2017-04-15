@@ -20,14 +20,11 @@ public class MediaScanner {
 
     private MediaScannerConnection mMediaScannerConnection;
 
-    private Context mContext;
-
     private static volatile MediaScanner sInstance;
 
     private List<String> mPendingList;
 
     private MediaScanner(Context context){
-        mContext = context;
         mPendingList = new ArrayList<>();
         mMediaScannerConnection = new MediaScannerConnection(context, new MediaScannerConnection.MediaScannerConnectionClient() {
             @Override

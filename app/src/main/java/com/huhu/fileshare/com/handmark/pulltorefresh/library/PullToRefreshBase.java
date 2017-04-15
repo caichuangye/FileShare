@@ -74,9 +74,9 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout {
 			this.continueRunning = false;
 			this.handler.removeCallbacks(this);
 		}
-	};
+	}
 
-	// ===========================================================
+    // ===========================================================
 	// Constants
 	// ===========================================================
 
@@ -699,15 +699,15 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout {
 	// Inner and Anonymous Classes
 	// ===========================================================
 
-	public static interface OnRefreshListener {
+	public interface OnRefreshListener {
 
-		public void onRefresh();
+		void onRefresh();
 
 	}
 
-	public static interface OnLastItemVisibleListener {
+	public interface OnLastItemVisibleListener {
 
-		public void onLastItemVisible();
+		void onLastItemVisible();
 
 	}
 

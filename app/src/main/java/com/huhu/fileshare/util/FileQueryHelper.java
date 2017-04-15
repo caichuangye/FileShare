@@ -1,7 +1,6 @@
 package com.huhu.fileshare.util;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -15,7 +14,6 @@ import android.text.TextUtils;
 import com.huhu.fileshare.databases.DownloadHistory;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.ApkItem;
-import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.ImageFolderItem;
 import com.huhu.fileshare.model.ImageItem;
 import com.huhu.fileshare.model.MusicItem;
@@ -33,8 +31,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import static android.content.pm.PackageManager.GET_UNINSTALLED_PACKAGES;
 
 /**
  * Created by Administrator on 2016/4/12.
@@ -242,7 +238,7 @@ public class FileQueryHelper {
                 String foldPath = getFolderPath(item.getPath());
                 Long count = map.get(foldPath);
                 if (count == null) {
-                    count = new Long(0);
+                    count = Long.valueOf(0);
                     coverList.add(item.getPath());
                 }
                 map.put(foldPath, count + 1);
@@ -330,6 +326,7 @@ public class FileQueryHelper {
                 saveCoverImage(path, coverPath);
                 break;
             }
+            cursor.close();
         } else {
             HLog.d(TAG, "cursor == null or size == 0");
         }

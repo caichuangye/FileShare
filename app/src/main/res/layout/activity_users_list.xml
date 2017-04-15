@@ -14,7 +14,6 @@
 
     <ListView
         android:layout_below="@id/title"
-        android:background="@android:color/white"
         android:id="@+id/devices_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

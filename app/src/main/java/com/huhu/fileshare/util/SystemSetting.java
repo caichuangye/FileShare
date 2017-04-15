@@ -32,7 +32,7 @@ public class SystemSetting {
     private Context mContext;
 
     private SystemSetting(Context context){
-        mContext = context;
+        mContext = context.getApplicationContext();
         mSharedPreferences = context.getSharedPreferences(FILE_SHARE_SETTING,Context.MODE_PRIVATE);
     }
 

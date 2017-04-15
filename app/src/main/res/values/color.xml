@@ -1,26 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="unselect_menu_color">#707070</color>
-    <color name="select_menu_color">#20b2aa</color>
     <color name="setting_color">#76000000</color>
     <color name="setting_label_color">#bb000000</color>
-    <color name="setting_divider_color">#efefef</color>
-    <color name="main_bottom_color">#f3f3f3</color>
-    <color name="main_divider">#c0c0c0</color>
-    <color name="wifi_level_1_color">#FFFAF0</color>
-    <color name="wifi_level_2_color">#FDFAF0</color>
-    <color name="wifi_level_3_color">#FBFAF0</color>
-    <color name="wifi_level_4_color">#F9FAF0</color>
     <color name="background_tab_pressed">#8833B5E5</color>
     <color name="title_color">#24b7a4</color>
     <color name="download_color">#ee24b7a4</color>
     <color name="black_87">#de000000</color>
     <color name="black_57">#82000000</color>
-    <color name="black_37">#12000000</color>
     <color name="white_0">#00000000</color>
 
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
 </resources>

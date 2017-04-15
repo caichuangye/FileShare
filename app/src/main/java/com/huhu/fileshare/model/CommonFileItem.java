@@ -10,7 +10,7 @@ public class CommonFileItem extends BaseItem {
 
         private String mType;
 
-        private FileType(String str) {
+        FileType(String str) {
             mType = str;
         }
 

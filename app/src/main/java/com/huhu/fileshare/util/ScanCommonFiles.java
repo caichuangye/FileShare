@@ -28,7 +28,7 @@ public class ScanCommonFiles implements Runnable {
     private List<CommonFileItem> mFileList;
 
     private ScanCommonFiles(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         HandlerThread handlerThread = new HandlerThread("scan-common-files");
         handlerThread.start();
         mHandler = new Handler(handlerThread.getLooper());

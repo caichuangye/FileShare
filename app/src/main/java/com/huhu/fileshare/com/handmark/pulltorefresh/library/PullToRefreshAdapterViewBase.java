@@ -114,9 +114,9 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 		refreshableViewHolder.addView(refreshableView, ViewGroup.LayoutParams.FILL_PARENT,
 				ViewGroup.LayoutParams.FILL_PARENT);
 		addView(refreshableViewHolder, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 0, 1.0f));
-	};
+	}
 
-	protected boolean isReadyForPullDown() {
+    protected boolean isReadyForPullDown() {
 		return isFirstItemVisible();
 	}
 

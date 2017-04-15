@@ -48,25 +48,6 @@
     </style>
 
 
-    <style name="main_menu_style">
-        <item name="android:layout_marginTop">2dp</item>
-        <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/unselect_menu_color</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="main_menu_icon_style">
-        <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_marginTop">5dp</item>
-        <item name="android:scaleType">fitXY</item>
-        <item name="android:layout_width">22dp</item>
-        <item name="android:layout_height">22dp</item>
-    </style>
-
     <style name="setting_icon_style">
         <item name="android:layout_marginLeft">12dp</item>
         <item name="android:layout_centerVertical">true</item>
