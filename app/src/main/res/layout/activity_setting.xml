@@ -19,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <RelativeLayout
-                android:background="#ffffff"
                 android:id="@+id/usericon_layout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
@@ -44,7 +43,6 @@
                 android:id="@+id/divider_below_icon"
                 style="@style/setting_divider_style_1"/>
             <RelativeLayout
-                android:background="#ffffff"
                 android:id="@+id/username_layout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
@@ -66,7 +64,6 @@
                 style="@style/setting_divider_style_1"/>
 
             <RelativeLayout
-                android:background="#ffffff"
                 android:id="@+id/storagepath_layout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
@@ -90,7 +87,6 @@
 
             <RelativeLayout
                 android:id="@+id/checkversion_layout"
-                android:background="@android:color/white"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <ImageView
@@ -111,7 +107,6 @@
                 style="@style/setting_divider_style_1"/>
 
             <RelativeLayout
-                android:background="@android:color/white"
                 android:id="@+id/feedback_layout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
@@ -133,14 +128,10 @@
                     android:layout_alignParentRight="true" />
             </RelativeLayout>
 
-
             <View
                 style="@style/setting_divider_style_1"/>
 
-
-
             <RelativeLayout
-                android:background="@android:color/white"
                 android:id="@+id/about_layout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">

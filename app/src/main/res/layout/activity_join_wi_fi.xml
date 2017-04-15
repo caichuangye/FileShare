@@ -43,14 +43,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:background="@android:color/white" />
+        android:layout_marginRight="2dp" />
 
     <RelativeLayout
         android:id="@+id/emptyview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/title"
