@@ -89,6 +89,7 @@ public class ServiceUtils {
     public void disConnected(Context context){
         if(mIsConnected && context == mContext){
             context.unbindService(mDownloadConnection);
+            mIsConnected = false;
         }
     }
 

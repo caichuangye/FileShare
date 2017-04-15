@@ -219,6 +219,9 @@ public class TransferClient {
         }
         if (!mInitial) {
             mInitial = true;
+            if(mWorkPool.isShutdown()){
+                mWorkPool = Executors.newFixedThreadPool(GlobalParams.CLIENT_DOWNLOAD_THREAD_NUM+1);
+            }
             mWorkPool.execute(new Runnable() {
                 @Override
                 public void run() {

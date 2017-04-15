@@ -209,6 +209,10 @@ public class TransferServer {
     private void initServerSocket() {
         try {
             mServerSocket = new ServerSocket(mPort);
+            HLog.d(TAG,"thread pool is shutdown: "+mWorkThreadPool.isShutdown());
+            if(mWorkThreadPool.isShutdown()){
+                mWorkThreadPool = Executors.newFixedThreadPool(5);
+            }
             mWorkThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
