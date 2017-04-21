@@ -14,6 +14,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.WiFiItem;
 
 import java.lang.reflect.InvocationTargetException;
@@ -117,7 +118,19 @@ public class WiFiOperation {
         }
     }
 
-
+    public void updateConnectionInfo(){
+        mRefreshHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                boolean available = isWiFiAvailable();
+                int status = isWiFiConnected() ?
+                        GlobalParams.WIFI_CONNECTED : GlobalParams.WIFI_NOT_CONNECTED;
+                String bssid = getConnectedWiFiBSSID();
+                String ssid = getConnectedWiFiSSID();
+                EventBus.getDefault().post(new EventBusType.ConnectInfo(available, status, bssid, ssid));
+            }
+        });
+    }
 
     public void setListener(IOnWiFiListScanListener listener){
         mWifiListChangedListener = listener;
