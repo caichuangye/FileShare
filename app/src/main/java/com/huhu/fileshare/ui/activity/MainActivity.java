@@ -22,7 +22,6 @@ import com.huhu.fileshare.R;
 import com.huhu.fileshare.download.ServiceUtils;
 import com.huhu.fileshare.util.DevicesDetection;
 import com.huhu.fileshare.util.EventBusType;
-import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.WiFiOperation;
 
 import java.util.ArrayList;
@@ -192,6 +191,9 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.download:
                 startActivity(new Intent(MainActivity.this, DownloadActivity.class));
+                break;
+            case R.id.help:
+                startActivity(new Intent(MainActivity.this, NewMainActivity.class));
                 break;
         }
         return true;

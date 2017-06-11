@@ -60,6 +60,7 @@
         <activity android:name=".ui.activity.SettingActivity" />
         <activity android:name=".ui.activity.DownloadActivity" />
         <activity android:name=".ui.activity.BrowserServerFilesActivity" />
+        <activity android:name=".ui.activity.NewMainActivity" />
     </application>
 
 </manifest>

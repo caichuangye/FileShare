@@ -17,17 +17,16 @@
 
     <style name="setting_divider_style_1">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:background">#ddd</item>
-        <item name="android:layout_marginStart">43dp</item>
-        <item name="android:layout_marginEnd">30dp</item>
+        <item name="android:layout_height">8dp</item>
+        <item name="android:background">#EDEDED</item>
     </style>
 
     <style name="setting_label_style">
+        <item name="android:layout_gravity">center_vertical</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/setting_label_color</item>
-        <item name="android:layout_marginLeft">6dp</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -49,11 +48,19 @@
 
 
     <style name="setting_icon_style">
-        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_width">25dp</item>
         <item name="android:layout_height">25dp</item>
         <item name="android:scaleType">fitXY</item>
     </style>
+
+
+    <style name="main_fragment_item_layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">45dp</item>
+    </style>
+
 
 </resources>

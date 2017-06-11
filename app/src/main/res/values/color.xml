@@ -2,7 +2,7 @@
 <resources>
     <color name="unselect_menu_color">#707070</color>
     <color name="setting_color">#76000000</color>
-    <color name="setting_label_color">#bb000000</color>
+    <color name="setting_label_color">#99000000</color>
     <color name="background_tab_pressed">#8833B5E5</color>
     <color name="title_color">#24b7a4</color>
     <color name="download_color">#ee24b7a4</color>

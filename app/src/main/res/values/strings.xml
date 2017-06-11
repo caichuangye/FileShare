@@ -26,4 +26,7 @@
     <string name="commit">Commit</string>
     <string name="cancel">Cancel</string>
     <string name="join_wifi_title">未加入无线网络，现在加入？</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
