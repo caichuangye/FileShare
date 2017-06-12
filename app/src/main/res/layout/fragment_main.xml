@@ -7,9 +7,6 @@
     android:orientation="vertical"
     tools:context="com.huhu.fileshare.ui.fragment.MainFragment">
 
-    <include
-        style="@style/toolbar_layout_style"
-        layout="@layout/toolbar_layout" />
 
     <RelativeLayout
         android:id="@+id/get"
@@ -37,14 +34,12 @@
             android:textSize="12sp" />
     </RelativeLayout>
 
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:background="#ddd" />
-
 
     <RelativeLayout
         android:id="@+id/share"

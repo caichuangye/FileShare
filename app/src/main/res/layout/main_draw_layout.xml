@@ -6,7 +6,6 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="130dp"
         android:background="@mipmap/main_title_bg">
@@ -24,21 +23,21 @@
         <TextView
             android:id="@+id/username"
             android:maxLines="1"
-            android:layout_width="200dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="6dp"
-            android:layout_below="@id/user_icon"
             android:gravity="center_vertical"
-            android:text="huhu"
-            android:textColor="#ddFFFFFF"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_below="@id/user_icon"
+            android:layout_marginTop="4dp"
+            android:text="huhu's phone"
+            android:textColor="#D9D9D9"
             android:textSize="18sp" />
 
 
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/download_wifi"
+        android:id="@+id/wifi_layout"
         style="@style/main_fragment_item_layout"
         android:orientation="horizontal">
 
@@ -66,7 +65,7 @@
         <TextView
             style="@style/setting_label_style"
             android:layout_toRightOf="@id/download_label"
-            android:text="下载" />
+            android:text="下载管理" />
     </LinearLayout>
 
     <LinearLayout
@@ -131,7 +130,7 @@
         <ImageView
             android:id="@+id/about_label"
             style="@style/setting_icon_style"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/desc" />
 
         <TextView
             style="@style/setting_label_style"
