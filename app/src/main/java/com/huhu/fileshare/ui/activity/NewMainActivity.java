@@ -14,9 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huhu.fileshare.R;
+import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.download.ServiceUtils;
 import com.huhu.fileshare.ui.fragment.MainFragment;
 import com.huhu.fileshare.util.DevicesDetection;
@@ -28,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class NewMainActivity extends BaseActivity {
 
     private DrawerLayout mDrawLayout;
@@ -35,6 +39,10 @@ public class NewMainActivity extends BaseActivity {
     private long mLastPressBackTimeStamp;
 
     private boolean mHasPermissions = false;
+
+    private TextView mUserNameTextView;
+
+    private CircleImageView mUserIconImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +65,10 @@ public class NewMainActivity extends BaseActivity {
         ServiceUtils.getInstance().connectDownloadService(getApplicationContext());
         DevicesDetection.getInstance(this).start();
         mDrawLayout = (DrawerLayout)findViewById(R.id.drawer);
+
+        mUserNameTextView = (TextView)findViewById(R.id.username);
+        mUserIconImageView = (CircleImageView)findViewById(R.id.user_icon);
+
 
         findViewById(R.id.user_icon).setOnClickListener(mMenuClickListener);
         findViewById(R.id.username).setOnClickListener(mMenuClickListener);
@@ -88,7 +100,6 @@ public class NewMainActivity extends BaseActivity {
                     startActivity(new Intent(NewMainActivity.this,DownloadActivity.class));
                     break;
                 case R.id.storagepath_layout:
-                    //startActivity(new Intent(NewMainActivity.this,DownloadActivity.class));
                     break;
                 case R.id.checkversion_layout:
                     Toast.makeText(NewMainActivity.this,"已是最新版本",Toast.LENGTH_SHORT).show();
@@ -167,6 +178,10 @@ public class NewMainActivity extends BaseActivity {
         if (mHasPermissions) {
             WiFiOperation.getInstance(getApplicationContext()).updateConnectionInfo();
         }
+        mUserNameTextView.setText(SystemSetting.getInstance(this).getUserNickName());
+        /*mUserIconImageView.setImageResource(((ShareApplication)getApplicationContext())
+                .getUserIconList()[SystemSetting.getInstance(this).getUserIconIndex()]);*/
+       mUserIconImageView.setImageResource(R.mipmap.logo);
     }
 
     @Override

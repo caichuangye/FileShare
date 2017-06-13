@@ -5,7 +5,7 @@
     <ImageView
         android:id="@+id/user_icon"
         android:scaleType="fitXY"
-        android:src="@mipmap/user_icon"
+        android:src="@mipmap/user_icon_1"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_width="45dp"

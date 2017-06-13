@@ -4,9 +4,9 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:src="@mipmap/user_icon_0"
+        android:src="@mipmap/user_icon_1"
         android:id="@+id/icon_imageview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="100dp" />
 
 </RelativeLayout>

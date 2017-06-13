@@ -59,7 +59,7 @@
 
     <style name="main_fragment_item_layout">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_height">40dp</item>
     </style>
 
 

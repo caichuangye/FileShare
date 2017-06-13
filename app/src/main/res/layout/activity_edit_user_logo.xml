@@ -18,6 +18,7 @@
         android:numColumns="3"
         android:horizontalSpacing="4dp"
         android:verticalSpacing="4dp"
+        android:divider="#f0f"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

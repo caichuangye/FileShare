@@ -2,36 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:background="@android:color/white"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="130dp"
-        android:background="@mipmap/main_title_bg">
+        android:background="@mipmap/huhu">
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/user_icon"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_marginTop="20dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
             android:src="@mipmap/huhu"
             app:civ_border_color="#FF000000"
             app:civ_border_width="0dp" />
 
         <TextView
             android:id="@+id/username"
-            android:maxLines="1"
-            android:gravity="center_vertical"
             android:layout_width="200dp"
             android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_below="@id/user_icon"
-            android:layout_marginTop="4dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/user_icon"
+            android:gravity="center_vertical"
+            android:maxLines="1"
             android:text="huhu's phone"
             android:textColor="#D9D9D9"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
 
     </RelativeLayout>
