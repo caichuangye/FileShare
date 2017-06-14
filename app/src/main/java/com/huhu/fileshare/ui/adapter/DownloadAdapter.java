@@ -257,14 +257,11 @@ public class DownloadAdapter extends BaseAdapter {
                 if (item.getRecvSize() > 0) {
                     int progress = (int) (item.getRecvSize() * 100 / item.getTotalSize());
                     itemHolder.progressLabelTextView.setText(progress + "%");
-                    itemHolder.progressLabelTextView.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
                 } else {
                     itemHolder.progressLabelTextView.setText("等待中");
-                    itemHolder.progressLabelTextView.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
                 }
             } else {
                 itemHolder.progressLabelTextView.setText("已下载");
-                itemHolder.progressLabelTextView.setTextColor(mContext.getResources().getColor(R.color.title_color));
             }
 
         } else {

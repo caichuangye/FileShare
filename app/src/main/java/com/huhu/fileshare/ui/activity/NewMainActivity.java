@@ -1,7 +1,9 @@
 package com.huhu.fileshare.ui.activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,7 +24,6 @@ import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.download.ServiceUtils;
 import com.huhu.fileshare.ui.fragment.MainFragment;
 import com.huhu.fileshare.util.DevicesDetection;
-import com.huhu.fileshare.util.HLog;
 import com.huhu.fileshare.util.SystemSetting;
 import com.huhu.fileshare.util.WiFiOperation;
 
@@ -117,10 +118,12 @@ public class NewMainActivity extends BaseActivity {
         }
     };
 
+
     @Override
     public void initToolbar(String title, String subtitle) {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.mipmap.menu);
+        mToolbar.setTitleTextColor(Color.parseColor("#82000000"));
         setSupportActionBar(mToolbar);
     }
 
@@ -179,9 +182,9 @@ public class NewMainActivity extends BaseActivity {
             WiFiOperation.getInstance(getApplicationContext()).updateConnectionInfo();
         }
         mUserNameTextView.setText(SystemSetting.getInstance(this).getUserNickName());
-        /*mUserIconImageView.setImageResource(((ShareApplication)getApplicationContext())
-                .getUserIconList()[SystemSetting.getInstance(this).getUserIconIndex()]);*/
-       mUserIconImageView.setImageResource(R.mipmap.logo);
+        mUserIconImageView.setImageResource(((ShareApplication)getApplicationContext())
+                .getUserIconList()[SystemSetting.getInstance(this).getUserIconIndex()]);
+       //mUserIconImageView.setImageResource(R.mipmap.logo);
     }
 
     @Override

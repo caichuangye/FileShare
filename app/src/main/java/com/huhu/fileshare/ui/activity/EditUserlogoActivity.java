@@ -26,7 +26,7 @@ public class EditUserlogoActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_user_logo);
-        initToolbar("编辑头像",null);
+        initToolbar("头像",null);
 
         mIconGridView = (GridView)findViewById(R.id.gridview);
         init();

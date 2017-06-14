@@ -50,7 +50,7 @@ public class ChangeUserIconAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.change_usericon_item_layout, null);
         }
         if (mSelectedIndex == position) {
-            convertView.setBackgroundColor(mContext.getResources().getColor(R.color.black_57));
+            convertView.setBackgroundColor(mContext.getResources().getColor(R.color.image_cover));
         } else {
             convertView.setBackgroundColor(mContext.getResources().getColor(R.color.white_0));
         }

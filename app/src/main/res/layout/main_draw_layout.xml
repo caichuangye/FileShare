@@ -17,7 +17,7 @@
             android:layout_height="70dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="20dp"
-            android:src="@mipmap/huhu"
+            android:src="@mipmap/ic_launcher"
             app:civ_border_color="#FF000000"
             app:civ_border_width="0dp" />
 
@@ -30,13 +30,14 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:text="huhu's phone"
-            android:textColor="#D9D9D9"
+            android:textColor="#E9E9E9"
             android:textSize="16sp" />
 
 
     </RelativeLayout>
 
     <LinearLayout
+        android:layout_marginTop="6dp"
         android:id="@+id/wifi_layout"
         style="@style/main_fragment_item_layout"
         android:orientation="horizontal">
@@ -87,6 +88,7 @@
     <View style="@style/setting_divider_style_1" />
 
     <LinearLayout
+        android:layout_marginTop="6dp"
         android:id="@+id/checkversion_layout"
         style="@style/main_fragment_item_layout">
 
