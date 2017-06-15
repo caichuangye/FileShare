@@ -71,7 +71,7 @@ public class DevicesDetection {
         try {
             mSocket = new DatagramSocket(GlobalParams.DETECT_PORT);
         } catch (Exception e) {
-            HLog.d(TAG, e.getMessage());
+            HLog.d(getClass(),HLog.D, e.getMessage());
         }
 
         mIsStart = false;
@@ -101,7 +101,6 @@ public class DevicesDetection {
             @Override
             public void run() {
                 while (!isQuit() && mSocket != null) {
-                    HLog.d(TAG, "broadcastOnlineMessage");
                     try {
                         if(WiFiOperation.getInstance(mContext).isWiFiConnected()) {
                             byte[] data = buildOnlineMessage();
@@ -114,9 +113,9 @@ public class DevicesDetection {
                         }
                         Thread.sleep(mSendInternal);
                     } catch (IOException e) {
-                        HLog.e(TAG, e.getMessage());
+                        HLog.e(getClass(),HLog.D ,e.getMessage());
                     } catch (InterruptedException e) {
-                        HLog.e(TAG, e.getMessage());
+                        HLog.e(getClass(),HLog.D, e.getMessage());
                     }
                 }
             }
@@ -126,7 +125,6 @@ public class DevicesDetection {
     private String getBroadcastIP() {
         if(TextUtils.isEmpty(mIP) || ShareApplication.getInstance().isNeedRefreshIP()) {
             String ip = WiFiOperation.getInstance(mContext).getIP();
-            HLog.d(TAG, "ip = " + ip);
             mIP = ip.substring(0, ip.lastIndexOf(".")) + ".255";
         }
         return mIP;
@@ -148,7 +146,7 @@ public class DevicesDetection {
                         }
                         parseMessage(buf, datagramPacket.getAddress().getHostAddress());
                     } catch (IOException e) {
-                        HLog.d(TAG, e.getMessage());
+                        HLog.e(getClass(),HLog.D, e.getMessage());
                     }
                 }
             }
@@ -197,7 +195,6 @@ public class DevicesDetection {
         }
         EventBus.getDefault().post(new EventBusType.OnlineDevicesInfo(mDevicesList));
         if (refresh) {
-            HLog.d(TAG, "---------------------recv refresh flag, to request again----------------------");
             ComClient.getInstance(ip).sendMessage(GlobalParams.REQUEST_SHARED_FILES);
         }
     }

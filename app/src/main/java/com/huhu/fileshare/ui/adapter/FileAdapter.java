@@ -107,8 +107,6 @@ public class FileAdapter extends BaseAdapter {
         item.setSelected(!res);
         notifyDataSetChanged();
         String oper = res? "delete":"add";
-        HLog.d(TAG,"post: "+oper+"; path = "+item.getPath());
-     //   EventBus.getDefault().post(new EventBusType.SharedFileInfo(item,GlobalParams.ShareType.SD_FILE,!res));
     }
 
     public String getParentFolderPath(){

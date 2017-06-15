@@ -157,7 +157,6 @@ public class DownloadItem implements Parcelable {
         mStates = DownloadStatus.WAIT;
         int index = mFromPath.lastIndexOf("/");
         mToPath = CommonUtil.getAppFolder()+ mFromPath.substring(index);
-        HLog.d(DownloadService.TAG,"from path = "+mFromPath+", to path = "+mToPath);
     }
 
     public String getFromIP(){

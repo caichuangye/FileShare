@@ -86,7 +86,6 @@ public class CommonUtil {
         }
         int folderLen = folder.length();
         String tmp = file.substring(folderLen+1);
-        HLog.d("ccyf","---------------tmp = "+tmp);
         return !tmp.contains("/");
     }
 

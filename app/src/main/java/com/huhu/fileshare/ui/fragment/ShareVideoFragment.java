@@ -115,6 +115,7 @@ public class ShareVideoFragment extends MediaFragment {
     }
 
     public void onEventMainThread(EventBusType.UpdateSharedFiles info){
+        HLog.d(getClass(),HLog.S,"EventBusType.UpdateSharedFiles");
         if(mType == GlobalParams.SERVER_MODE) {
             setData();
         }
@@ -142,6 +143,7 @@ public class ShareVideoFragment extends MediaFragment {
         onQueryComplete();
         if(collection != null && mAdapter != null){
             List<VideoItem> list = collection.getVideoList();
+            HLog.d(getClass(),HLog.S,"video count = "+list.size());
             mAdapter.setData(list);
         }
     }

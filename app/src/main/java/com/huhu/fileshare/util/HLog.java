@@ -8,24 +8,34 @@ import android.util.Log;
 public class HLog {
     private static final boolean sDebug = true;
 
-    public static String DD = "tran_d";
+    private static final String PRE_TAG = "com_huhu_fileshare";
 
-    public static void d(String tag,String msg){
+    public static String T = "transfer";
+
+    public static String S = "socket";
+
+    public static String D = "detection";
+
+    public static String L = "temp";
+
+    public static void d(Class cls,String model, String msg){
         if(sDebug){
-            Log.d(tag,msg);
+            Log.d("["+PRE_TAG+"_"+cls.getSimpleName()+": "+model+"] ",msg);
         }
     }
 
-    public static void e(String tag,String msg){
+    public static void w(Class cls,String model, String msg){
         if(sDebug){
-            Log.e(tag,msg);
+            Log.w("["+PRE_TAG+"_"+cls.getSimpleName()+"]: "+model,msg);
         }
     }
 
-    public static void w(String tag,String msg){
+    public static void e(Class cls,String model, String msg){
         if(sDebug){
-            Log.w(tag,msg);
+            Log.e("["+PRE_TAG+"_"+cls.getSimpleName()+"]: "+model,msg);
         }
     }
+
+
 
 }

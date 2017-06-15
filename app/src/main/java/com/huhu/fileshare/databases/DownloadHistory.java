@@ -127,7 +127,6 @@ public class DownloadHistory {
     }
 
     private void addItem(DownloadItem item){
-        HLog.d(TAG,"add item: "+item.getStartTime());
         ContentValues values = new ContentValues();
         values.put(DatabaseUtils.ColumnName.ID,item.getUUID());
         values.put(DatabaseUtils.ColumnName.START_TIME,item.getStartTime());
@@ -146,7 +145,6 @@ public class DownloadHistory {
     }
 
     private void updateItem(DownloadItem item){
-        HLog.d(TAG,"update item: "+item.toString());
         String where = " id = '"+item.getUUID()+"'";
         ContentValues values = new ContentValues();
         values.put(DatabaseUtils.ColumnName.DOWNLOAD_STATES,item.getStatus().toString());
@@ -168,7 +166,6 @@ public class DownloadHistory {
                 ContentValues values = new ContentValues();
                 values.put(DatabaseUtils.ColumnName.COVER_PATH,uri);
                 int count = mContentResolver.update(DatabaseUtils.DOWNLOAD_HISTORY_URI,values,where,null);
-                HLog.d(TAG,"count = "+count);
             }
         });
 

@@ -98,7 +98,6 @@ public class TransferServer {
      */
     private boolean sendFile(Socket socket) {
         if (socket.isClosed()) {
-            HLog.e(TAG, "socket is closed, can not send file");
             return false;
         }
         Log.d(TAG, "socket = " + socket.toString());
@@ -118,26 +117,22 @@ public class TransferServer {
                 startPos = operInfo.start;
                 endPos = operInfo.end;
             } else {
-                HLog.e(TAG, "read serverPath format wrong: " + path);
                 return false;
             }
         } catch (IOException e) {
             e.printStackTrace();
-            HLog.e(TAG, "read snd serverPath: " + e.getMessage());
             return false;
         }
 
         boolean res = false;
         File file = new File(path);
         if (!file.exists()) {
-            Log.e(TAG, "file is no existed, can not send file");
             return res;
         }
         long start = System.currentTimeMillis();
         long size = 0;
         FileInputStream inputStream = null;
         OutputStream outputStream = null;
-        Log.d(TAG, "start send: " + path);
         try {
             outputStream = socket.getOutputStream();
             /**
@@ -146,7 +141,6 @@ public class TransferServer {
             if (!checkSendPermission(path)) {
                 outputStream.write(GlobalParams.PERMISSION_DENIED.getBytes());
                 outputStream.flush();
-                HLog.e(TAG, socket.getInetAddress().getHostAddress()+" have no permission to request: " + path);
                 outputStream.close();
                 socket.close();
                 return false;
@@ -184,7 +178,7 @@ public class TransferServer {
         long consume = System.currentTimeMillis() - start;
         float rate = size / consume;
         rate = rate * (1000 / 1024f);
-        HLog.d(TAG, "rate = " + rate + "KB/s" + ", size = " + size + ", time = " + consume);
+        HLog.d(this.getClass(),HLog.T, "rate = " + rate + "KB/s" + ", size = " + size + ", time = " + consume);
         return res;
     }
 
@@ -209,7 +203,6 @@ public class TransferServer {
     private void initServerSocket() {
         try {
             mServerSocket = new ServerSocket(mPort);
-            HLog.d(TAG,"thread pool is shutdown: "+mWorkThreadPool.isShutdown());
             if(mWorkThreadPool.isShutdown()){
                 mWorkThreadPool = Executors.newFixedThreadPool(5);
             }
@@ -233,7 +226,6 @@ public class TransferServer {
                             });
 
                         } catch (IOException e) {
-                            HLog.e(TAG,e.getMessage());
                             e.printStackTrace();
                         }
                     }

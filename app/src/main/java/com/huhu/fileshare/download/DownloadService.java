@@ -95,7 +95,6 @@ public class DownloadService extends Service{
         public void addDownloadItem(String uuid,String ip,String fromPath,long size,long recv,
                                     String fromUser,String type,String destName,String coverPath)
                 throws RemoteException {
-            HLog.d(TAG,"Service:addDownloadItem, ip = "+ip+", from serverPath = "+fromPath);
             DownloadItem item = new DownloadItem(ip,size,fromPath,fromUser,uuid,type);
             item.setRecvSize(recv);
             item.setDestName(destName);

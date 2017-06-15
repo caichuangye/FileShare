@@ -43,7 +43,7 @@ public class ComServer implements Runnable {
         try {
             mServerSocket = new ServerSocket(GlobalParams.SEND_PORT);
         } catch (IOException e) {
-            HLog.d(TAG, e.getMessage());
+            HLog.e(getClass(),HLog.S, e.getMessage());
         }
         HandlerThread thread = new HandlerThread("common-server-recv");
         thread.start();
@@ -67,14 +67,13 @@ public class ComServer implements Runnable {
                     }
                 })).start();
             } catch (IOException e) {
-                HLog.e(TAG, e.getMessage());
+                HLog.e(getClass(),HLog.S, e.getMessage());
             }
         }
     }
 
     private void handleSocket(Socket socket) {
         try {
-            HLog.d(TAG, "server recv, from: " + socket.getInetAddress().getHostName());
             InputStream inputStream = socket.getInputStream();
             byte[] data = new byte[inputStream.available()];
             inputStream.read(data);
@@ -82,21 +81,18 @@ public class ComServer implements Runnable {
             handleRequest(str, socket);
             socket.close();
         } catch (IOException e) {
-            HLog.e(TAG,e.getMessage());
+            HLog.e(getClass(),HLog.S,e.getMessage());
         }
     }
 
     private void handleRequest(String request,Socket socket){
-        HLog.d("shareinfo", "handleRequest: " + request);
         switch (request){
             case GlobalParams.REQUEST_SHARED_FILES:
-                Log.d("shareinfo","1111111----");
                 String reply = ShareApplication.getInstance().getAllSharedFiles();
-                Log.d("shareinfo","json = "+reply);
+                HLog.d(getClass(),HLog.S,"server reply = "+reply);
                 sendResponse(reply,socket);
                 break;
             default:
-                Log.d("shareinfo","pase request = "+request);
                 parseData(request);
                 break;
         }
@@ -107,14 +103,13 @@ public class ComServer implements Runnable {
     }
 
     private void sendResponse(String reply, Socket socket){
-        HLog.d(TAG, "server build reply: " + reply);
         byte[] data = reply.getBytes();
         try {
             OutputStream outputStream = socket.getOutputStream();
             outputStream.write(data);
             outputStream.flush();
         }catch (IOException e){
-            HLog.e(TAG,e.getMessage());
+            HLog.e(getClass(),HLog.S,e.getMessage());
         }
     }
 

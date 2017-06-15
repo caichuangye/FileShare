@@ -63,7 +63,6 @@ public class ShareImageFolderFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String folder = mAdapter.getFolderPath(position);
                 if (!TextUtils.isEmpty(folder)) {
-                    HLog.d("SSSS", "pos = " + position + "; folder = " + folder);
                     Intent intent = new Intent(mContext, ShareImagesActivity.class);
                     intent.putExtra("FOLDER", folder);
                     mContext.startActivity(intent);
@@ -87,7 +86,6 @@ public class ShareImageFolderFragment extends BaseFragment {
     }
 
     public void onEventMainThread(EventBusType.ShareImageFolderInfo info) {
-        HLog.d("ccfolder","get ShareImageFolderInfo");
         getData();
         mAdapter.setData(info.getData());
     }

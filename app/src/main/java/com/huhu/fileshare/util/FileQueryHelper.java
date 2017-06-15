@@ -72,7 +72,6 @@ public class FileQueryHelper {
     }
 
     public void scanFileByType(final GlobalParams.ShareType type) {
-        HLog.d(TAG,"scanFileByType: "+type.toString());
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -322,13 +321,11 @@ public class FileQueryHelper {
                 int albumIndex = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
                 int id = cursor.getInt(albumIndex);
                 String coverPath = getAlbumArt(id);
-                HLog.d(TAG, path + ": " + coverPath);
                 saveCoverImage(path, coverPath);
                 break;
             }
             cursor.close();
         } else {
-            HLog.d(TAG, "cursor == null or size == 0");
         }
     }
 
@@ -349,7 +346,6 @@ public class FileQueryHelper {
     }
 
     private void parseApkCoverImage(String path) {
-        HLog.d(TAG, "parseApkCoverImage: " + path);
         PackageManager packageManager = mContext.getPackageManager();
         PackageInfo pi = packageManager.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
         pi.applicationInfo.sourceDir = path;
@@ -359,7 +355,6 @@ public class FileQueryHelper {
     }
 
     private void parseVideoCoverImage(String path) {
-        HLog.d(TAG, "parseVideoCoverImage: " + path);
         ImageCacher.getInstance().cacheVideo(path, 150, 150);
     }
 

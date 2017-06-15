@@ -79,7 +79,6 @@ public class WiFiOperation {
             @Override
             public void handleMessage(Message message){
                 if(mWifiListChangedListener != null && message.what == SCAN_DONE){
-                    HLog.d(TAG, "begin to update");
                     mWifiListChangedListener.onChanged(convertScanResults(mScanList));
                 }
             }
@@ -108,7 +107,6 @@ public class WiFiOperation {
         @Override
         public void run() {
             while (mIsAutoRefreshWiFi){
-                HLog.d(TAG,"begin scan");
                 scanWiFi();
                 try {
                     Thread.sleep(mScanInterval);
@@ -137,16 +135,12 @@ public class WiFiOperation {
     }
 
     public void scanWiFi() {
-        HLog.d(TAG, "in scan");
         boolean res = mWiFiManager.startScan();
         if (res) {
-            HLog.d(TAG, "scan done");
             mScanList.clear();
             mScanList = mWiFiManager.getScanResults();
-            HLog.d(TAG, "size = "+mScanList.size());
             mMainHandler.sendEmptyMessage(SCAN_DONE);
         } else {
-            HLog.d(TAG, "scan failed");
         }
     }
 
@@ -239,9 +233,7 @@ public class WiFiOperation {
             objects[1] = Boolean.valueOf(enable);
             return (boolean)method.invoke(mWiFiManager,objects);
         }catch (InvocationTargetException e){
-            HLog.d(TAG, e.getTargetException().toString());
         }catch (Exception e){
-            HLog.d(TAG, e.getMessage());
         }
         return false;
     }

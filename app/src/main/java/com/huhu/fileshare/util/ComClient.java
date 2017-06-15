@@ -55,6 +55,7 @@ public class ComClient implements Runnable{
     }
 
     public void sendMessage(String msg){
+        HLog.d(getClass(),HLog.S,"request msg = "+msg);
         mSendMsg = msg;
         mHandler.post(this);
     }
@@ -65,27 +66,19 @@ public class ComClient implements Runnable{
         try{
             socket = new Socket(mIP,GlobalParams.SEND_PORT);
             socket.setSoTimeout(3000*10);
-            HandlerThread thread = new HandlerThread("common-client-send");
-            thread.start();
-            mHandler = new Handler(thread.getLooper());
         }catch (UnknownHostException e){
-            HLog.e(TAG,e.getMessage());
+            HLog.e(getClass(),HLog.S,e.getMessage());
             return;
         }catch (IOException e){
-            HLog.e(TAG,e.getMessage());
+            HLog.e(getClass(),HLog.S,e.getMessage());
             return;
         }
 
-        HLog.d(TAG, "send:" + mSendMsg);
         byte[] data = mSendMsg.getBytes();
         try {
             OutputStream outputStream = socket.getOutputStream();
             outputStream.write(data);
             outputStream.flush();
-
-            HLog.d(TAG, "after send, then to recv reply");
-
-
             StringBuilder stringBuilder = new StringBuilder();
             BufferedReader bReader = new BufferedReader(new InputStreamReader(
                     socket.getInputStream()));
@@ -95,23 +88,20 @@ public class ComClient implements Runnable{
                 stringBuilder.append(line);
             }
 
-            HLog.d(TAG, "after send to "+mIP+", recv:" + stringBuilder.toString());
             if(mSendMsg.equals(GlobalParams.REQUEST_SHARED_FILES)) {
-                HLog.d("RECCY","---------------------got reply REQUEST_SHARED_FILES, then post----------------------");
+                HLog.d(getClass(),HLog.S,"recv: "+stringBuilder.toString());
                 EventBus.getDefault().post(new EventBusType.SharedFilesReply(stringBuilder.toString(),mIP));
             }
-        }catch (SocketTimeoutException eout){
-            eout.printStackTrace(System.out);
-            HLog.e(TAG,"client read reply timeout");
+        }catch (SocketTimeoutException out){
+            HLog.e(getClass(),HLog.T,"client read reply timeout");
         }catch (IOException e){
-            e.printStackTrace(System.out);
-            HLog.e(TAG, TextUtils.isEmpty(e.getMessage()) ? "-send msg occur unknown error" : e.getMessage());
+            HLog.e(getClass(),HLog.T, TextUtils.isEmpty(e.getMessage()) ? "-send msg occur unknown error" : e.getMessage());
         }
 
         try {
             socket.close();
         }catch (IOException e){
-            HLog.e(TAG,e.getMessage());
+            HLog.e(getClass(),HLog.S,e.getMessage());
         }
     }
 }

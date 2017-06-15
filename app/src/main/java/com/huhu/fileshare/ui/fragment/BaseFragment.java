@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
+import com.huhu.fileshare.util.HLog;
 
 /**
  * Created by Administrator on 2016/4/10.

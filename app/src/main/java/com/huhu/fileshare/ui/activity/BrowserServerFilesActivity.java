@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,8 +17,10 @@ import com.huhu.fileshare.model.DownloadItem;
 import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.ui.adapter.ServerViewPagerAdapter;
 import com.huhu.fileshare.ui.view.PagerSlidingTabStrip;
+import com.huhu.fileshare.util.ComClient;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
+import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
 
 import java.util.ArrayList;
@@ -55,6 +58,9 @@ public class BrowserServerFilesActivity extends BaseActivity {
         mViewPager.setAdapter(mAdapter);
         mTabs.setViewPager(mViewPager);
         mViewPager.setCurrentItem(index);
+        if(!TextUtils.isEmpty(mIP)) {
+            ComClient.getInstance(mIP).sendMessage(GlobalParams.REQUEST_SHARED_FILES);
+        }
     }
 
     @Override
@@ -88,7 +94,6 @@ public class BrowserServerFilesActivity extends BaseActivity {
     }
 
     public void onEventMainThread(EventBusType.StartViewAction info){
-        HLog.d("ccstatus","start view: "+info.path);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri uri = Uri.parse("file://" + info.path);
         String ext = info.path.substring(info.path.lastIndexOf('.') + 1);

@@ -128,11 +128,9 @@ public abstract class FileBaseAdapter<T extends BaseItem> extends BaseAdapter {
         @Override
         public void onClick(View v){
             BaseItem item = (BaseItem)mInfo.getData();
-            HLog.d("ccstatus",ShareApplication.getInstance().getFileDownloadStatus(item.getPath()).toString());
             if(ShareApplication.getInstance().getFileDownloadStatus(item.getPath()) == DownloadStatus.INIT) {
                 ShareApplication.getInstance().requestFile(mInfo);
             }else if(ShareApplication.getInstance().getFileDownloadStatus(item.getPath()) == DownloadStatus.SUCCESSED){
-                HLog.d("ccstatus","path = "+item.getPath());
                 EventBus.getDefault().post(new EventBusType.StartViewAction(item.getPath()));
             }else{
                 EventBus.getDefault().post(new EventBusType.GoToDownloadActivity());

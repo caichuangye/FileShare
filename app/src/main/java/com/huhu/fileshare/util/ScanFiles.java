@@ -56,7 +56,6 @@ public class ScanFiles {
                     if (files != null) {
                         for (File f : files) {
                             String p = f.getAbsolutePath();
-                            HLog.d(TAG,"path = "+f.getAbsolutePath());
                             if (f.isFile()) {
                                 SDCardFileItem item = new SDCardFileItem(SDCardFileItem.TYPE_FILE, p, f.length());
                                 list.add(item);
@@ -69,7 +68,6 @@ public class ScanFiles {
                         }
                         EventBus.getDefault().post(new EventBusType.FileItemsInfo(list));
                     }else{
-                        HLog.d(TAG,"path = "+path+" ---------is null");
                     }
                 }
             }

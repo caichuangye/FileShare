@@ -117,16 +117,13 @@ public class TransferClient {
                                 Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                                 boolean res = receiveFile(unit);
                                 String str = res ? "success" : "failed";
-                                HLog.d(TAG, "receive +" + unit.serverPath + ": " + str);
                             }
                         });
                     }else{
-                        HLog.w(TAG, "delete: " + unit.serverPath +", handle next");
                     }
                     Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                HLog.d(TAG,"run loop to receive: "+e.getMessage());
             }
         }
     }
@@ -147,7 +144,6 @@ public class TransferClient {
             operInfo.start = unit.recvSize;
             String str = gson.toJson(operInfo);
             OutputStream output = socket.getOutputStream();
-            HLog.d(TAG,"request info: "+str);
             output.write(str.getBytes());
 
             long size = unit.totalSize;
@@ -167,7 +163,6 @@ public class TransferClient {
                     outputStream.close();
                     inputStream.close();
                     socket.close();
-                    HLog.w(TAG, "delete while downloading: " + unit.serverPath +", handle next");
                     return false;
                 }
 
@@ -180,7 +175,7 @@ public class TransferClient {
                 if(tmp == GlobalParams.PERMISSION_DENIED.length()){
                     String info = new String(data,0,tmp,"utf-8");
                     if(info.equals(GlobalParams.PERMISSION_DENIED)){
-                        HLog.e(TAG,"no permission to download: "+remotePath);
+                        HLog.w(getClass(),HLog.T,"no permission to download: "+remotePath);
                         return false;
                     }
                 }

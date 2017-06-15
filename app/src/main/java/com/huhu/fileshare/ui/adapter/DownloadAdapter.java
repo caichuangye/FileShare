@@ -233,10 +233,8 @@ public class DownloadAdapter extends BaseAdapter {
                     if (mSelectedList.contains(item.getUUID())) {
                         mSelectedList.remove(item.getUUID());
                         checkBox.setChecked(false);
-                        HLog.d("ccdelete", "contains, has = " + mSelectedList.size());
                         mListener.onHasSelected(mSelectedList.size() > 0);
                     } else {
-                        HLog.d("ccdelete", "not contains, add, has = true");
                         mSelectedList.add(item.getUUID());
                         checkBox.setChecked(true);
                         mListener.onHasSelected(true);

@@ -94,7 +94,6 @@ public class ShareMusicFragment extends MediaFragment {
 
     public void onEventMainThread(EventBusType.NoLocalFiles info) {
         if(info.getType() == GlobalParams.ShareType.AUDIO && mType == GlobalParams.LOCAL_MODE) {
-            HLog.d("ccload","no music");
             onQueryComplete();
             mAdapter.setData(null);
         }

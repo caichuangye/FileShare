@@ -55,7 +55,6 @@ public class BrowserLocalFilesActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int i) {
-                HLog.d("BrowserLocalFilesActivity","onPageSelected: "+i);
                 EventBus.getDefault().post(new EventBusType.QueryFiles(i));
             }
 

@@ -41,7 +41,6 @@ public class MediaScanner {
             @Override
             public void onScanCompleted(String path, Uri uri) {
                 mMediaScannerConnection.disconnect();
-                HLog.d(TAG,path+": "+uri);
                 FileQueryHelper.getInstance().parseCoverImage(path,uri);
             }
         });
@@ -65,10 +64,8 @@ public class MediaScanner {
         }
         File file = new File(path);
         if(!file.exists()){
-            HLog.d(TAG,"begin to scan,not f: "+path);
             return;
         }
-        HLog.d(TAG,"begin to scan: "+path);
         if(mMediaScannerConnection.isConnected()){
             String ext = path.substring(path.lastIndexOf('.')+1);
             mMediaScannerConnection.scanFile(path, MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext));

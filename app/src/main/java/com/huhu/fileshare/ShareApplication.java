@@ -204,7 +204,6 @@ public class ShareApplication extends Application {
         if(tmp != null){
             boolean res = tmp.remove(info.getPath());
             if(res){
-                HLog.d(TAG,"remove from deleted list: "+info.getPath());
             }
         }
         mClientDeletedFiles.put(mScanningServerIP,tmp);
@@ -368,8 +367,8 @@ public class ShareApplication extends Application {
         }.getType();
         SharedCollection collection = gson.fromJson(reply.getData(), type);
         mAllSharedCollection.put(reply.getIP(), collection);
+        HLog.d(getClass(),HLog.S,"from ip = "+reply.getIP()+", count = "+collection.totalCount());
         EventBus.getDefault().post(new EventBusType.UpdateSharedFiles());
-        HLog.d("RECCY", "---------------------in application, notice fragment to update----------------------");
     }
 
     /**
