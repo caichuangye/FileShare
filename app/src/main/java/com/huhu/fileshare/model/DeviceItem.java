@@ -4,7 +4,7 @@ package com.huhu.fileshare.model;
  * Created by Administrator on 2016/4/9.
  */
 public class DeviceItem {
-    private int mIconIndex;
+    private String mIconPath;
 
     private String mUserName;
 
@@ -20,8 +20,8 @@ public class DeviceItem {
 
     private byte mSharedType;
 
-    public DeviceItem(int index,String name,String ip,boolean has,boolean refresh,long time,byte type){
-        mIconIndex = index;
+    public DeviceItem(String path,String name,String ip,boolean has,boolean refresh,long time,byte type){
+        mIconPath = path;
         mUserName = name;
         mIP = ip;
         mHasShared = has;
@@ -39,12 +39,12 @@ public class DeviceItem {
         mSharedType = flag;
     }
 
-    public int getIconIndex() {
-        return mIconIndex;
+    public String getIconPath() {
+        return mIconPath;
     }
 
-    public void setIconIndex(int iconIndex) {
-        this.mIconIndex = iconIndex;
+    public void setIconPath(String path) {
+        this.mIconPath = path;
     }
 
     public String getUserName() {

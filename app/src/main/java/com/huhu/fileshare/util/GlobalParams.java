@@ -108,6 +108,8 @@ public class GlobalParams {
      */
     public static final String REQUEST_SHARED_FILES = "request_shared_files";
 
+    public static final String REQUEST_ICON_PATH = "request_icon_path";
+
 
 
 }

@@ -23,9 +23,7 @@
         android:theme="@style/HuhuAppTheme">
         <activity
             android:name=".ui.activity.MainActivity"
-            android:label="@string/app_name">
-
-        </activity>
+            android:label="@string/app_name"></activity>
         <activity
             android:name=".ui.activity.ShareImagesActivity"
             android:label="@string/title_activity_share_images" />
@@ -40,7 +38,7 @@
         <activity
             android:name=".ui.activity.AboutActivity"
             android:label="@string/title_activity_about" />
-        <activity android:name=".ui.activity.EditUserlogoActivity" />
+        <activity android:name=".ui.activity.UserIconActivity" />
 
         <provider
             android:name=".databases.ShareProvider"
@@ -62,6 +60,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activity.ChangeUserIconActivity"></activity>
     </application>
 
 </manifest>

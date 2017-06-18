@@ -6,6 +6,7 @@ import com.huhu.fileshare.model.ApkItem;
 import com.huhu.fileshare.model.BaseItem;
 import com.huhu.fileshare.model.DeviceItem;
 import com.huhu.fileshare.model.DownloadItem;
+import com.huhu.fileshare.model.ImageItem;
 import com.huhu.fileshare.model.SDCardFileItem;
 import com.huhu.fileshare.model.ImageFolderItem;
 import com.huhu.fileshare.model.MusicItem;
@@ -130,6 +131,21 @@ public class EventBusType {
         }
 
         public List<ImageFolderItem> getData() {
+            return mData;
+        }
+    }
+
+    /**
+     *
+     */
+    public static class AllImages{
+        private List<ImageItem> mData;
+
+        public AllImages(List<ImageItem> items) {
+            mData = items;
+        }
+
+        public List<ImageItem> getData() {
             return mData;
         }
     }
@@ -311,6 +327,17 @@ public class EventBusType {
     public static class UpdateSharedFiles {
 
         public UpdateSharedFiles() {
+
+        }
+
+    }
+
+    /**
+     * 更新服务端头像
+     */
+    public static class UpdateUserIcon {
+
+        public UpdateUserIcon() {
 
         }
 

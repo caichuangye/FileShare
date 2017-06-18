@@ -61,7 +61,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initSettingValues(){
-        int index = SystemSetting.getInstance(getApplicationContext()).getUserIconIndex();
+        int index = 1;//SystemSetting.getInstance(getApplicationContext()).getUserIconPath();
         mIconImageView.setImageResource(((ShareApplication)getApplicationContext()).getUserIconList()[index]);
         mNameTextView.setText(SystemSetting.getInstance(getApplicationContext()).getUserNickName());
         mStorageEditText.setText(SystemSetting.getInstance(getApplicationContext()).getStoragePath());
@@ -90,7 +90,7 @@ public class SettingActivity extends BaseActivity {
             String item = null;
             switch (v.getId()){
                 case R.id.usericon_layout:
-                    goActivity(EditUserlogoActivity.class);
+                    goActivity(UserIconActivity.class);
                     return;
                 case R.id.username_layout:
                     item = SystemSetting.USER_NICKNAME;

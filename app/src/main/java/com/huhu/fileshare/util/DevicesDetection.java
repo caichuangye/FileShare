@@ -159,16 +159,23 @@ public class DevicesDetection {
         boolean isSame = false;
         boolean has = CommonUtil.parseHasSharedFiles(data);
         boolean refresh = CommonUtil.parseNeedRefresh(data);
-        int index = CommonUtil.parseIconIndex(data);
+        String path = CommonUtil.parseIconPath(data);
+        long iconSize = CommonUtil.parseIconSize(data);
+        boolean needRefreshIcon = UserIconManager.getInstance().setServerIconPath(ip,new UserIconManager.ServerIconItem(path,iconSize));
+        HLog.d(getClass(),HLog.S,"icon path = "+path+", refresh = "+needRefreshIcon+", size = "+iconSize);
+        if(needRefreshIcon){
+            HLog.d(getClass(),HLog.S,"---needRefreshIcon----");
+            ComClient.getInstance(ip).sendMessage(GlobalParams.REQUEST_ICON_PATH);
+        }
         String name = CommonUtil.parseUserName(data);
-        DeviceItem item = new DeviceItem(index, name, ip, has, refresh, now,data[1]);
+        DeviceItem item = new DeviceItem(path, name, ip, has, refresh, now,data[1]);
         List<String> tmp = new ArrayList<>();
         synchronized (DevicesDetection.class) {
             for (DeviceItem devicesItem : mDevicesList) {
                 if (devicesItem.getIP().equals(ip)) {
                     devicesItem.setTimeStamp(now);
                     devicesItem.setHasShared(has);
-                    devicesItem.setIconIndex(index);
+                    devicesItem.setIconPath(path);
                     devicesItem.setUserName(name);
                     devicesItem.setRefresh(refresh);
                     devicesItem.setSharedType(data[1]);

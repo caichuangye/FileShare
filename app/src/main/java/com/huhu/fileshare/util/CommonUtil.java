@@ -17,6 +17,7 @@ import com.huhu.fileshare.model.DownloadStatus;
 import com.huhu.fileshare.model.ImageItem;
 import com.huhu.fileshare.ui.view.DownloadIcon;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,33 +70,33 @@ public class CommonUtil {
         return strH + ":" + strM + ":" + strS;
     }
 
-    public static String getFolderByPath(String path){
-        if(!TextUtils.isEmpty(path)){
-            return path.substring(0,path.lastIndexOf("/"));
-        }else{
+    public static String getFolderByPath(String path) {
+        if (!TextUtils.isEmpty(path)) {
+            return path.substring(0, path.lastIndexOf("/"));
+        } else {
             return null;
         }
     }
 
-    public static boolean isDirectFolder(String file,String folder){
-        if(TextUtils.isEmpty(file) || TextUtils.isEmpty(folder)){
+    public static boolean isDirectFolder(String file, String folder) {
+        if (TextUtils.isEmpty(file) || TextUtils.isEmpty(folder)) {
             return false;
         }
-        if(!file.startsWith(folder)){
+        if (!file.startsWith(folder)) {
             return false;
         }
         int folderLen = folder.length();
-        String tmp = file.substring(folderLen+1);
+        String tmp = file.substring(folderLen + 1);
         return !tmp.contains("/");
     }
 
-    public static List<ImageItem> getImageItemsList(Context context,String folderPath){
+    public static List<ImageItem> getImageItemsList(Context context, String folderPath) {
         List<ImageItem> list = new ArrayList<>();
         List<ImageItem> allList = FileQueryHelper.getInstance().getAllImages();
-        if(allList != null){
-            for(ImageItem item : allList){
-             //   if(item.getPath().startsWith(folderPath)){
-                if(CommonUtil.isDirectFolder(item.getPath(),folderPath)){
+        if (allList != null) {
+            for (ImageItem item : allList) {
+                //   if(item.getPath().startsWith(folderPath)){
+                if (CommonUtil.isDirectFolder(item.getPath(), folderPath)) {
                     list.add(item);
                 }
             }
@@ -103,101 +104,140 @@ public class CommonUtil {
         return list;
     }
 
-    public static byte[] buildSendData(Context context){
-        ShareApplication shareApplication = (ShareApplication)context.getApplicationContext();
+
+    private static boolean sIsSendIconPath = true;
+
+    public static byte[] buildSendData(Context context) {
+        ShareApplication shareApplication = (ShareApplication) context.getApplicationContext();
         byte b = 0;
-        if(shareApplication.getSharedFilesCount() > 0){
+        if (shareApplication.getSharedFilesCount() > 0) {
             b |= 0x80;
-        }else{
+        } else {
             b &= 0x7f;
         }
-        if(shareApplication.needRefresh()){
+        if (shareApplication.needRefresh()) {
             b |= 0x40;
-        }else{
+        } else {
             b &= 0xbf;
         }
-        int iconIndex = SystemSetting.getInstance(context).getUserIconIndex();
-        iconIndex &= 0x3f;
-        b |= iconIndex;
         String name = SystemSetting.getInstance(context).getUserNickName();
-        byte[] tmp = name.getBytes();
-        byte[] data = new byte[tmp.length+2];
+        String iconPath = SystemSetting.getInstance(context).getUserIconPath();
+        String size = String.valueOf(UserIconManager.getInstance().getSelfIconBitmapSize(context));
+        if(TextUtils.isEmpty(iconPath) || Long.parseLong(size) <= 0){
+            sIsSendIconPath = false;
+        }
+        int length = name.length() + 2;
+        if (sIsSendIconPath) {
+            length += iconPath.length() + 1 + size.length() + 1;
+        }
+
+        byte[] data = new byte[length];
         data[0] = b;
         data[1] = shareApplication.getSharedType();
-        for(int i = 0 ; i < tmp.length; i++){
-            data[i+2] = tmp[i];
+        System.arraycopy(name.getBytes(), 0, data, 2, name.length());
+        if (sIsSendIconPath) {
+            data[2 + name.length()] = '|';
+            System.arraycopy(iconPath.getBytes(), 0, data, 2 + name.length() + 1, iconPath.length());
+            data[2 + name.length() + iconPath.length()+1] = '|';
+            System.arraycopy(size.getBytes(), 0, data, 2 + name.length() + 1 +iconPath.length()+ 1, size.length());
+            HLog.d(CommonUtil.class,HLog.S,"send str = "+new String(data)+", size = "+size);
+            sIsSendIconPath = false;
+        } else {
+            sIsSendIconPath = true;
         }
         return data;
     }
 
-    public static String parseUserName(byte[] data){
-        if(data != null){
-            return new String(data,2,data.length-2);
+    public static String parseUserName(byte[] data) {
+        if (data != null) {
+            String str = new String(data);
+            if (!str.contains("|")) {
+                return new String(data, 2, data.length - 2);
+            } else {
+                return str.substring(2, str.indexOf('|'));
+            }
         }
         return null;
     }
 
-    public static int parseIconIndex(byte[] data){
-        byte b = data[0];
-        return b&0x3f;
+    public static String parseIconPath(byte[] data) {
+        String str = new String(data);
+        if(str.contains("|")){
+            int first = str.indexOf("|");
+            int last = str.lastIndexOf("|");
+            if(first > 2 && last > first){
+                return str.substring(first+1,last);
+            }
+        }
+        return null;
     }
 
-    public static boolean parseNeedRefresh(byte[] data){
+    public static long parseIconSize(byte[] data) {
+        String str = new String(data);
+        if(str.contains("|")){
+            int last = str.lastIndexOf("|");
+            if(last > 2){
+                return Long.parseLong(str.substring(last+1));
+            }
+        }
+        return 0;
+    }
+
+    public static boolean parseNeedRefresh(byte[] data) {
         byte b = data[0];
         b &= 0x40;
         return b != 0;
     }
 
-    public static boolean parseHasSharedFiles(byte[] data){
+    public static boolean parseHasSharedFiles(byte[] data) {
         byte b = data[0];
         b &= 0x80;
         return b != 0;
     }
 
-    public static boolean parseHasImages(byte data){
+    public static boolean parseHasImages(byte data) {
         data &= 0x01;
         return data != 0;
     }
 
-    public static boolean parseHasMusics(byte data){
+    public static boolean parseHasMusics(byte data) {
         data &= 0x02;
         return data != 0;
     }
 
-    public static boolean parseHasVideos(byte data){
+    public static boolean parseHasVideos(byte data) {
         data &= 0x04;
         return data != 0;
     }
 
-    public static boolean parseHasApks(byte data){
+    public static boolean parseHasApks(byte data) {
         data &= 0x08;
         return data != 0;
     }
 
-    public static boolean parseHascommonFiles(byte data){
+    public static boolean parseHascommonFiles(byte data) {
         data &= 0x10;
         return data != 0;
     }
 
 
-
-    public static Bitmap roundBitmap(Bitmap src,int rx, int ry){
+    public static Bitmap roundBitmap(Bitmap src, int rx, int ry) {
         int w = src.getWidth();
         int h = src.getHeight();
-        Bitmap bitmap = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_4444);
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
         Canvas canvas = new Canvas(bitmap);
         Paint p = new Paint();
         p.setAntiAlias(true);
         canvas.drawRoundRect(0, 0, w, h, rx, ry, p);
         p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(src,0,0,p);
+        canvas.drawBitmap(src, 0, 0, p);
         return bitmap;
     }
 
     private static String sFolderName;
 
-    public static String getAppFolder(){
-        if(TextUtils.isEmpty(sFolderName)) {
+    public static String getAppFolder() {
+        if (TextUtils.isEmpty(sFolderName)) {
             sFolderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/fileshare";
             File file = new File(sFolderName);
             if (!file.exists()) {
@@ -207,20 +247,20 @@ public class CommonUtil {
         return sFolderName;
     }
 
-    public static String getUUID(){
+    public static String getUUID() {
         return UUID.randomUUID().toString();
     }
 
-    public static DownloadIcon.Status getStatus(DownloadStatus status){
-        if(status == DownloadStatus.INIT){
+    public static DownloadIcon.Status getStatus(DownloadStatus status) {
+        if (status == DownloadStatus.INIT) {
             return DownloadIcon.Status.INIT;
-        }else if(status == DownloadStatus.WAIT){
+        } else if (status == DownloadStatus.WAIT) {
             return DownloadIcon.Status.WAIT;
-        }else if(status == DownloadStatus.DOWNLOADING){
+        } else if (status == DownloadStatus.DOWNLOADING) {
             return DownloadIcon.Status.DOWNLOADING;
-        }else if(status == DownloadStatus.SUCCESSED){
+        } else if (status == DownloadStatus.SUCCESSED) {
             return DownloadIcon.Status.COMPLETE;
-        }else{
+        } else {
             return null;
         }
     }
@@ -232,50 +272,50 @@ public class CommonUtil {
         OWNER//3
     }
 
-    public static Flag getFlag(int i){
-        if(i == 1){
+    public static Flag getFlag(int i) {
+        if (i == 1) {
             return Flag.TYPE;
-        }else if(i == 2){
+        } else if (i == 2) {
             return Flag.DATE;
-        }else if(i == 3){
+        } else if (i == 3) {
             return Flag.OWNER;
-        }else{
+        } else {
             return Flag.NONE;
         }
     }
 
-    public static int getFlagValue(Flag flag){
-        if(flag == Flag.TYPE){
+    public static int getFlagValue(Flag flag) {
+        if (flag == Flag.TYPE) {
             return 1;
-        }else if(flag == Flag.DATE){
+        } else if (flag == Flag.DATE) {
             return 2;
-        }else if(flag == Flag.OWNER){
+        } else if (flag == Flag.OWNER) {
             return 3;
-        }else{
+        } else {
             return 0;
         }
     }
 
 
-    public static Map<String,Set<String>> groupByIP(List<DownloadItem> list){
-        Map<String,Set<String>> map  = new HashMap<>();
-        if(list != null){
-            for(DownloadItem item : list){
+    public static Map<String, Set<String>> groupByIP(List<DownloadItem> list) {
+        Map<String, Set<String>> map = new HashMap<>();
+        if (list != null) {
+            for (DownloadItem item : list) {
                 Set<String> tmp = map.get(item.getFromIP());
-                if(tmp == null){
+                if (tmp == null) {
                     tmp = new HashSet<>();
                 }
                 tmp.add(item.getFromPath());
-                map.put(item.getFromIP(),tmp);
+                map.put(item.getFromIP(), tmp);
             }
         }
         return map;
     }
 
-    public static int getCommonFileCoverId(String path){
-        String typeStr = path.substring(path.lastIndexOf('.')+1);
+    public static int getCommonFileCoverId(String path) {
+        String typeStr = path.substring(path.lastIndexOf('.') + 1);
         CommonFileItem.FileType type = CommonFileItem.FileType.valueOfString(typeStr);
-        switch (type){
+        switch (type) {
             case PDF:
                 return R.mipmap.pdf;
             case TXT:
@@ -290,9 +330,15 @@ public class CommonUtil {
                 return R.mipmap.apk1;
             case XLS:
                 return R.mipmap.excel;
-            default: UNKNOWN:
-            return R.mipmap.file;
+            default:
+                UNKNOWN:
+                return R.mipmap.file;
         }
     }
 
+    public static byte[] bitmap2Bytes(Bitmap bm) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
+    }
 }

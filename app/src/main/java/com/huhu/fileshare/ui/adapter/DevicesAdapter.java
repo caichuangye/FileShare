@@ -1,6 +1,8 @@
 package com.huhu.fileshare.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.DeviceItem;
 import com.huhu.fileshare.util.CommonUtil;
+import com.huhu.fileshare.util.UserIconManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +86,8 @@ public class DevicesAdapter extends BaseAdapter {
             viewHolder = (ViewHolder)convertView.getTag();
         }
         DeviceItem item = mDataList.get(position);
-        viewHolder.iconImageView.setImageResource(((ShareApplication) mContext.getApplicationContext()).getUserIconList()[item.getIconIndex()]);
+        Bitmap bitmap = UserIconManager.getInstance().getIconBitMap(item.getIP());
+        viewHolder.iconImageView.setImageBitmap(bitmap != null ? bitmap : BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.default_icon));
         viewHolder.nameTextView.setText(mDataList.get(position).getUserName());
         viewHolder.ipTextView.setText(getShardDesc(mDataList.get(position).getSharedType()));
         viewHolder.hasSharedImageView.setVisibility(mDataList.get(position).hasShared()? View.VISIBLE:View.INVISIBLE);

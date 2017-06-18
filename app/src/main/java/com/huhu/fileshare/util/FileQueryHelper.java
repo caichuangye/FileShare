@@ -213,6 +213,7 @@ public class FileQueryHelper {
             EventBus.getDefault().post(new EventBusType.ShareVideoInfo(mVideoList));
 
         } else if (type == GlobalParams.ShareType.IMAGE) {
+            mAllImagesList.clear();
             while (cursor.moveToNext()) {
                 int dateIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED);
                 SimpleDateFormat sDateFormat = new SimpleDateFormat("yy-MM-dd");
@@ -223,6 +224,8 @@ public class FileQueryHelper {
                 mAllImagesList.add(item);
             }
             EventBus.getDefault().post(new EventBusType.ShareImageFolderInfo(convert(mAllImagesList)));
+            EventBus.getDefault().post(new EventBusType.AllImages(mAllImagesList));
+
         }
         cursor.close();
     }
@@ -274,6 +277,8 @@ public class FileQueryHelper {
     public List<ImageItem> getAllImages() {
         return mAllImagesList;
     }
+
+
 
     private Map<Long, String> mCoverMap = null;
 

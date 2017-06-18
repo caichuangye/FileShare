@@ -1,12 +1,18 @@
 package com.huhu.fileshare.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
 import com.huhu.fileshare.ShareApplication;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,7 +49,7 @@ public class ComServer implements Runnable {
         try {
             mServerSocket = new ServerSocket(GlobalParams.SEND_PORT);
         } catch (IOException e) {
-            HLog.e(getClass(),HLog.S, e.getMessage());
+            HLog.e(getClass(), HLog.S, e.getMessage());
         }
         HandlerThread thread = new HandlerThread("common-server-recv");
         thread.start();
@@ -67,7 +73,7 @@ public class ComServer implements Runnable {
                     }
                 })).start();
             } catch (IOException e) {
-                HLog.e(getClass(),HLog.S, e.getMessage());
+                HLog.e(getClass(), HLog.S, e.getMessage());
             }
         }
     }
@@ -81,16 +87,19 @@ public class ComServer implements Runnable {
             handleRequest(str, socket);
             socket.close();
         } catch (IOException e) {
-            HLog.e(getClass(),HLog.S,e.getMessage());
+            HLog.e(getClass(), HLog.S, e.getMessage());
         }
     }
 
-    private void handleRequest(String request,Socket socket){
-        switch (request){
+    private void handleRequest(String request, Socket socket) {
+        switch (request) {
             case GlobalParams.REQUEST_SHARED_FILES:
                 String reply = ShareApplication.getInstance().getAllSharedFiles();
-                HLog.d(getClass(),HLog.S,"server reply = "+reply);
-                sendResponse(reply,socket);
+                HLog.d(getClass(), HLog.S, "server reply = " + reply);
+                sendResponse(reply, socket);
+                break;
+            case GlobalParams.REQUEST_ICON_PATH:
+                sendIconPath(socket);
                 break;
             default:
                 parseData(request);
@@ -98,18 +107,31 @@ public class ComServer implements Runnable {
         }
     }
 
-    private void parseData(String request){
+    private void parseData(String request) {
 
     }
 
-    private void sendResponse(String reply, Socket socket){
+    private void sendIconPath(Socket socket) {
+        Bitmap bitmap = UserIconManager.getInstance().getSelfIconBitmap(ShareApplication.getInstance());
+        if(bitmap != null) {
+            byte[] data = CommonUtil.bitmap2Bytes(bitmap);
+            sendReplay(data, socket);
+        }
+
+    }
+
+    private void sendResponse(String reply, Socket socket) {
         byte[] data = reply.getBytes();
+        sendReplay(data, socket);
+    }
+
+    private void sendReplay(byte[] data, Socket socket) {
         try {
             OutputStream outputStream = socket.getOutputStream();
             outputStream.write(data);
             outputStream.flush();
-        }catch (IOException e){
-            HLog.e(getClass(),HLog.S,e.getMessage());
+        } catch (IOException e) {
+            HLog.e(getClass(), HLog.S, e.getMessage());
         }
     }
 

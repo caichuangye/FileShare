@@ -1,8 +1,8 @@
 package com.huhu.fileshare.ui.activity;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huhu.fileshare.R;
-import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.download.ServiceUtils;
 import com.huhu.fileshare.ui.fragment.MainFragment;
 import com.huhu.fileshare.util.DevicesDetection;
@@ -87,7 +87,7 @@ public class NewMainActivity extends BaseActivity {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.user_icon:
-                    startActivity(new Intent(NewMainActivity.this,EditUserlogoActivity.class));
+                    startActivity(new Intent(NewMainActivity.this,UserIconActivity.class));
                     break;
                 case R.id.username:
                     Intent intent = new Intent(NewMainActivity.this, EditSettingItemActivity.class);
@@ -182,9 +182,12 @@ public class NewMainActivity extends BaseActivity {
             WiFiOperation.getInstance(getApplicationContext()).updateConnectionInfo();
         }
         mUserNameTextView.setText(SystemSetting.getInstance(this).getUserNickName());
-        mUserIconImageView.setImageResource(((ShareApplication)getApplicationContext())
-                .getUserIconList()[SystemSetting.getInstance(this).getUserIconIndex()]);
-       //mUserIconImageView.setImageResource(R.mipmap.logo);
+        String path = SystemSetting.getInstance(this).getUserIconPath();
+        if(!TextUtils.isEmpty(path)) {
+            mUserIconImageView.setImageBitmap(BitmapFactory.decodeFile(path));
+        }else{
+            mUserIconImageView.setImageResource(R.mipmap.default_icon);
+        }
     }
 
     @Override

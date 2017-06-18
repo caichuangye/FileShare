@@ -17,7 +17,7 @@ public class SystemSetting {
 
     private final String FILE_SHARE_SETTING = "FILE_SHARE_SETTING";
 
-    public static final String USER_ICON_INDEX ="USER_ICON_INDEX";
+    public static final String USER_ICON_PATH  ="USER_ICON_PATH";
     public static final String USER_NICKNAME   = "USER_NICKNAME";
     public static final String AP_NAME         = "AP_NAME";
     public static final String AP_PWD          = "AP_PWD";
@@ -47,19 +47,14 @@ public class SystemSetting {
         return sInstance;
     }
 
-    public int getUserIconIndex(){
-        int index =  mSharedPreferences.getInt(USER_ICON_INDEX,-1);
-        if(index == -1){
-            Random random = new Random(System.currentTimeMillis());
-            index = random.nextInt(12);
-            setUserIconIndex(index);
-        }
-        return index;
+    public String getUserIconPath(){
+     //   return Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"icon.png";
+        return   mSharedPreferences.getString(USER_ICON_PATH,null);
     }
 
-    public void setUserIconIndex(int index){
+    public void setUserIconPath(String path){
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putInt(USER_ICON_INDEX,index);
+        editor.putString(USER_ICON_PATH,path);
         editor.commit();
     }
 

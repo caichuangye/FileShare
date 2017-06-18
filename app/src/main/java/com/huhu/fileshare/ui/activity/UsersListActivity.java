@@ -80,4 +80,8 @@ public class UsersListActivity extends BaseActivity {
         mListView.getEmptyView().setVisibility(View.VISIBLE);
         mAdapter.setData(info.getData());
     }
+
+    public void onEventMainThread(EventBusType.UpdateUserIcon info) {
+       mAdapter.notifyDataSetChanged();
+    }
 }
