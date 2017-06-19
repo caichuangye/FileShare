@@ -25,7 +25,7 @@
     <include
         android:id="@+id/main_menu"
         layout="@layout/main_draw_layout"
-        android:layout_width="280dp"
+        android:layout_width="360dp"
         android:layout_height="match_parent"
         android:layout_gravity="start" />
 

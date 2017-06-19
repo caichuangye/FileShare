@@ -26,6 +26,10 @@ import com.huhu.fileshare.ui.fragment.MainFragment;
 import com.huhu.fileshare.util.DevicesDetection;
 import com.huhu.fileshare.util.SystemSetting;
 import com.huhu.fileshare.util.WiFiOperation;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -184,7 +188,7 @@ public class NewMainActivity extends BaseActivity {
         mUserNameTextView.setText(SystemSetting.getInstance(this).getUserNickName());
         String path = SystemSetting.getInstance(this).getUserIconPath();
         if(!TextUtils.isEmpty(path)) {
-            mUserIconImageView.setImageBitmap(BitmapFactory.decodeFile(path));
+            ImageLoader.getInstance().displayImage("file://" + path, mUserIconImageView);
         }else{
             mUserIconImageView.setImageResource(R.mipmap.default_icon);
         }

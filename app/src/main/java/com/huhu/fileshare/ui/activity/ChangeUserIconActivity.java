@@ -13,6 +13,7 @@ import com.huhu.fileshare.ui.adapter.ChangeUserIconAdapter;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.HLog;
 import com.huhu.fileshare.util.SystemSetting;
 
 import java.util.ArrayList;

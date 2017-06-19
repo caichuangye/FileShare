@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false"
     android:fitsSystemWindows="true"
+    android:background="@android:color/darker_gray"
     tools:context="com.huhu.fileshare.ui.activity.EditSettingItemActivity">
 
     <include
@@ -11,16 +12,24 @@
         style="@style/toolbar_layout_style"/>
 
 
-    <GridView
-        android:padding="4dp"
-        android:layout_below="@id/title"
-        android:id="@+id/gridview"
-        android:numColumns="3"
-        android:horizontalSpacing="4dp"
-        android:verticalSpacing="4dp"
-        android:divider="#f0f"
+    <ImageView
+        android:id="@+id/user_icon"
+        android:scaleType="centerCrop"
+        tools:src="@mipmap/default_icon"
+        android:layout_centerInParent="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="360dp" />
+
+    <Button
+        android:id="@+id/change_icon"
+        android:text="更换头像"
+        android:textColor="@color/title_color"
+        android:background="@drawable/change_icon_background"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/user_icon"
+        android:layout_width="160dp"
+        android:layout_height="40dp" />
 
 
 </RelativeLayout>

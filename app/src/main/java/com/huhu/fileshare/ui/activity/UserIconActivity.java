@@ -17,6 +17,10 @@ import android.widget.ImageView;
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ui.adapter.ChangeUserIconAdapter;
 import com.huhu.fileshare.util.SystemSetting;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 public class UserIconActivity extends BaseActivity {
 
@@ -39,9 +43,10 @@ public class UserIconActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Bitmap bitmap = BitmapFactory.decodeFile(SystemSetting.getInstance(UserIconActivity.this).getUserIconPath());
-        if(bitmap != null) {
-            mImageView.setImageBitmap(bitmap);
+
+        String path = SystemSetting.getInstance(UserIconActivity.this).getUserIconPath();
+        if(!TextUtils.isEmpty(path)) {
+            ImageLoader.getInstance().displayImage("file://" + path,mImageView);
         }else{
             mImageView.setImageResource(R.mipmap.default_icon);
         }

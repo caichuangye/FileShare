@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.ImageItem;
+import com.huhu.fileshare.util.HLog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
@@ -26,42 +27,32 @@ import java.util.List;
  */
 public class ChangeUserIconAdapter extends BaseAdapter {
 
-    private DisplayImageOptions mOptions = new DisplayImageOptions.Builder()
-            .showImageOnLoading(R.mipmap.ic_launcher) // 在ImageView加载过程中显示图片
-            .showImageForEmptyUri(R.mipmap.ic_launcher) // image连接地址为空时
-            .showImageOnFail(R.mipmap.ic_launcher) // image加载失败
-            .cacheInMemory(true) // 加载图片时会在内存中加载缓存
-            .cacheOnDisk(true) // 加载图片时会在磁盘中加载缓存
-            .build();
-
     private Context mContext;
 
     private List<String> mImagePathList;
 
     public ChangeUserIconAdapter(Context context) {
+        mImagePathList = new ArrayList<>();
         mContext = context;
     }
 
     public void setData(List<String> list) {
-        if(mImagePathList == null){
-            mImagePathList = new ArrayList<>();
-        }else{
-            mImagePathList.clear();
-        }
+        mImagePathList.clear();
         if(list != null){
             mImagePathList.addAll(list);
         }
+        HLog.d(getClass(),HLog.T,"size = "+mImagePathList.size());
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return ((ShareApplication) mContext.getApplicationContext()).getUserIconList().length;
+        return mImagePathList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return ((ShareApplication) mContext.getApplicationContext()).getUserIconList()[position];
+        return mImagePathList.get(position);
     }
 
     @Override
@@ -76,8 +67,7 @@ public class ChangeUserIconAdapter extends BaseAdapter {
         }
         if(mImagePathList != null && position < mImagePathList.size()) {
             ImageView imageView = (ImageView) convertView.findViewById(R.id.icon_imageview);
-            ImageAware aware = new ImageViewAware(imageView, false);
-            ImageLoader.getInstance().displayImage("file://" + mImagePathList.get(position), aware, mOptions, new ImageSize(174 * 3, 174 * 3), null, null);
+            ImageLoader.getInstance().displayImage("file://" + mImagePathList.get(position), imageView);
         }
         return convertView;
     }

@@ -94,12 +94,12 @@ public class ComClient implements Runnable{
                 EventBus.getDefault().post(new EventBusType.SharedFilesReply(stringBuilder.toString(),mIP));
             }else if(mSendMsg.equals(GlobalParams.REQUEST_ICON_PATH)){
                 InputStream inputStream = socket.getInputStream();
-                HLog.d(getClass(),HLog.S,"REQUEST_ICON_PATH: get reply, size = "+inputStream.available());
+                HLog.d(getClass(),HLog.S,"REQUEST_ICON_PATH: get reply, inputStream.size = "+inputStream.available());
                 int iconSize = (int)UserIconManager.getInstance().getServerIconSize(mIP);
                 if(iconSize > 0) {
                     byte[] img = new byte[iconSize];
                     inputStream.read(img);
-                    HLog.d(getClass(), HLog.S, "REQUEST_ICON_PATH: get reply, size = " + img.length);
+                    HLog.d(getClass(), HLog.S, "REQUEST_ICON_PATH: get reply, record.size = " + img.length);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
                     UserIconManager.getInstance().setBitMap(mIP, bitmap);
                 }

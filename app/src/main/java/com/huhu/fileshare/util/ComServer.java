@@ -1,18 +1,10 @@
 package com.huhu.fileshare.util;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 
 import com.huhu.fileshare.ShareApplication;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -99,7 +91,7 @@ public class ComServer implements Runnable {
                 sendResponse(reply, socket);
                 break;
             case GlobalParams.REQUEST_ICON_PATH:
-                sendIconPath(socket);
+                sendIconData(socket);
                 break;
             default:
                 parseData(request);
@@ -111,10 +103,10 @@ public class ComServer implements Runnable {
 
     }
 
-    private void sendIconPath(Socket socket) {
-        Bitmap bitmap = UserIconManager.getInstance().getSelfIconBitmap(ShareApplication.getInstance());
-        if(bitmap != null) {
-            byte[] data = CommonUtil.bitmap2Bytes(bitmap);
+    private void sendIconData(Socket socket) {
+        byte[] data = UserIconManager.getInstance().getSelfIconBitmapData(ShareApplication.getInstance());
+        if(data != null) {
+            HLog.d(getClass(),HLog.S,"self icon size = "+data.length);
             sendReplay(data, socket);
         }
 

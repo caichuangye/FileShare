@@ -27,14 +27,16 @@ public class UserIconManager {
 
     private Map<String, Bitmap> mServerIconBitmapMap;
 
-    private UserIconManager(){
+    private byte[] mSelfIconData;
+
+    private UserIconManager() {
 
     }
 
-    public static UserIconManager getInstance(){
-        if(sInstance == null){
-            synchronized (UserIconManager.class){
-                if(sInstance == null){
+    public static UserIconManager getInstance() {
+        if (sInstance == null) {
+            synchronized (UserIconManager.class) {
+                if (sInstance == null) {
                     sInstance = new UserIconManager();
                 }
             }
@@ -43,9 +45,9 @@ public class UserIconManager {
     }
 
 
-    public static class ServerIconItem{
+    public static class ServerIconItem {
 
-        public ServerIconItem(String path,long size){
+        public ServerIconItem(String path, long size) {
             this.path = path;
             this.size = size;
         }
@@ -59,12 +61,12 @@ public class UserIconManager {
      * @param
      * @return true: 表示需要更新服务端头像； false表示不需要更新服务端头像
      */
-    public  boolean setServerIconPath(String ip, ServerIconItem item) {
+    public boolean setServerIconPath(String ip, ServerIconItem item) {
         if (mServerIconPathMap == null) {
             mServerIconPathMap = new HashMap<>();
         }
         ServerIconItem iconItem = mServerIconPathMap.get(ip);
-        if(iconItem == null){
+        if (iconItem == null) {
             mServerIconPathMap.put(ip, item);
             return true;
         }
@@ -77,42 +79,60 @@ public class UserIconManager {
         }
     }
 
-    public long getServerIconSize(String ip){
-        if(mServerIconPathMap != null){
+    public long getServerIconSize(String ip) {
+        if (mServerIconPathMap != null) {
             return mServerIconPathMap.get(ip).size;
         }
         return 0;
     }
 
-    public void setBitMap(String ip, Bitmap bitmap){
-        if(mServerIconBitmapMap == null){
+    public void setBitMap(String ip, Bitmap bitmap) {
+        if (mServerIconBitmapMap == null) {
             mServerIconBitmapMap = new HashMap<>();
         }
-        if(bitmap != null) {
-            HLog.d(getClass(),HLog.S,"setBitMap, ip = "+ip+", bitmap = "+bitmap.toString());
+        if (bitmap != null) {
+            HLog.d(getClass(), HLog.S, "setBitMap, ip = " + ip + ", bitmap = " + bitmap.toString());
             mServerIconBitmapMap.put(ip, bitmap);
             EventBus.getDefault().post(new EventBusType.UpdateUserIcon());
-        }else{
-            HLog.d(getClass(),HLog.S,"setBitMap, ip = "+ip+", bitmap = null");
+        } else {
+            HLog.d(getClass(), HLog.S, "setBitMap, ip = " + ip + ", bitmap = null");
         }
     }
 
-    public Bitmap getIconBitMap(String ip){
+    public Bitmap getIconBitMap(String ip) {
         return mServerIconBitmapMap == null ? null : mServerIconBitmapMap.get(ip);
     }
 
-    public Bitmap getSelfIconBitmap(Context context){
-        String path = SystemSetting.getInstance(context).getUserIconPath();
-        if(!TextUtils.isEmpty(path)) {
-            File file = new File(path);
-            return file.exists() ? BitmapFactory.decodeFile(path) : null;
+
+    public byte[] getSelfIconBitmapData(Context context) {
+        if (mSelfIconData == null) {
+            String path = SystemSetting.getInstance(context).getUserIconPath();
+            if (!TextUtils.isEmpty(path)) {
+                File file = new File(path);
+                if (file.exists()) {
+                    HLog.d(getClass(),HLog.L,"--------------bitmap2Bytes----------------: start!");
+                    Bitmap bitmap = BitmapFactory.decodeFile(path);
+                    HLog.d(getClass(),HLog.L,"--------------bitmap2Bytes----------------: ing!");
+                    if(bitmap != null){
+                        mSelfIconData = CommonUtil.bitmap2Bytes(bitmap);
+                        int l = mSelfIconData == null ? 0 : mSelfIconData.length;
+                        HLog.d(getClass(),HLog.L,"--------------bitmap2Bytes----------------: "+l);
+                    }else{
+                        HLog.d(getClass(),HLog.L,"--------------bitmap2Bytes----------------: failed!");
+                    }
+                }
+            }else{
+
+            }
         }
-        return null;
+        return mSelfIconData;
     }
 
-    public long getSelfIconBitmapSize(Context context){
+
+
+    public long getSelfIconBitmapSize(Context context) {
         String path = SystemSetting.getInstance(context).getUserIconPath();
-        if(!TextUtils.isEmpty(path)) {
+        if (!TextUtils.isEmpty(path)) {
             FileInputStream inputStream = null;
             try {
                 inputStream = new FileInputStream(path);

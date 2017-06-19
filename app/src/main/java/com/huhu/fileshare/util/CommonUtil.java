@@ -122,7 +122,9 @@ public class CommonUtil {
         }
         String name = SystemSetting.getInstance(context).getUserNickName();
         String iconPath = SystemSetting.getInstance(context).getUserIconPath();
-        String size = String.valueOf(UserIconManager.getInstance().getSelfIconBitmapSize(context));
+        //String size = String.valueOf(UserIconManager.getInstance().getSelfIconBitmapSize(context));
+        byte[] tmp = UserIconManager.getInstance().getSelfIconBitmapData(context);
+        String size = tmp == null ? "0" : String.valueOf(tmp.length);
         if(TextUtils.isEmpty(iconPath) || Long.parseLong(size) <= 0){
             sIsSendIconPath = false;
         }
@@ -130,7 +132,6 @@ public class CommonUtil {
         if (sIsSendIconPath) {
             length += iconPath.length() + 1 + size.length() + 1;
         }
-
         byte[] data = new byte[length];
         data[0] = b;
         data[1] = shareApplication.getSharedType();
@@ -338,7 +339,7 @@ public class CommonUtil {
 
     public static byte[] bitmap2Bytes(Bitmap bm) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        bm.compress(Bitmap.CompressFormat.PNG, 10, baos);
         return baos.toByteArray();
     }
 }

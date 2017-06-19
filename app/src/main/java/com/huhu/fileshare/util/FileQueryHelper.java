@@ -223,8 +223,8 @@ public class FileQueryHelper {
                         cursor.getLong(sizeIndex), false, null, d);
                 mAllImagesList.add(item);
             }
-            EventBus.getDefault().post(new EventBusType.ShareImageFolderInfo(convert(mAllImagesList)));
             EventBus.getDefault().post(new EventBusType.AllImages(mAllImagesList));
+            EventBus.getDefault().post(new EventBusType.ShareImageFolderInfo(convert(mAllImagesList)));
 
         }
         cursor.close();
