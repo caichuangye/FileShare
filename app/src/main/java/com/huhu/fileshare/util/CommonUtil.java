@@ -2,6 +2,7 @@ package com.huhu.fileshare.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -19,6 +20,8 @@ import com.huhu.fileshare.ui.view.DownloadIcon;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -122,9 +125,7 @@ public class CommonUtil {
         }
         String name = SystemSetting.getInstance(context).getUserNickName();
         String iconPath = SystemSetting.getInstance(context).getUserIconPath();
-        //String size = String.valueOf(UserIconManager.getInstance().getSelfIconBitmapSize(context));
-        byte[] tmp = UserIconManager.getInstance().getSelfIconBitmapData(context);
-        String size = tmp == null ? "0" : String.valueOf(tmp.length);
+        String size = String.valueOf(UserIconManager.getInstance().getSelfIconBitmapSize(context));
         if(TextUtils.isEmpty(iconPath) || Long.parseLong(size) <= 0){
             sIsSendIconPath = false;
         }
@@ -141,7 +142,6 @@ public class CommonUtil {
             System.arraycopy(iconPath.getBytes(), 0, data, 2 + name.length() + 1, iconPath.length());
             data[2 + name.length() + iconPath.length()+1] = '|';
             System.arraycopy(size.getBytes(), 0, data, 2 + name.length() + 1 +iconPath.length()+ 1, size.length());
-            HLog.d(CommonUtil.class,HLog.S,"send str = "+new String(data)+", size = "+size);
             sIsSendIconPath = false;
         } else {
             sIsSendIconPath = true;
@@ -216,7 +216,7 @@ public class CommonUtil {
         return data != 0;
     }
 
-    public static boolean parseHascommonFiles(byte data) {
+    public static boolean parseHasCommonFiles(byte data) {
         data &= 0x10;
         return data != 0;
     }
@@ -337,9 +337,34 @@ public class CommonUtil {
         }
     }
 
-    public static byte[] bitmap2Bytes(Bitmap bm) {
+    public static byte[] bitmap2Bytes(Bitmap bm,Bitmap.CompressFormat format) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.PNG, 10, baos);
+        bm.compress(format, 100, baos);
         return baos.toByteArray();
+    }
+
+    public static byte[] compressImage(String path, int percent){
+        File file = new File(path);
+        if(!file.exists()){
+            return null;
+        }
+        long original = 0;
+        try {
+            FileInputStream inputStream = new FileInputStream(file);
+            original = inputStream.available();
+            inputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path,options);
+        options.inSampleSize = percent;
+        options.inJustDecodeBounds = false;
+        Bitmap.CompressFormat format = path.endsWith(".png")? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+        byte[] data = bitmap2Bytes(BitmapFactory.decodeFile(path,options),format);
+        float per = (data.length*100)/original;
+        HLog.d(CommonUtil.class,HLog.L,"path = "+path+", per = "+per+"%");
+        return data;
     }
 }

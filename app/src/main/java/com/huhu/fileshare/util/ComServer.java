@@ -2,9 +2,13 @@ package com.huhu.fileshare.util;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.text.TextUtils;
 
 import com.huhu.fileshare.ShareApplication;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -61,6 +65,7 @@ public class ComServer implements Runnable {
                 new Thread((new Runnable() {
                     @Override
                     public void run() {
+                        HLog.d(ComServer.class, HLog.S, "server get conn from: " + socket.getInetAddress().getHostAddress());
                         handleSocket(socket);
                     }
                 })).start();
@@ -104,10 +109,13 @@ public class ComServer implements Runnable {
     }
 
     private void sendIconData(Socket socket) {
-        byte[] data = UserIconManager.getInstance().getSelfIconBitmapData(ShareApplication.getInstance());
-        if(data != null) {
-            HLog.d(getClass(),HLog.S,"self icon size = "+data.length);
-            sendReplay(data, socket);
+        String path = SystemSetting.getInstance(ShareApplication.getInstance()).getUserIconPath();
+        if (!TextUtils.isEmpty(path)) {
+            HLog.d(getClass(), HLog.S, "server send icon, size = " + UserIconManager.getInstance().getSelfIconBitmapSize(ShareApplication.getInstance()) +
+                    ", to " + socket.getInetAddress().getHostAddress());
+            sendSelfIcon(path, socket);
+        } else {
+            HLog.d(getClass(), HLog.S, "server to send icon, path is not exists = " + path);
         }
 
     }
@@ -117,6 +125,56 @@ public class ComServer implements Runnable {
         sendReplay(data, socket);
     }
 
+    private void sendSelfIcon(String path, Socket socket) {
+        byte[] data = CommonUtil.compressImage(path,8);
+        if(data == null || data.length <= 0){
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+            }
+            return;
+        }
+        long start = System.currentTimeMillis();
+        String ip = socket.getInetAddress().getHostAddress();
+        OutputStream outputStream = null;
+        try {
+            outputStream = socket.getOutputStream();
+            int unit = 1024 * 4;
+            int offset  = 0;
+            int total = data.length;
+            while (true) {
+                int size = total - offset >= unit ? unit : total - offset;
+                outputStream.write(data, offset, size);
+                offset += size;
+                if (size < unit) {
+                    break;
+                }
+            }
+            HLog.d(getClass(), HLog.S, "server send icon to " + ip + " success！");
+        } catch (FileNotFoundException e) {
+            HLog.e(getClass(), HLog.S, "server send icon to " + ip + " failed: " + e.getMessage());
+        } catch (IOException e) {
+            HLog.e(getClass(), HLog.S, "server send icon to " + ip + " failed: " + e.getMessage());
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                }
+            }
+        }
+        long time = System.currentTimeMillis() - start;
+        if(time <= 0){
+            time = 1;
+        }
+        float rate = data.length/time;// b/ms
+        HLog.d(getClass(),HLog.S,"--------------sent to "+ip+" rate = "+rate*(1000f/(1024*1024))+" MB/s, size = "+data.length/1024+" kb, consume "+time+" ms--------------");
+    }
+
     private void sendReplay(byte[] data, Socket socket) {
         try {
             OutputStream outputStream = socket.getOutputStream();
@@ -124,6 +182,8 @@ public class ComServer implements Runnable {
             outputStream.flush();
         } catch (IOException e) {
             HLog.e(getClass(), HLog.S, e.getMessage());
+        } finally {
+
         }
     }
 

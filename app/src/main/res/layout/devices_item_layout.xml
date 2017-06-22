@@ -4,7 +4,7 @@
     android:layout_height="60dp">
     <ImageView
         android:id="@+id/user_icon"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:src="@mipmap/user_icon_1"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"

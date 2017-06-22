@@ -162,7 +162,6 @@ public class DevicesDetection {
         String path = CommonUtil.parseIconPath(data);
         long iconSize = CommonUtil.parseIconSize(data);
         boolean needRefreshIcon = UserIconManager.getInstance().setServerIconPath(ip,new UserIconManager.ServerIconItem(path,iconSize));
-        HLog.d(getClass(),HLog.S,"icon path = "+path+", refresh = "+needRefreshIcon+", size = "+iconSize);
         if(needRefreshIcon){
             HLog.d(getClass(),HLog.S,"---needRefreshIcon----");
             ComClient.getInstance(ip).sendMessage(GlobalParams.REQUEST_ICON_PATH);

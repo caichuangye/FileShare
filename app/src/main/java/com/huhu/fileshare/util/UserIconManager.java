@@ -27,7 +27,7 @@ public class UserIconManager {
 
     private Map<String, Bitmap> mServerIconBitmapMap;
 
-    private byte[] mSelfIconData;
+    private String mSelfIconPath;
 
     private UserIconManager() {
 
@@ -65,8 +65,16 @@ public class UserIconManager {
         if (mServerIconPathMap == null) {
             mServerIconPathMap = new HashMap<>();
         }
+
+        /**
+         *
+         */
+        if(item == null || item.size == 0 || TextUtils.isEmpty(item.path)){
+            return false;
+        }
         ServerIconItem iconItem = mServerIconPathMap.get(ip);
         if (iconItem == null) {
+            HLog.d(getClass(),HLog.S,"---------set need refresh 1, iconItem == null-----------");
             mServerIconPathMap.put(ip, item);
             return true;
         }
@@ -74,6 +82,7 @@ public class UserIconManager {
         if (!TextUtils.isEmpty(oldPath) && !TextUtils.isEmpty(item.path) && oldPath.equals(item.path)) {
             return false;
         } else {
+            HLog.d(getClass(),HLog.S,"---------set need refresh 2, old = "+oldPath+", new = "+item.path);
             mServerIconPathMap.put(ip, item);
             return true;
         }
@@ -104,7 +113,7 @@ public class UserIconManager {
     }
 
 
-    public byte[] getSelfIconBitmapData(Context context) {
+    /*public byte[] getSelfIconBitmapData(Context context) {
         if (mSelfIconData == null) {
             String path = SystemSetting.getInstance(context).getUserIconPath();
             if (!TextUtils.isEmpty(path)) {
@@ -126,7 +135,7 @@ public class UserIconManager {
             }
         }
         return mSelfIconData;
-    }
+    }*/
 
 
 

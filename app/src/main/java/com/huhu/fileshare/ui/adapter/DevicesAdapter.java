@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huhu.fileshare.R;
-import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.model.DeviceItem;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.UserIconManager;
@@ -108,7 +107,7 @@ public class DevicesAdapter extends BaseAdapter {
         if(CommonUtil.parseHasApks(flag)){
             desc += "应用|";
         }
-        if(CommonUtil.parseHascommonFiles(flag)){
+        if(CommonUtil.parseHasCommonFiles(flag)){
             desc += "文件|";
         }
         if(!TextUtils.isEmpty(desc)){
@@ -133,7 +132,7 @@ public class DevicesAdapter extends BaseAdapter {
         if(CommonUtil.parseHasApks(flag)){
             return 3;
         }
-        if(CommonUtil.parseHascommonFiles(flag)){
+        if(CommonUtil.parseHasCommonFiles(flag)){
             return 4;
         }
         return 0;

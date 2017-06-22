@@ -48,7 +48,6 @@ public class SystemSetting {
     }
 
     public String getUserIconPath(){
-     //   return Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"icon.png";
         return   mSharedPreferences.getString(USER_ICON_PATH,null);
     }
 

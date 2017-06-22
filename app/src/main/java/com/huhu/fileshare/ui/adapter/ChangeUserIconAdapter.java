@@ -41,7 +41,6 @@ public class ChangeUserIconAdapter extends BaseAdapter {
         if(list != null){
             mImagePathList.addAll(list);
         }
-        HLog.d(getClass(),HLog.T,"size = "+mImagePathList.size());
         notifyDataSetChanged();
     }
 
