@@ -88,6 +88,41 @@
     <View style="@style/setting_divider_style_1" />
 
     <LinearLayout
+        android:id="@+id/ap_name_layout"
+        style="@style/main_fragment_item_layout">
+
+        <ImageView
+            android:id="@+id/ap_name_label"
+            style="@style/setting_icon_style"
+            android:src="@mipmap/ap_name" />
+
+        <TextView
+            style="@style/setting_label_style"
+            android:layout_toRightOf="@id/feedback_label"
+            android:text="@string/ap_name" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ap_pwd_layout"
+        style="@style/main_fragment_item_layout">
+
+        <ImageView
+            android:id="@+id/ap_pwd_label"
+            style="@style/setting_icon_style"
+            android:src="@mipmap/ap_pwd" />
+
+        <TextView
+            style="@style/setting_label_style"
+            android:layout_toRightOf="@id/feedback_label"
+            android:text="@string/ap_pwd" />
+
+    </LinearLayout>
+
+
+    <View style="@style/setting_divider_style_1" />
+
+    <LinearLayout
         android:layout_marginTop="6dp"
         android:id="@+id/checkversion_layout"
         style="@style/main_fragment_item_layout">

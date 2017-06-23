@@ -12,10 +12,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.huhu.fileshare.R;
+import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.ui.activity.BrowserLocalFilesActivity;
 import com.huhu.fileshare.ui.activity.JoinWiFiActivity;
 import com.huhu.fileshare.ui.activity.UsersListActivity;
 import com.huhu.fileshare.util.EventBusType;
+import com.huhu.fileshare.util.HLog;
+import com.huhu.fileshare.util.SystemSetting;
 import com.huhu.fileshare.util.WiFiOperation;
 
 /**

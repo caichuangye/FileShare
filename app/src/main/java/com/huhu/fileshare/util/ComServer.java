@@ -57,6 +57,10 @@ public class ComServer implements Runnable {
         mHandler.post(this);
     }
 
+    public void stop(){
+        mHandler.removeCallbacks(this);
+    }
+
     @Override
     public void run() {
         while (!isQuit()) {

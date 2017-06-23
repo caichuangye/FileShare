@@ -108,9 +108,9 @@ public class CommonUtil {
     }
 
 
-    private static boolean sIsSendIconPath = true;
 
     public static byte[] buildSendData(Context context) {
+        boolean isSendIconPath = true;
         ShareApplication shareApplication = (ShareApplication) context.getApplicationContext();
         byte b = 0;
         if (shareApplication.getSharedFilesCount() > 0) {
@@ -127,24 +127,21 @@ public class CommonUtil {
         String iconPath = SystemSetting.getInstance(context).getUserIconPath();
         String size = String.valueOf(UserIconManager.getInstance().getSelfIconBitmapSize(context));
         if(TextUtils.isEmpty(iconPath) || Long.parseLong(size) <= 0){
-            sIsSendIconPath = false;
+            isSendIconPath = false;
         }
         int length = name.length() + 2;
-        if (sIsSendIconPath) {
+        if (isSendIconPath) {
             length += iconPath.length() + 1 + size.length() + 1;
         }
         byte[] data = new byte[length];
         data[0] = b;
         data[1] = shareApplication.getSharedType();
         System.arraycopy(name.getBytes(), 0, data, 2, name.length());
-        if (sIsSendIconPath) {
+        if (isSendIconPath) {
             data[2 + name.length()] = '|';
             System.arraycopy(iconPath.getBytes(), 0, data, 2 + name.length() + 1, iconPath.length());
             data[2 + name.length() + iconPath.length()+1] = '|';
             System.arraycopy(size.getBytes(), 0, data, 2 + name.length() + 1 +iconPath.length()+ 1, size.length());
-            sIsSendIconPath = false;
-        } else {
-            sIsSendIconPath = true;
         }
         return data;
     }

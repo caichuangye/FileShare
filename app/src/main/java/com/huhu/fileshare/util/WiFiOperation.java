@@ -30,7 +30,7 @@ import java.util.List;
 
 public class WiFiOperation {
 
-    private  final String TAG = this.getClass().getSimpleName();
+    private final String TAG = this.getClass().getSimpleName();
 
     private static final int SCAN_DONE = 0;
 
@@ -54,19 +54,19 @@ public class WiFiOperation {
 
     private AutoRefreshRunnable mAutoRefreshRunnable;
 
-    public static WiFiOperation getInstance(Context context){
+    public static WiFiOperation getInstance(Context context) {
         sInstance.init(context);
         return sInstance;
     }
 
-    private void init(Context context){
-        if(mWiFiManager == null) {
+    private void init(Context context) {
+        if (mWiFiManager == null) {
             mContext = context;
             mWiFiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         }
     }
 
-    private WiFiOperation(){
+    private WiFiOperation() {
         mIsAutoRefreshWiFi = false;
         mAutoRefreshRunnable = new AutoRefreshRunnable();
         mScanList = new ArrayList<>();
@@ -75,48 +75,48 @@ public class WiFiOperation {
         HandlerThread handlerThread1 = new HandlerThread("wifi-refresh-handler");
         handlerThread1.start();
         mRefreshHandler = new Handler(handlerThread1.getLooper());
-        mMainHandler = new Handler(Looper.getMainLooper()){
+        mMainHandler = new Handler(Looper.getMainLooper()) {
             @Override
-            public void handleMessage(Message message){
-                if(mWifiListChangedListener != null && message.what == SCAN_DONE){
+            public void handleMessage(Message message) {
+                if (mWifiListChangedListener != null && message.what == SCAN_DONE) {
                     mWifiListChangedListener.onChanged(convertScanResults(mScanList));
                 }
             }
         };
     }
 
-    public void setAutoScanInterval(int interval){
-        if(interval >= 0){
+    public void setAutoScanInterval(int interval) {
+        if (interval >= 0) {
             mScanInterval = interval;
         }
     }
 
-    public void setAutoRefreshWiFi(final boolean auto){
-        if(auto && mIsAutoRefreshWiFi){
+    public void setAutoRefreshWiFi(final boolean auto) {
+        if (auto && mIsAutoRefreshWiFi) {
             return;
         }
         mIsAutoRefreshWiFi = auto;
-        if(auto){
+        if (auto) {
             mRefreshHandler.post(mAutoRefreshRunnable);
-        }else{
+        } else {
             mRefreshHandler.removeCallbacks(mAutoRefreshRunnable);
         }
     }
 
-    private class AutoRefreshRunnable implements Runnable{
+    private class AutoRefreshRunnable implements Runnable {
         @Override
         public void run() {
-            while (mIsAutoRefreshWiFi){
+            while (mIsAutoRefreshWiFi) {
                 scanWiFi();
                 try {
                     Thread.sleep(mScanInterval);
-                }catch (Exception e){
+                } catch (Exception e) {
                 }
             }
         }
     }
 
-    public void updateConnectionInfo(){
+    public void updateConnectionInfo() {
         mRefreshHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -130,7 +130,7 @@ public class WiFiOperation {
         });
     }
 
-    public void setListener(IOnWiFiListScanListener listener){
+    public void setListener(IOnWiFiListScanListener listener) {
         mWifiListChangedListener = listener;
     }
 
@@ -144,59 +144,59 @@ public class WiFiOperation {
         }
     }
 
-    public String getConnectedWiFiBSSID(){
-        if(isWiFiConnected()){
+    public String getConnectedWiFiBSSID() {
+        if (isWiFiConnected()) {
             WifiInfo info = mWiFiManager.getConnectionInfo();
-            return info == null? null : info.getBSSID();
-        }else {
+            return info == null ? null : info.getBSSID();
+        } else {
             return null;
         }
     }
 
-    public String getConnectedWiFiSSID(){
-        if(isWiFiConnected()){
+    public String getConnectedWiFiSSID() {
+        if (isWiFiConnected()) {
             WifiInfo info = mWiFiManager.getConnectionInfo();
-            if(info != null ){
+            if (info != null) {
                 String ssid = info.getSSID();
-                if(!TextUtils.isEmpty(ssid) && ssid.length() > 2){
-                    return ssid.substring(1,ssid.length()-1);
+                if (!TextUtils.isEmpty(ssid) && ssid.length() > 2) {
+                    return ssid.substring(1, ssid.length() - 1);
                 }
             }
         }
         return null;
     }
 
-    public String getIP(){
+    public String getIP() {
         WifiInfo info = mWiFiManager.getConnectionInfo();
         return intToIp(info.getIpAddress());
     }
 
     private String intToIp(int i) {
 
-        return (i & 0xFF ) + "." +
-                ((i >> 8 ) & 0xFF) + "." +
-                ((i >> 16 ) & 0xFF) + "." +
-                ( i >> 24 & 0xFF) ;
+        return (i & 0xFF) + "." +
+                ((i >> 8) & 0xFF) + "." +
+                ((i >> 16) & 0xFF) + "." +
+                (i >> 24 & 0xFF);
     }
 
 
-    public boolean isWiFiConnected(){
-        NetworkInfo info = ((ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE)).
+    public boolean isWiFiConnected() {
+        NetworkInfo info = ((ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE)).
                 getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         return info.isConnected();
     }
 
-    public boolean isWiFiAvailable(){
-        NetworkInfo info = ((ConnectivityManager)mContext.getSystemService(Context.CONNECTIVITY_SERVICE)).
+    public boolean isWiFiAvailable() {
+        NetworkInfo info = ((ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE)).
                 getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         return info.isAvailable();
     }
 
-    public boolean joinWiFi(String ssid,String pwd,int type){
+    public boolean joinWiFi(String ssid, String pwd, int type) {
         WifiConfiguration configuration = new WifiConfiguration();
-        if(type == 1){//has pwd
-            configuration.SSID = "\""+ssid+"\"";
-            configuration.preSharedKey = "\""+pwd+"\"";
+        if (type == 1) {//has pwd
+            configuration.SSID = "\"" + ssid + "\"";
+            configuration.preSharedKey = "\"" + pwd + "\"";
             configuration.hiddenSSID = false;
             configuration.status = WifiConfiguration.Status.ENABLED;
             configuration.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
@@ -206,11 +206,11 @@ public class WiFiOperation {
             configuration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
             configuration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
             configuration.status = WifiConfiguration.Status.ENABLED;
-        }else if(type == 2){//no pwd
-            configuration.SSID = "\""+ssid+"\"";
+        } else if (type == 2) {//no pwd
+            configuration.SSID = "\"" + ssid + "\"";
             configuration.hiddenSSID = true;
             configuration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-        }else{
+        } else {
             return false;
         }
         int id = mWiFiManager.addNetwork(configuration);
@@ -220,25 +220,48 @@ public class WiFiOperation {
         return join;
     }
 
-    public boolean createAp(String ssid,String pwd,int type,boolean enable){
-        WifiConfiguration configuration = createWiFiConfiguration(ssid,pwd,type);
-        try{
-            Class localClass = mWiFiManager.getClass();
-            Class[] classes = new Class[2];
-            classes[0] = WifiConfiguration.class;
-            classes[1] = Boolean.TYPE;
-            Method method = localClass.getMethod("setWifiApEnabled",classes);
-            Object[] objects = new Object[2];
-            objects[0] = configuration;
-            objects[1] = Boolean.valueOf(enable);
-            return (boolean)method.invoke(mWiFiManager,objects);
-        }catch (InvocationTargetException e){
-        }catch (Exception e){
+
+    public boolean createAp(String ssid, String pwd, boolean enable) {
+   //     WifiConfiguration configuration = createWiFiConfiguration(ssid, pwd, 3);
+        try {
+            WifiConfiguration apConfig = new WifiConfiguration();
+            //配置热点的名称(可以在名字后面加点随机数什么的)
+            apConfig.SSID = ssid;
+            //配置热点的密码
+            apConfig.preSharedKey = pwd;
+            //安全：WPA2_PSK
+            apConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+            Method method = mWiFiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
+            return (Boolean) method.invoke(mWiFiManager, apConfig, enable);
+        } catch (InvocationTargetException e) {
+            HLog.e(getClass(), HLog.L, "createAp error 1: " + e.toString());
+        } catch (Exception e) {
+            HLog.e(getClass(), HLog.L, "createAp error 2: " + e.getMessage());
         }
         return false;
     }
 
-    private WifiConfiguration createWiFiConfiguration(String ssid,String pwd,int type){
+    public boolean createAp_bak(String ssid, String pwd, boolean enable) {
+        WifiConfiguration configuration = createWiFiConfiguration(ssid, pwd, 3);
+        try {
+            Class localClass = mWiFiManager.getClass();
+            Class[] classes = new Class[2];
+            classes[0] = WifiConfiguration.class;
+            classes[1] = Boolean.TYPE;
+            Method method = localClass.getMethod("setWifiApEnabled", classes);
+            Object[] objects = new Object[2];
+            objects[0] = configuration;
+            objects[1] = Boolean.valueOf(enable);
+            return (boolean) method.invoke(mWiFiManager, objects);
+        } catch (InvocationTargetException e) {
+            HLog.e(getClass(), HLog.L, "createAp error 1: " + e.toString());
+        } catch (Exception e) {
+            HLog.e(getClass(), HLog.L, "createAp error 2: " + e.getMessage());
+        }
+        return false;
+    }
+
+    private WifiConfiguration createWiFiConfiguration(String ssid, String pwd, int type) {
         WifiConfiguration configuration = new WifiConfiguration();
         configuration.allowedAuthAlgorithms.clear();
         configuration.allowedGroupCiphers.clear();
@@ -246,11 +269,11 @@ public class WiFiOperation {
         configuration.allowedPairwiseCiphers.clear();
         configuration.allowedProtocols.clear();
         configuration.SSID = ssid;
-        if(type == 1){//no pwd
+        if (type == 1) {//no pwd
             configuration.wepKeys[0] = "";
             configuration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
             configuration.wepTxKeyIndex = 0;
-        }else if(type == 2){//wep
+        } else if (type == 2) {//wep
             configuration.preSharedKey = pwd;
             configuration.hiddenSSID = true;
             configuration.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
@@ -260,7 +283,7 @@ public class WiFiOperation {
             configuration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
             configuration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
             configuration.wepTxKeyIndex = 0;
-        }else if(type == 3){//wpa
+        } else if (type == 3) {//wpa
             configuration.preSharedKey = pwd;
             configuration.allowedAuthAlgorithms.set(0);
             configuration.allowedProtocols.set(1);
@@ -272,27 +295,23 @@ public class WiFiOperation {
         return configuration;
     }
 
-    public void dimissAp(String ssid,String pwd,int type){
-        createAp(ssid,pwd,type,false);
-    }
-
-    public void closeWiFi(){
+    public void closeWiFi() {
         mWiFiManager.setWifiEnabled(false);
     }
 
-    public void openWiFi(){
+    public void openWiFi() {
         mWiFiManager.setWifiEnabled(true);
     }
 
-    public interface IOnWiFiListScanListener{
+    public interface IOnWiFiListScanListener {
         void onChanged(List<WiFiItem> list);
     }
 
-    private List<WiFiItem> convertScanResults(List<ScanResult> list){
+    private List<WiFiItem> convertScanResults(List<ScanResult> list) {
         List<WiFiItem> wiFiItems = new ArrayList<>();
-        if(list != null){
-            for(ScanResult result : list){
-                WiFiItem item = new WiFiItem(result.SSID, result.BSSID,WifiManager.calculateSignalLevel(result.level,4));
+        if (list != null) {
+            for (ScanResult result : list) {
+                WiFiItem item = new WiFiItem(result.SSID, result.BSSID, WifiManager.calculateSignalLevel(result.level, 4));
                 wiFiItems.add(item);
             }
         }

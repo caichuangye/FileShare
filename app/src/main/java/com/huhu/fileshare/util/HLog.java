@@ -26,13 +26,13 @@ public class HLog {
 
     public static void w(Class cls,String model, String msg){
         if(sDebug){
-            Log.w("["+PRE_TAG+"_"+cls.getSimpleName()+"]: "+model,msg);
+            Log.w("["+PRE_TAG+"_"+cls.getSimpleName()+": "+model+"] ",msg);
         }
     }
 
     public static void e(Class cls,String model, String msg){
         if(sDebug){
-            Log.e("["+PRE_TAG+"_"+cls.getSimpleName()+"]: "+model,msg);
+            Log.e("["+PRE_TAG+"_"+cls.getSimpleName()+": "+model+"] ",msg);
         }
     }
 
