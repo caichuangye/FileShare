@@ -364,4 +364,26 @@ public class CommonUtil {
         HLog.d(CommonUtil.class,HLog.L,"path = "+path+", per = "+per+"%");
         return data;
     }
+
+    /**
+     * 把服务器地址转换为本地的保持地址
+     * @param serverPath
+     * @return
+     */
+    public static String getLocalPath(String serverPath){
+        if(TextUtils.isEmpty(serverPath)){
+            return null;
+        }
+        String folder = SystemSetting.getInstance(ShareApplication.getInstance()).getStoragePath();
+        int index = serverPath.lastIndexOf("/");
+        if(index > 0){
+            return folder+serverPath.substring(index);
+        }else{
+            return null;
+        }
+    }
+
+    public static String getPercent(long child, long parent){
+        return (child*100/parent)+"%";
+    }
 }

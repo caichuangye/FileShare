@@ -105,7 +105,7 @@ public class ApkAdapter extends FileBaseAdapter<ApkItem> {
         if (mMode == GlobalParams.SERVER_MODE) {
             holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadIcon.setVisibility(View.VISIBLE);
-            DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());
+            DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath(),mServerIP);
             if (status != null) {
                 holder.downloadIcon.setStatus(CommonUtil.getStatus(status));
             }

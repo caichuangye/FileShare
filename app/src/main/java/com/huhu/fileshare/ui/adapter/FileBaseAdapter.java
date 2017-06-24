@@ -9,6 +9,7 @@ import com.huhu.fileshare.ShareApplication;
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.model.BaseItem;
 import com.huhu.fileshare.model.DownloadStatus;
+import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
@@ -27,10 +28,18 @@ public abstract class FileBaseAdapter<T extends BaseItem> extends BaseAdapter {
 
     protected int mMode;
 
+    protected String mServerIP;
+
     public FileBaseAdapter(Context context, int mode){
         mMode = mode;
         mContext = context;
         mDataList = new ArrayList<>();
+    }
+
+    public void setServerIP(String ip){
+        if(mMode == GlobalParams.SERVER_MODE){
+            mServerIP = ip;
+        }
     }
 
     public  void setData(List<T> list){
@@ -128,10 +137,10 @@ public abstract class FileBaseAdapter<T extends BaseItem> extends BaseAdapter {
         @Override
         public void onClick(View v){
             BaseItem item = (BaseItem)mInfo.getData();
-            if(ShareApplication.getInstance().getFileDownloadStatus(item.getPath()) == DownloadStatus.INIT) {
+            if(ShareApplication.getInstance().getFileDownloadStatus(item.getPath(),mServerIP) == DownloadStatus.INIT) {
                 ShareApplication.getInstance().requestFile(mInfo);
-            }else if(ShareApplication.getInstance().getFileDownloadStatus(item.getPath()) == DownloadStatus.SUCCESSED){
-                EventBus.getDefault().post(new EventBusType.StartViewAction(item.getPath()));
+            }else if(ShareApplication.getInstance().getFileDownloadStatus(item.getPath(),mServerIP) == DownloadStatus.SUCCESSED){
+                EventBus.getDefault().post(new EventBusType.StartViewAction(CommonUtil.getLocalPath(item.getPath())));
             }else{
                 EventBus.getDefault().post(new EventBusType.GoToDownloadActivity());
             }

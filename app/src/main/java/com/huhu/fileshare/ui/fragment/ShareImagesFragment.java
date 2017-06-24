@@ -22,8 +22,10 @@ import com.huhu.fileshare.ui.adapter.ImageAdapter;
 import com.huhu.fileshare.util.CommonUtil;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.HLog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
+import com.nostra13.universalimageloader.utils.L;
 
 import java.util.List;
 
@@ -77,6 +79,7 @@ public class ShareImagesFragment extends BaseFragment {
         mGridView = (GridView)view.findViewById(R.id.gridview);
         mGridView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),true,true));
         mAdapter = new ImageAdapter(mContext,mType);
+        mAdapter.setServerIP(mIP);
         mGridView.setAdapter(mAdapter);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
@@ -132,8 +135,8 @@ public class ShareImagesFragment extends BaseFragment {
     public void onEventMainThread(EventBusType.UpdateDownloadFile info){
         if(mType == GlobalParams.SERVER_MODE && (info.getOper() == GlobalParams.DownloadOper.UPDATE_END
                 || info.getOper() == GlobalParams.DownloadOper.UPDATE_START
+                || info.getOper() == GlobalParams.DownloadOper.UPDATE_ING
                 || info.getOper() == GlobalParams.DownloadOper.ADD)) {
-            Log.d("ooo","just change tag");
             mAdapter.notifyDataSetChanged();
         }
     }

@@ -191,9 +191,9 @@ public class TransferClient {
             outputStream.close();
             inputStream.close();
             socket.close();
-            Log.d(TAG, "end receive " + unit.serverPath);
+            HLog.d(getClass(),HLog.L, "end receive " + unit.serverPath);
         } catch (Exception e) {
-            Log.e(TAG, "receive err, " +unit.serverPath +": "+e.getMessage());
+            HLog.e(getClass(),HLog.L, "receive err, " +unit.serverPath +": "+e.getMessage());
         }
         return true;
     }

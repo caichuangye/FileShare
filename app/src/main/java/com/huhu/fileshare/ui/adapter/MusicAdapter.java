@@ -77,7 +77,7 @@ public class MusicAdapter extends FileBaseAdapter<MusicItem> {
         if (mMode == GlobalParams.SERVER_MODE) {
             holder.selectedCheckbox.setVisibility(View.GONE);
             holder.downloadTextView.setVisibility(View.VISIBLE);
-            DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath());
+            DownloadStatus status = ShareApplication.getInstance().getFileDownloadStatus(item.getPath(),mServerIP);
             if (status != null) {
                 holder.downloadTextView.setStatus(CommonUtil.getStatus(status));
             }

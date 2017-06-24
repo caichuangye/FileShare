@@ -412,8 +412,8 @@ public class ShareApplication extends Application {
         return mRequestCollection.getWaitToDownloadingFiles();
     }
 
-    public DownloadStatus getFileDownloadStatus(String path){
-        DownloadItem item = mRequestCollection.getItemByPath(path);
+    public DownloadStatus getFileDownloadStatus(String path,String ip){
+        DownloadItem item = mRequestCollection.getItemByPath(path,ip);
         return item != null? item.getStatus() : DownloadStatus.INIT;
     }
 
@@ -455,6 +455,15 @@ public class ShareApplication extends Application {
             return list.contains(path);
         }
         return false;
+    }
+
+    public int getDownloadPercent(String path,String ip){
+        DownloadItem item = mRequestCollection.getItemByPath(path,ip);
+        if(item != null) {
+            return (int) (100 * item.getRecvSize() / item.getTotalSize());
+        }else{
+            return -1;
+        }
     }
 
 }

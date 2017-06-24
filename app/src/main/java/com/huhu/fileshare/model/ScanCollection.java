@@ -1,6 +1,6 @@
 package com.huhu.fileshare.model;
 
-import android.util.Log;
+import android.text.TextUtils;
 
 import com.huhu.fileshare.de.greenrobot.event.EventBus;
 import com.huhu.fileshare.util.EventBusType;
@@ -47,9 +47,12 @@ public class ScanCollection {
         return null;
     }
 
-    public DownloadItem getItemByPath(String path){
+    public DownloadItem getItemByPath(String path,String ip){
+        if(TextUtils.isEmpty(path) || TextUtils.isEmpty(ip)){
+            return null;
+        }
         for (DownloadItem item : mDataList){
-            if(item.getFromPath().equals(path)){
+            if(item.getFromPath().equals(path) && item.getFromIP().equals(ip)){
                 return item;
             }
         }
