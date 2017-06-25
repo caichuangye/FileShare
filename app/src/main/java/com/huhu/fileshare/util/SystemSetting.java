@@ -24,6 +24,7 @@ public class SystemSetting {
     public static final String STORAGE_PATH    = "STORAGE_PATH";
     public static final String AUTO_REFRESH    = "AUTO_REFRESH";
     public static final String GROUP_FLAG      ="GROUP_FLAG";
+    public static final String SHOW_SELF       ="SHOW_SELF";
 
     private SharedPreferences mSharedPreferences;
 
@@ -31,9 +32,23 @@ public class SystemSetting {
 
     private Context mContext;
 
+    private SharedPreferences.OnSharedPreferenceChangeListener mListener;
+
     private SystemSetting(Context context){
         mContext = context.getApplicationContext();
         mSharedPreferences = context.getSharedPreferences(FILE_SHARE_SETTING,Context.MODE_PRIVATE);
+
+        mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+            }
+        };
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(mListener);
+    }
+
+    public void finish(){
+        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(mListener);
     }
 
     public static SystemSetting getInstance(Context context){
@@ -68,13 +83,23 @@ public class SystemSetting {
     }
 
     public String getUserNickName(){
-        return mSharedPreferences.getString(USER_NICKNAME,Build.BRAND+"-"+Build.MODEL);
+        return mSharedPreferences.getString(USER_NICKNAME,Build.MODEL);
     }
 
     public void setUserNickName(String name){
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(USER_NICKNAME,name);
         editor.commit();
+    }
+
+    public void setShowSelf(boolean show){
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putBoolean(SHOW_SELF,show);
+        editor.commit();
+    }
+
+    public boolean getShowSelf(){
+        return mSharedPreferences.getBoolean(SHOW_SELF,true);
     }
 
     public String getApName(){

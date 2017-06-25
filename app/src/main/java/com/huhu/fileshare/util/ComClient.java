@@ -57,7 +57,7 @@ public class ComClient implements Runnable {
     }
 
     public void sendMessage(String msg) {
-        HLog.d(getClass(), HLog.S, "request msg = " + msg);
+        HLog.d(getClass(), HLog.P, "request msg = " + msg);
         mSendMsg = msg;
         mHandler.post(this);
     }

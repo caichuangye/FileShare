@@ -31,6 +31,18 @@ public class DeviceItem {
         mSharedType = type;
     }
 
+    public boolean isSameStatus(DeviceItem item){
+        return mIconPath.equals(item.getIconPath()) &&
+                mUserName.equals(item.getUserName()) &&
+                mHasShared == item.hasShared() &&
+                mSharedType == item.getSharedType();
+    }
+
+    @Override
+    public String toString(){
+        return "[name = "+mUserName+", ip = "+mIP+", hasShared = "+mHasShared+", needRefresh = "+mNeedRefresh+"]";
+    }
+
     public byte getSharedType(){
         return mSharedType;
     }

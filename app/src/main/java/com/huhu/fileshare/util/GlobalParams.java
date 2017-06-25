@@ -56,6 +56,8 @@ public class GlobalParams {
 
     public static int CLIENT_DOWNLOAD_THREAD_NUM = 1;
 
+    public static final int OFFLINE_INTERNAL = 1800;
+
     public enum  OperationType{
         REQUEST,
         DELETE

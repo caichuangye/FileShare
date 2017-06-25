@@ -423,5 +423,15 @@ public class EventBusType {
         }
     }
 
+    public static class OfflineMessage{
+
+        public List<String> list;
+
+        public OfflineMessage(List<String> list){
+            this.list = list;
+        }
+
+    }
+
 
 }

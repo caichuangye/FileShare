@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.model.DeviceItem;
 import com.huhu.fileshare.util.CommonUtil;
+import com.huhu.fileshare.util.HLog;
 import com.huhu.fileshare.util.UserIconManager;
 
 import java.util.ArrayList;
@@ -35,8 +36,10 @@ public class DevicesAdapter extends BaseAdapter {
 
     public void setData(List<DeviceItem> list){
         mDataList.clear();
+        HLog.d(getClass(),HLog.P,"---------update devices-------------");
         if(list != null){
             for(DeviceItem item : list){
+                HLog.d(getClass(),HLog.P,"device: "+item.getIP());
                 mDataList.add(item);
             }
         }

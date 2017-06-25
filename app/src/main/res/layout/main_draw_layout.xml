@@ -87,7 +87,7 @@
 
     <View style="@style/setting_divider_style_1" />
 
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/ap_name_layout"
         style="@style/main_fragment_item_layout">
 
@@ -120,7 +120,7 @@
     </LinearLayout>
 
 
-    <View style="@style/setting_divider_style_1" />
+    <View style="@style/setting_divider_style_1" />-->
 
     <LinearLayout
         android:layout_marginTop="6dp"

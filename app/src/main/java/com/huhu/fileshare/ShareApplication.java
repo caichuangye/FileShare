@@ -28,6 +28,7 @@ import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.FileQueryHelper;
 import com.huhu.fileshare.util.GlobalParams;
 import com.huhu.fileshare.util.HLog;
+import com.huhu.fileshare.util.PreviewIconManager;
 import com.huhu.fileshare.util.WiFiOperation;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -265,6 +266,9 @@ public class ShareApplication extends Application {
      */
     private void operateShardFile(EventBusType.SharedFileInfo info) {
         mOperateTimeStamp = System.currentTimeMillis();
+        String str = info.isAdd()? "operate: add":"operate: delete";
+        str += ", mOperateTimeStamp = "+mOperateTimeStamp;
+        HLog.d(getClass(),HLog.P,"-------------------------------"+str);
         if (info.isAdd()) {
             mSharedCollection.addShared(info.getType(), info.getData());
             mSharedFileSize++;
@@ -294,6 +298,7 @@ public class ShareApplication extends Application {
      * 判断当前设备的共享文件有没有被更新
      */
     public boolean needRefresh() {
+ //       HLog.d(getClass(),HLog.P,"mOperateTimeStamp = "+mOperateTimeStamp+", mLastOperateTimeStamp = "+mLastOperateTimeStamp);
         boolean res = mOperateTimeStamp != mLastOperateTimeStamp;
         mLastOperateTimeStamp = mOperateTimeStamp;
         return res;
@@ -367,6 +372,7 @@ public class ShareApplication extends Application {
         }.getType();
         SharedCollection collection = gson.fromJson(reply.getData(), type);
         mAllSharedCollection.put(reply.getIP(), collection);
+        PreviewIconManager.getInstance().setCurrentScanedFiles(reply.getIP(),collection);
         HLog.d(getClass(),HLog.S,"from ip = "+reply.getIP()+", count = "+collection.totalCount());
         EventBus.getDefault().post(new EventBusType.UpdateSharedFiles());
     }

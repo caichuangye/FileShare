@@ -18,6 +18,8 @@ public class HLog {
 
     public static String L = "temp";
 
+    public static String P = "preview";
+
     public static void d(Class cls,String model, String msg){
         if(sDebug){
             Log.d("["+PRE_TAG+"_"+cls.getSimpleName()+": "+model+"] ",msg);

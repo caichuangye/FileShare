@@ -11,11 +11,17 @@ import android.widget.Toast;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.ShareApplication;
+import com.huhu.fileshare.model.DeviceItem;
 import com.huhu.fileshare.ui.adapter.DevicesAdapter;
 import com.huhu.fileshare.util.ComClient;
+import com.huhu.fileshare.util.DevicesDetection;
 import com.huhu.fileshare.util.EventBusType;
 import com.huhu.fileshare.util.GlobalParams;
+import com.huhu.fileshare.util.SystemSetting;
 import com.huhu.fileshare.util.WiFiOperation;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class UsersListActivity extends BaseActivity {
 
@@ -62,6 +68,18 @@ public class UsersListActivity extends BaseActivity {
         mLoadingView.setVisibility(View.VISIBLE);
         mListView.setVisibility(View.GONE);
         mListView.getEmptyView().setVisibility(View.GONE);
+        List<DeviceItem> list = DevicesDetection.getInstance(this).getDevices();
+        if(list.size() > 0) {
+            mLoadingView.setVisibility(View.GONE);
+            mListView.setVisibility(View.VISIBLE);
+            mListView.getEmptyView().setVisibility(View.VISIBLE);
+            checkSelfDevice(list);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -78,7 +96,22 @@ public class UsersListActivity extends BaseActivity {
         mLoadingView.setVisibility(View.GONE);
         mListView.setVisibility(View.VISIBLE);
         mListView.getEmptyView().setVisibility(View.VISIBLE);
-        mAdapter.setData(info.getData());
+        checkSelfDevice(info.getData());
+    }
+
+    private void checkSelfDevice(List<DeviceItem> list){
+        if (!SystemSetting.getInstance(ShareApplication.getInstance()).getShowSelf()) {
+            Iterator<DeviceItem> itemIterator = list.iterator();
+            String selfIP = WiFiOperation.getInstance(ShareApplication.getInstance()).getIP();
+            while (itemIterator.hasNext()) {
+                DeviceItem deviceItem = itemIterator.next();
+                if (selfIP.equals(deviceItem.getIP())) {
+                    itemIterator.remove();
+                    break;
+                }
+            }
+        }
+        mAdapter.setData(list);
     }
 
     public void onEventMainThread(EventBusType.UpdateUserIcon info) {

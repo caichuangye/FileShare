@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import com.huhu.fileshare.R;
 import com.huhu.fileshare.model.BaseItem;
@@ -103,6 +104,19 @@ public class BrowserServerFilesActivity extends BaseActivity {
 
     public void onEventMainThread(EventBusType.GoToDownloadActivity info) {
         startActivity(new Intent(this,DownloadActivity.class));
+    }
+
+    public void onEventMainThread(EventBusType.OfflineMessage info) {
+        List<String> offlineList  = info.list;
+        if(offlineList != null && offlineList.size() > 0){
+            for(String ip : offlineList){
+                if(ip.equals(mIP)){
+                    Toast.makeText(this,mOwner+" 已掉线",Toast.LENGTH_LONG).show();
+                    finish();
+                    break;
+                }
+            }
+        }
     }
 
     public void onEventMainThread(EventBusType.SharedFileInfo info) {

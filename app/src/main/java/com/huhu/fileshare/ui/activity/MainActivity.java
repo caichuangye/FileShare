@@ -79,8 +79,8 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.user_icon).setOnClickListener(mMenuClickListener);
         findViewById(R.id.username).setOnClickListener(mMenuClickListener);
         findViewById(R.id.wifi_layout).setOnClickListener(mMenuClickListener);
-        findViewById(R.id.ap_name_layout).setOnClickListener(mMenuClickListener);
-        findViewById(R.id.ap_pwd_layout).setOnClickListener(mMenuClickListener);
+     //   findViewById(R.id.ap_name_layout).setOnClickListener(mMenuClickListener);
+    //    findViewById(R.id.ap_pwd_layout).setOnClickListener(mMenuClickListener);
         findViewById(R.id.download_layout).setOnClickListener(mMenuClickListener);
         findViewById(R.id.storagepath_layout).setOnClickListener(mMenuClickListener);
         findViewById(R.id.checkversion_layout).setOnClickListener(mMenuClickListener);
@@ -108,13 +108,14 @@ public class MainActivity extends BaseActivity {
                     break;
                 case R.id.storagepath_layout:
                     break;
-                case R.id.ap_name_layout:
+             /*   case R.id.ap_name_layout:
                     operation = SystemSetting.AP_NAME;
                     break;
                 case R.id.ap_pwd_layout:
                     operation = SystemSetting.AP_PWD;
-                    break;
+                    break;*/
                 case R.id.checkversion_layout:
+                    test();
                     Toast.makeText(MainActivity.this,"已是最新版本",Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.feedback_layout:
@@ -134,6 +135,18 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
+
+    private long mLastClickTime = 0;
+
+    private void test(){
+        long now = System.currentTimeMillis();
+        if(now - mLastClickTime < 500){
+            SystemSetting.getInstance(this).setShowSelf(!SystemSetting.getInstance(this).getShowSelf());
+            String str = SystemSetting.getInstance(this).getShowSelf()? "显示自己":"屏蔽自己";
+            Toast.makeText(MainActivity.this,str,Toast.LENGTH_SHORT).show();
+        }
+        mLastClickTime = now;
+    }
 
     private void exitApplication(){
         ServiceUtils.getInstance().disConnected(getApplicationContext());
@@ -215,8 +228,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = new MenuInflater(this);
-        inflater.inflate(R.menu.menu_main, menu);
+   //     MenuInflater inflater = new MenuInflater(this);
+     //   inflater.inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

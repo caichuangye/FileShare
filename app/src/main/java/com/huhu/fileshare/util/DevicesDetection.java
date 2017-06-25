@@ -15,6 +15,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -58,7 +59,7 @@ public class DevicesDetection {
 
     private DevicesDetection(Context context) {
         mContext = context;
-        HandlerThread threadSend = new HandlerThread("DevicesDetection_send",Process.THREAD_PRIORITY_BACKGROUND);
+        HandlerThread threadSend = new HandlerThread("DevicesDetection_send", Process.THREAD_PRIORITY_BACKGROUND);
         threadSend.start();
         mSendHandler = new Handler(threadSend.getLooper());
 
@@ -71,7 +72,7 @@ public class DevicesDetection {
         try {
             mSocket = new DatagramSocket(GlobalParams.DETECT_PORT);
         } catch (Exception e) {
-            HLog.d(getClass(),HLog.D, e.getMessage());
+            HLog.d(getClass(), HLog.D, e.getMessage());
         }
 
         mIsStart = false;
@@ -102,20 +103,20 @@ public class DevicesDetection {
             public void run() {
                 while (!isQuit() && mSocket != null) {
                     try {
-                        if(WiFiOperation.getInstance(mContext).isWiFiConnected()) {
+                        if (WiFiOperation.getInstance(mContext).isWiFiConnected()) {
                             byte[] data = buildOnlineMessage();
                             InetAddress address = InetAddress.getByName(getBroadcastIP());
                             DatagramPacket dp = new DatagramPacket(data, data.length, address, GlobalParams.DETECT_PORT);
                             mSocket.send(dp);
                             Thread.sleep(mSendInternal);
-                        }else{
-                            Thread.sleep(mSendInternal*2);
+                        } else {
+                            Thread.sleep(mSendInternal * 2);
                         }
                         Thread.sleep(mSendInternal);
                     } catch (IOException e) {
-                        HLog.e(getClass(),HLog.D ,e.getMessage());
+                        HLog.e(getClass(), HLog.D, e.getMessage());
                     } catch (InterruptedException e) {
-                        HLog.e(getClass(),HLog.D, e.getMessage());
+                        HLog.e(getClass(), HLog.D, e.getMessage());
                     }
                 }
             }
@@ -123,7 +124,7 @@ public class DevicesDetection {
     }
 
     private String getBroadcastIP() {
-        if(TextUtils.isEmpty(mIP) || ShareApplication.getInstance().isNeedRefreshIP()) {
+        if (TextUtils.isEmpty(mIP) || ShareApplication.getInstance().isNeedRefreshIP()) {
             String ip = WiFiOperation.getInstance(mContext).getIP();
             mIP = ip.substring(0, ip.lastIndexOf(".")) + ".255";
         }
@@ -146,32 +147,37 @@ public class DevicesDetection {
                         }
                         parseMessage(buf, datagramPacket.getAddress().getHostAddress());
                     } catch (IOException e) {
-                        HLog.e(getClass(),HLog.D, e.getMessage());
+                        HLog.e(getClass(), HLog.D, e.getMessage());
                     }
                 }
             }
         });
     }
 
-
     private void parseMessage(byte[] data, String ip) {
+
+        boolean needRefreshDevicesList = false;
         long now = System.currentTimeMillis();
         boolean isSame = false;
         boolean has = CommonUtil.parseHasSharedFiles(data);
         boolean refresh = CommonUtil.parseNeedRefresh(data);
         String path = CommonUtil.parseIconPath(data);
         long iconSize = CommonUtil.parseIconSize(data);
-        boolean needRefreshIcon = UserIconManager.getInstance().setServerIconPath(ip,new UserIconManager.ServerIconItem(path,iconSize));
-        if(needRefreshIcon){
-            HLog.d(getClass(),HLog.S,"---needRefreshIcon----");
+        boolean needRefreshIcon = UserIconManager.getInstance().setServerIconPath(ip, new UserIconManager.ServerIconItem(path, iconSize));
+        if (needRefreshIcon) {
+            HLog.d(getClass(), HLog.S, "---needRefreshIcon----");
             ComClient.getInstance(ip).sendMessage(GlobalParams.REQUEST_ICON_PATH);
         }
         String name = CommonUtil.parseUserName(data);
-        DeviceItem item = new DeviceItem(path, name, ip, has, refresh, now,data[1]);
-        List<String> tmp = new ArrayList<>();
+        DeviceItem item = new DeviceItem(path, name, ip, has, refresh, now, data[1]);
+        HLog.d(getClass(), HLog.P, item.toString());
+        List<String> offLineList = new ArrayList<>();
         synchronized (DevicesDetection.class) {
             for (DeviceItem devicesItem : mDevicesList) {
                 if (devicesItem.getIP().equals(ip)) {
+                    if (!devicesItem.isSameStatus(item)) {
+                        needRefreshDevicesList = true;
+                    }
                     devicesItem.setTimeStamp(now);
                     devicesItem.setHasShared(has);
                     devicesItem.setIconPath(path);
@@ -180,26 +186,37 @@ public class DevicesDetection {
                     devicesItem.setSharedType(data[1]);
                     isSame = true;
                 } else {
-                    if (now - devicesItem.getTimeStamp() > 1500) {
-                        tmp.add(devicesItem.getIP());
-                    } else {
-                        devicesItem.setTimeStamp(now);
+                    if (now - devicesItem.getTimeStamp() > GlobalParams.OFFLINE_INTERNAL) {
+                        needRefreshDevicesList = true;
+                        offLineList.add(devicesItem.getIP());
                     }
                 }
             }
             if (!isSame) {
+                HLog.d(getClass(), HLog.P, "add a new device: " + ip);
+                needRefreshDevicesList = true;
                 mDevicesList.add(item);
             }
         }
-        for (String ip1 : tmp) {
-            for (DeviceItem item1 : mDevicesList) {
-                if (ip1.equals(item1.getIP())) {
-                    mDevicesList.remove(item1);
-                    break;
+
+        for (String ip1 : offLineList) {
+            Iterator<DeviceItem> itemIterator = mDevicesList.iterator();
+            while (itemIterator.hasNext()) {
+                DeviceItem deviceItem = itemIterator.next();
+                if (ip1.equals(deviceItem.getIP())) {
+                    HLog.d(getClass(), HLog.P, "delete: " + deviceItem.getIP());
+                    itemIterator.remove();
                 }
             }
         }
-        EventBus.getDefault().post(new EventBusType.OnlineDevicesInfo(mDevicesList));
+
+        if(offLineList.size() > 0){
+            EventBus.getDefault().post(new EventBusType.OfflineMessage(offLineList));
+        }
+
+        if (needRefreshDevicesList) {
+            EventBus.getDefault().post(new EventBusType.OnlineDevicesInfo(mDevicesList));
+        }
         if (refresh) {
             ComClient.getInstance(ip).sendMessage(GlobalParams.REQUEST_SHARED_FILES);
         }
@@ -213,5 +230,11 @@ public class DevicesDetection {
 
     private byte[] buildOnlineMessage() {
         return CommonUtil.buildSendData(mContext);
+    }
+
+    public List<DeviceItem> getDevices() {
+        synchronized (DevicesDetection.class) {
+            return mDevicesList;
+        }
     }
 }
