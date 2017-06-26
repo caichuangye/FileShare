@@ -38,8 +38,6 @@ public class DevicesDetection {
 
     private boolean mQuit;
 
-    private int mSendInternal;
-
     private DatagramSocket mSocket;
 
     private List<DeviceItem> mDevicesList;
@@ -77,7 +75,6 @@ public class DevicesDetection {
 
         mIsStart = false;
         mQuit = false;
-        mSendInternal = 500;
     }
 
     public void start() {
@@ -108,11 +105,10 @@ public class DevicesDetection {
                             InetAddress address = InetAddress.getByName(getBroadcastIP());
                             DatagramPacket dp = new DatagramPacket(data, data.length, address, GlobalParams.DETECT_PORT);
                             mSocket.send(dp);
-                            Thread.sleep(mSendInternal);
+                            Thread.sleep(GlobalParams.SEND_ONLINE_MSG_INTERNAL);
                         } else {
-                            Thread.sleep(mSendInternal * 2);
+                            Thread.sleep(GlobalParams.SEND_ONLINE_MSG_INTERNAL * 2);
                         }
-                        Thread.sleep(mSendInternal);
                     } catch (IOException e) {
                         HLog.e(getClass(), HLog.D, e.getMessage());
                     } catch (InterruptedException e) {
@@ -170,7 +166,7 @@ public class DevicesDetection {
         }
         String name = CommonUtil.parseUserName(data);
         DeviceItem item = new DeviceItem(path, name, ip, has, refresh, now, data[1]);
-        HLog.d(getClass(), HLog.P, item.toString());
+    //    HLog.d(getClass(), HLog.P, item.toString());
         List<String> offLineList = new ArrayList<>();
         synchronized (DevicesDetection.class) {
             for (DeviceItem devicesItem : mDevicesList) {

@@ -60,7 +60,7 @@ public class MainFragment extends BaseFragment {
                 if (WiFiOperation.getInstance(getActivity().getApplicationContext()).isWiFiConnected()) {
                     startActivity(new Intent(getActivity(), UsersListActivity.class));
                 } else {
-                    showJoinWiFiNotice();
+                    startActivity(new Intent(getActivity(), JoinWiFiActivity.class));
                 }
             }
         });

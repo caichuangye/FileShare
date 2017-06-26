@@ -298,7 +298,6 @@ public class ShareApplication extends Application {
      * 判断当前设备的共享文件有没有被更新
      */
     public boolean needRefresh() {
- //       HLog.d(getClass(),HLog.P,"mOperateTimeStamp = "+mOperateTimeStamp+", mLastOperateTimeStamp = "+mLastOperateTimeStamp);
         boolean res = mOperateTimeStamp != mLastOperateTimeStamp;
         mLastOperateTimeStamp = mOperateTimeStamp;
         return res;
@@ -388,8 +387,6 @@ public class ShareApplication extends Application {
      * 添加一个要下载的文件
      */
     public void addScanFile(DownloadItem item) {
-    //    Log.d(TAG,"mRequestCollection add: "+item.getFromPath());
-    //    item.setStatus(DownloadStatus.WAIT);
         mRequestCollection.addFile(item);
         ServiceUtils.getInstance().addDownloadItem(item);
     }

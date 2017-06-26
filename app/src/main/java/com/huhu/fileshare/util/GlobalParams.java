@@ -56,7 +56,11 @@ public class GlobalParams {
 
     public static int CLIENT_DOWNLOAD_THREAD_NUM = 1;
 
-    public static final int OFFLINE_INTERNAL = 1800;
+    public static final int SEND_ONLINE_MSG_INTERNAL = 1000;
+
+    public static final int OFFLINE_INTERNAL = SEND_ONLINE_MSG_INTERNAL * 2;
+
+    public static final int CHECK_NET_AVAILABLE_INTERNAL = SEND_ONLINE_MSG_INTERNAL * 3;
 
     public enum  OperationType{
         REQUEST,

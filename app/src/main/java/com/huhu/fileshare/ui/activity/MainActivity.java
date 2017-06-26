@@ -116,7 +116,7 @@ public class MainActivity extends BaseActivity {
                     break;*/
                 case R.id.checkversion_layout:
                     test();
-                    Toast.makeText(MainActivity.this,"已是最新版本",Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(MainActivity.this,"已是最新版本",Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.feedback_layout:
                     startActivity(new Intent(MainActivity.this,UserFeedbackActivity.class));
